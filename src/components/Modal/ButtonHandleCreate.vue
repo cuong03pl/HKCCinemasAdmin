@@ -1,0 +1,49 @@
+<template>
+    
+    <div :class="this.class" class="flex gap-2 items-center">
+        <button @click="handleOpen" class="bg-[#0d6efd] h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold">Thêm</button>
+    </div>
+    <Modal @handleCreate="handleCreate" :data="data" :isCreate="true" :isOpen="toggleModal" @handleClose="handleClose" :formFields="formFields" :genresDataProps="genresData"/>
+</template>
+
+<script>
+import Modal from './Modal.vue';
+import ModalDelete from './ModalDelete.vue';
+
+export default {
+    props: {
+        formFields: Array,
+        data: Object,
+        class: String,
+        handleCreate: Function,
+        genresData: Array
+    },
+    data(){
+        return {
+            toggleModal: false,
+            toggleModalDelete: false
+        }
+    },
+    watch: {
+        genresData(newG, oldG){
+            console.log(JSON.parse(JSON.stringify(newG)));
+        }
+    },
+    methods: {
+        handleOpen() {
+            this.toggleModal = true;
+        },
+        handleClose(n) {
+            this.toggleModal = n;
+        },
+        handleCreate(data){
+            this.$emit('handleCreate', data);
+        }
+    },
+    components: { Modal, ModalDelete }
+}
+</script>
+
+<style>
+
+</style>
