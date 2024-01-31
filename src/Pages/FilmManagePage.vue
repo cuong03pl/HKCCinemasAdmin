@@ -17,7 +17,7 @@
                 <span class="w-[20%]">Chức năng </span>
             </div>
             <div v-for="(item, index) in filmList" :key="index" class="flex justify-around items-center gap-2 border-t border-t-[#0000002f]  px-[16px] hover:bg-[#e5e5e5] py-[8px]">
-                <div class="w-[10%]  flex items-center justify-center    ">
+                <div class="w-[15%]  flex items-center justify-center    ">
                     <img class="w-full h-full" :src="`https://localhost:7253/${item.thumbnail}` " alt="">
                 </div> 
                 <span class="w-[30%]">{{ item.title }}</span>
@@ -82,7 +82,7 @@ export default {
                 formData.append("duration", form_data.duration);
                 formData.append("country", form_data.country);
                 formData.append("rating", form_data.rating);
-                formData.append("formFile", form_data.formFile);
+                formData.append("formFile", form_data.thumbnail);
                 formData.append("releaseDate", form_data.releaseDate);
                 form_data.categoryIds.forEach(item => {
                     formData.append("categoryIds[]", item);
@@ -110,7 +110,7 @@ export default {
                 formData.append("duration", form_data.duration);
                 formData.append("country", form_data.country);
                 formData.append("rating", form_data.rating);
-                formData.append("formFile", form_data.formFile);
+                formData.append("formFile", form_data.thumbnail);
                 formData.append("releaseDate", form_data.releaseDate);
                 form_data.categoryIds.forEach(item => {
                     formData.append("categoryIds[]", item);

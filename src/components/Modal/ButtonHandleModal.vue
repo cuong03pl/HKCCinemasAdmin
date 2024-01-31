@@ -26,7 +26,6 @@ export default {
     },
     watch: {
         genresData(newG, oldG){
-            console.log(JSON.parse(JSON.stringify(newG)));
         }
     },
     methods: {

@@ -9,9 +9,10 @@ export const formFields = {
             {title: "Quốc gia", id: "country", placeholder: "Nhập quốc gia", isText: true},
             {title: "Đánh giá phim", id: "rating", placeholder: "Nhập đánh giá phim", isText: true},
             {title: "Thời gian phát hành", id: "releaseDate", placeholder: "Nhập thời gian phát hành", isDate: true},
-            {title: "Ảnh phim", id: "formFile", placeholder: "Nhập ảnh phim", isFile: true},
-            {title: "Thể loại", id: "categoryIds", placeholder: "Chọn thể loại", isSelect: true},
             {title: "Đạo diễn", id: "director", placeholder: "Nhập tên đạo diễn", isText: true},
+            {id: "", placeholder: "", isHidden: true},
+            {title: "Thể loại", id: "categoryIds", placeholder: "Chọn thể loại", isSelect: true},
+            {title: "Ảnh phim", id: "thumbnail", placeholder: "Nhập ảnh phim", isFile: true},
         ],
     user: [
         // {id: "id", isHidden: true},
