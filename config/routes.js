@@ -3,6 +3,7 @@ import DashboardPage from "@/Pages/DashboardPage.vue"
 import DefaultLayout from "@/layouts/DefaultLayout.vue"
 import UserManagePage from "@/Pages/UserManagePage.vue"
 import FilmManagePage from "@/Pages/FilmManagePage.vue"
+import CinemasManagePage from "@/Pages/CinemasManagePage.vue"
 
 // 2. Define some routes
 // Each route should map to a component.
@@ -15,7 +16,8 @@ export  const routes =   [
         { path: "/dashboard", component: DashboardPage },
         { path: "/home", component: HomePage },
         {path: "/user-manage", component: UserManagePage},
-        {path: "/film-manage", component: FilmManagePage}
+        {path: "/film-manage", component: FilmManagePage},
+        {path: "/cinemas-manage", component: CinemasManagePage}
       ]
     }
   ]

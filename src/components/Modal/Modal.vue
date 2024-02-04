@@ -32,7 +32,6 @@
                 this.formFields.forEach((field) => {
                     init[field.id] = this.data[field.id]; // tạo ra 1 abcd: ""
                 });
-                console.log(init);
         return init;
         },
         initFormCreate(){
@@ -50,7 +49,7 @@
         },
         handleFileChange(event) {
             var file = event.target.files[0]
-            this.FormData["thumbnail"] = file;
+            this.FormData["image"] = file;
             if (file) {
                 this.imageUrl = URL.createObjectURL(file);
             }

@@ -18,7 +18,7 @@
             </div>
             <div v-for="(item, index) in filmList" :key="index" class="flex justify-around items-center gap-2 border-t border-t-[#0000002f]  px-[16px] hover:bg-[#e5e5e5] py-[8px]">
                 <div class="w-[15%]  flex items-center justify-center    ">
-                    <img class="w-full h-full" :src="`https://localhost:7253/${item.thumbnail}` " alt="">
+                    <img class="w-full h-full" :src="`https://localhost:7253/${item.image}` " alt="">
                 </div> 
                 <span class="w-[30%]">{{ item.title }}</span>
                 <span class="w-[10%]">{{ item.duration }} phút</span>
@@ -30,7 +30,7 @@
                 </span>
             </div>
         </div>
-        <ModelMessage :isOpen="toggleModalMessage" @handleClose="handleClose" :message="this.message"/>
+        <ModelMessage :isOpen="toggleModalMessage" @handleClose="handleClose" :message="message"/>
     </div>
     
     
@@ -82,21 +82,27 @@ export default {
                 formData.append("duration", form_data.duration);
                 formData.append("country", form_data.country);
                 formData.append("rating", form_data.rating);
-                formData.append("formFile", form_data.thumbnail);
+                formData.append("formFile", form_data.image);
                 formData.append("releaseDate", form_data.releaseDate);
-                form_data.categoryIds.forEach(item => {
-                    formData.append("categoryIds[]", item);
-                });
+                if(form_data.categoryIds){
+                    form_data.categoryIds?.forEach(item => {
+                        formData.append("categoryIds[]", item);
+                    });
+                }
                 formData.append("director", form_data.director);
-                
                 axios.post("https://localhost:7253/api/Films",formData , {
                 headers: {'Content-Type': 'multipart/form-data',}
             })
             .then((res) =>  {
                 this.toggleModalMessage = true;
-                 this.message = res;
+                 this.message = res.data;
                  this.loadFilm();
-            } ).catch((err) => console.log(err)) 
+            } ).catch((err) => {
+                if (err.response.status == 400){
+                   this.message = "Vui lòng nhập đầy đủ thông tin";
+                   this.toggleModalMessage = true;
+                }
+            }) 
             
             
         },
@@ -110,9 +116,9 @@ export default {
                 formData.append("duration", form_data.duration);
                 formData.append("country", form_data.country);
                 formData.append("rating", form_data.rating);
-                formData.append("formFile", form_data.thumbnail);
+                formData.append("formFile", form_data.image);
                 formData.append("releaseDate", form_data.releaseDate);
-                form_data.categoryIds.forEach(item => {
+                form_data.categoryIds?.forEach(item => {
                     formData.append("categoryIds[]", item);
                 });
                 formData.append("director", form_data.director);
@@ -122,9 +128,15 @@ export default {
             })
             .then((res) =>  {
                 this.toggleModalMessage = true;
-                 this.message = res;
+                 this.message = res.data;
                  this.loadFilm();
-            } ).catch((err) => console.log(err)) 
+            } )
+            .catch((err) => {
+                if (err.response.status == 400){
+                   this.message = "Vui lòng nhập đầy đủ thông tin";
+                   this.toggleModalMessage = true;
+                }
+            })
             
             
         },
@@ -132,9 +144,13 @@ export default {
             axios.delete(`https://localhost:7253/api/Films/${id}`)
             .then((res) =>  {
                 this.toggleModalMessage = true;
-                this.message = res;
+                this.message = res.data;
                 this.loadFilm();
-            } );
+            } )
+            .catch((err) => {
+                   this.message = "Xóa không thành công";
+                   this.toggleModalMessage = true;
+            })
         },
         handleClose(n){
             this.toggleModalMessage = n

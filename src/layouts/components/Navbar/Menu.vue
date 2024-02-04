@@ -45,6 +45,16 @@ export default {
                   fill: "#fff"
                 }  ,
             },
+            {
+                title: "Quản lý Cinemas",
+                to:"/cinemas-manage",
+                icon: {
+                  item: UserIcon,
+                  height: 18,
+                  width: 18,
+                  fill: "#fff"
+                }  ,
+            },
             
         ]
     }
