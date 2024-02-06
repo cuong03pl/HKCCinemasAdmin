@@ -55,7 +55,26 @@ export default {
                   fill: "#fff"
                 }  ,
             },
-            
+            {
+                title: "Quản lý diễn viên",
+                to:"/actor-manage",
+                icon: {
+                  item: UserIcon,
+                  height: 18,
+                  width: 18,
+                  fill: "#fff"
+                }  ,
+            },
+            {
+                title: "Quản lý danh mục",
+                to:"/category-manage",
+                icon: {
+                  item: UserIcon,
+                  height: 18,
+                  width: 18,
+                  fill: "#fff"
+                }  ,
+            },
         ]
     }
   },

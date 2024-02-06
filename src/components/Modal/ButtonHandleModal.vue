@@ -3,7 +3,7 @@
             <button @click="handleOpen"  class="bg-[#0d6efd] h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold">Sửa</button>
             <button @click="handleOpenModalDelete" class="bg-[#dc3545] h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold">Xóa</button>
     </div>
-    <Modal :data="data" :isOpen="toggleModal" @handleClose="handleClose" @handleUpdate="handleUpdate" :formFields="formFields" :genresDataProps="genresData"/>
+    <Modal :data="data" :isOpen="toggleModal" @handleClose="handleClose" @handleUpdate="handleUpdate" :formFields="formFields" :selectListData="selectListData"/>
     <ModalDelete :isOpen="toggleModalDelete" @handleClose = "handleCloseModalDelete" @handleDelete="handleDelete" />
 </template>
 
@@ -15,7 +15,7 @@ export default {
     props: {
         formFields: Array,
         data: Object,
-        genresData: Array
+        selectListData: Array
 
     },
     data(){
@@ -25,7 +25,7 @@ export default {
         }
     },
     watch: {
-        genresData(newG, oldG){
+        selectListData(newG, oldG){
         }
     },
     methods: {

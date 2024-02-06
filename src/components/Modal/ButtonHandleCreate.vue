@@ -3,7 +3,7 @@
     <div :class="this.class" class="flex gap-2 items-center">
         <button @click="handleOpen" class="bg-[#0d6efd] h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold">Thêm</button>
     </div>
-    <Modal @handleCreate="handleCreate" :data="data" :isCreate="true" :isOpen="toggleModal" @handleClose="handleClose" :formFields="formFields" :genresDataProps="genresData"/>
+    <Modal @handleCreate="handleCreate" :data="data" :isCreate="true" :isOpen="toggleModal" @handleClose="handleClose" :formFields="formFields" :selectListData="selectListData"/>
 </template>
 
 <script>
@@ -16,7 +16,7 @@ export default {
         data: Object,
         class: String,
         handleCreate: Function,
-        genresData: Array
+        selectListData: Array
     },
     data(){
         return {
@@ -25,7 +25,7 @@ export default {
         }
     },
     watch: {
-        genresData(newG, oldG){
+        selectListData(newG, oldG){
         }
     },
     methods: {

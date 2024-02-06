@@ -4,7 +4,7 @@
 
         <div>
            <span class=" text-[30px] font-bold">  Quản lý phim </span> 
-           <ButtonHandleCreate @handleCreate="createNewFilm" :genresData="genres" :class="'mt-4 mb-4'" :formFields="formFields"/>
+           <ButtonHandleCreate @handleCreate="createNewFilm" :selectListData="selectListData" :class="'mt-4 mb-4'" :formFields="formFields"/>
         </div>
         <div>
             <div class="flex justify-between font-medium  py-[16px] px-3 gap-2 bg-white">
@@ -26,7 +26,7 @@
                 <span class="w-[10%]">{{ convertTime(item.releaseDate)  }}</span>
                 <span class="w-[10%]">{{ item.director }}</span>
                 <span class="w-[20%]">
-                    <ButtonHandleModal @handleDelete="deleteFilm" @handleUpdate="updateFilm" :data="item" :formFields="formFields" :genresData="genres"/>
+                    <ButtonHandleModal @handleDelete="deleteFilm" @handleUpdate="updateFilm" :data="item" :formFields="formFields" :selectListData="selectListData"/>
                 </span>
             </div>
         </div>
@@ -51,7 +51,7 @@ export default {
             toggleModalDelete: false,
             toggleModalMessage: false,
             message: Object,
-            genres: [],
+            selectListData: [],
             formFields: formFields.film
         };
     },
@@ -68,7 +68,7 @@ export default {
         fetchApi() {
             try {
                 axios.get("https://localhost:7253/api/Categories/getAllCategories")
-                .then((res) => this.genres = JSON.parse(JSON.stringify(res.data)))  ;
+                .then((res) => this.selectListData = JSON.parse(JSON.stringify(res.data)))  ;
             } catch (error) {
                 console.error("Lỗi khi lấy dữ liệu:", error);
             }
