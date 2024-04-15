@@ -66,7 +66,7 @@ export default {
             })
             .then((res) =>  {
                 this.toggleModalMessage = true;
-                 this.message = res;
+                 this.message = res.data;
                  this.userList.push(JSON.parse(res.config.data) );
                  console.log(this.userList);
             } );
@@ -75,7 +75,7 @@ export default {
             axios.delete(`https://localhost:7253/api/Users/deleteUser/${id}`)
             .then((res) =>  {
                 this.toggleModalMessage = true;
-                 this.message = res;
+                 this.message = res.data;
                 this.loadUser();
             } );
         },
@@ -93,7 +93,7 @@ export default {
             .then((res) =>  {
                 console.log(res);
                 this.toggleModalMessage = true;
-                 this.message = res;
+                 this.message = res.data;
                 this.loadUser();
             } );
         },

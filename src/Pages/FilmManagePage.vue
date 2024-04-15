@@ -13,6 +13,7 @@
                 <span class="w-[10%]">Thời gian phim</span>
                 <span class="w-[10%]">Đánh giá</span>
                 <span class="w-[10%]">Thời gian phát hành</span>
+                <span class="w-[10%]">Thời gian kết thúc</span>
                 <span class="w-[10%]">Đạo diễn</span>
                 <span class="w-[20%]">Chức năng </span>
             </div>
@@ -24,6 +25,7 @@
                 <span class="w-[10%]">{{ item.duration }} phút</span>
                 <span class="w-[10%]">{{ item.rating }} </span>
                 <span class="w-[10%]">{{ convertTime(item.releaseDate)  }}</span>
+                <span class="w-[10%]">{{ item.endDate && convertTime(item.endDate)  }}</span>
                 <span class="w-[10%]">{{ item.director }}</span>
                 <span class="w-[20%]">
                     <ButtonHandleModal @handleDelete="deleteFilm" @handleUpdate="updateFilm" :data="item" :formFields="formFields" :selectListData="selectListData"/>
@@ -84,6 +86,7 @@ export default {
                 formData.append("rating", form_data.rating);
                 formData.append("formFile", form_data.image);
                 formData.append("releaseDate", form_data.releaseDate);
+                formData.append("endDate", form_data.endDate);
                 if(form_data.categoryIds){
                     form_data.categoryIds?.forEach(item => {
                         formData.append("categoryIds[]", item);
@@ -118,6 +121,7 @@ export default {
                 formData.append("rating", form_data.rating);
                 formData.append("formFile", form_data.image);
                 formData.append("releaseDate", form_data.releaseDate);
+                formData.append("endDate", form_data.endDate);
                 form_data.categoryIds?.forEach(item => {
                     formData.append("categoryIds[]", item);
                 });

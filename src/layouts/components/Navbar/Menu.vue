@@ -75,6 +75,16 @@ export default {
                   fill: "#fff"
                 }  ,
             },
+            {
+                title: "Quản lý Trailer",
+                to:"/trailer-manage",
+                icon: {
+                  item: UserIcon,
+                  height: 18,
+                  width: 18,
+                  fill: "#fff"
+                }  ,
+            },
         ]
     }
   },

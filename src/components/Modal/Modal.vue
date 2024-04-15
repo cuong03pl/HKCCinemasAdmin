@@ -23,7 +23,6 @@
     watch: {
         selectListData(newG, oldG){
                 this.selectList = newG;
-                console.log(this.selectList);
             }
         },
     methods: {
@@ -45,7 +44,6 @@
             
             this.isCreate ?  this.$emit('handleCreate', this.FormData) : this.$emit('handleUpdate', this.data.id ,this.FormData);
             // this.$emit('handleClose', false);
-            console.log(this.FormData);
         },
         handleFileChange(event) {
             var file = event.target.files[0]
@@ -74,6 +72,9 @@
 
                             <label v-if="item.title" for="">{{ item.title }} (<span class="text-[red]">*</span>)</label>
                             <select multiple v-if="item.isSelect" v-model="FormData[item.id]" :options="selectListData" class="block border-[2px] mt-1 focus:border-[green] rounded-md outline-none w-[100%] text-[16px] border-[#ccc] px-4 py-2">
+                                <option v-for="(item, index) in selectListData" :key="index" :value="item.id">{{ item.name || item.title }}</option>
+                            </select>
+                            <select  v-if="item.isSelectnotMuti" v-model="FormData[item.id]" :options="selectListData" class="block border-[2px] mt-1 focus:border-[green] rounded-md outline-none w-[100%] text-[16px] border-[#ccc] px-4 py-2">
                                 <option v-for="(item, index) in selectListData" :key="index" :value="item.id">{{ item.name || item.title }}</option>
                             </select>
                             <input v-model="FormData[item.id]" type="date" v-if="item.isDate" class="block border-[2px] mt-1 focus:border-[green] rounded-md outline-none w-[100%] text-[16px] border-[#ccc] px-4 py-2"/>

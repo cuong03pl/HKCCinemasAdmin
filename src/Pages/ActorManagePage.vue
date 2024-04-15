@@ -76,7 +76,7 @@ export default {
                         formData.append("filmIds[]", item);
                     });
                 }
-                axios.post("https://localhost:7253/api/Actors",formData , {
+            axios.post("https://localhost:7253/api/Actors",formData , {
                 headers: {'Content-Type': 'multipart/form-data',}
             })
             .then((res) =>  {
