@@ -97,6 +97,26 @@ export default {
             fill: "#fff",
           },
         },
+        {
+          title: "Quản lý phòng chiếu",
+          to: "/room-manage",
+          icon: {
+            item: UserIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
+        {
+          title: "Quản lý chỗ ngồi",
+          to: "/seat-manage",
+          icon: {
+            item: UserIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
       ],
     };
   },

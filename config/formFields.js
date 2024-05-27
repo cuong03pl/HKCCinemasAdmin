@@ -44,5 +44,14 @@ export const formFields = {
         {title: "Link", id: "link", placeholder: "Nhập link trailer", isText: true},
         {title: "Id phim", id: "filmId", placeholder: "id phim", isSelectnotMuti: true},
     ],
+    room: [
+        {title: "Tên phòng", id: "name", placeholder: "Nhập tên phòng", isText: true},
+        {title: "Rạp chiếu", id: "cinemasId", placeholder: "Nhập rạp chiếu",  isSelectnotMuti: true},
+    ],
+    seat: [
+        {title: "Tên chỗ ngồi", id: "name", placeholder: "Nhập tên chỗ ngồi", isText: true},
+        {title: "Trạng thái", id: "status", placeholder: "Nhập trạng thái chỗ ngồi", isText: true},
+        {title: "Phòng chiếu", id: "roomID", placeholder: "Nhập rạp chiếu",  isSelectnotMuti: true},
+    ],
 
 }

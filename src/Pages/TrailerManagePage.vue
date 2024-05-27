@@ -82,12 +82,9 @@ export default {
       axios.get("https://localhost:7253/api/Trailers").then((res) => {
         const trailers = res.data;
         const trailerPromises = trailers.map(async (item) => {
-          // Vì getFilmName trả về một Promise, bạn có thể "await" ở đây
           const title = await this.getFilmName(item.filmId);
-          // Sau khi Promise được giải quyết, bạn có tiêu đề phim và thêm nó vào item
           return { ...item, filmTitle: title };
         });
-        // Chờ tất cả các Promise trong mảng được giải quyết
         Promise.all(trailerPromises).then((completedTrailers) => {
           this.trailerList = completedTrailers;
         });

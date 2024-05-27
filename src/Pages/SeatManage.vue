@@ -3,7 +3,7 @@
     <div>
       <span class="text-[30px] font-bold"> Quản lý phòng chiếu phim </span>
       <ButtonHandleCreate
-        @handleCreate="createRoom"
+        @handleCreate="createSeat"
         :selectListData="selectListData"
         :class="'mt-4 mb-4'"
         :formFields="formFields"
@@ -13,27 +13,25 @@
       <div
         class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
       >
-        <span class="w-[15%]">Tên phòng</span>
-        <span class="w-[30%]">Tên rạp</span>
+        <span class="w-[15%]">Tên chỗ ngồi</span>
+        <span class="w-[30%]">Tên phòng</span>
         <span class="w-[35%]"></span>
         <span class="w-[20%]">Chức năng </span>
       </div>
       <div
-        v-for="(item, index) in roomList"
+        v-for="(item, index) in seatList"
         :key="index"
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
         <div class="w-[15%]">
           {{ item.name }}
         </div>
-        <span class="w-[30%]">{{
-          getCinemasNameById(item.cinemasId) || cinemasName
-        }}</span>
+        <span class="w-[30%]">{{ getRoomById(item.roomID) || roomName }}</span>
         <span class="w-[35%]">{{}}</span>
         <span class="w-[20%]">
           <ButtonHandleModal
-            @handleDelete="deleteRoom"
-            @handleUpdate="updateRoom"
+            @handleDelete="deleteSeat"
+            @handleUpdate="updateSeat"
             :data="item"
             :formFields="formFields"
             :selectListData="selectListData"
@@ -57,32 +55,31 @@ import { formFields } from "../../config/formFields";
 export default {
   data() {
     return {
-      roomList: [],
+      seatList: [],
       toggleModal: false,
       toggleModalDelete: false,
       toggleModalMessage: false,
       message: Object,
       selectListData: [],
-      formFields: formFields.room,
-      cinemasName: "",
+      formFields: formFields.seat,
+      roomName: "",
     };
   },
   created() {
-    this.getCinemas();
+    this.getRooms();
     this.loadData();
   },
 
   methods: {
     loadData() {
-      axios.get("https://localhost:7253/api/Rooms").then((res) => {
-        this.roomList = res.data;
-        console.log(res);
+      axios.get("https://localhost:7253/api/Seats").then((res) => {
+        this.seatList = res.data;
       });
     },
-    getCinemas() {
+    getRooms() {
       try {
         axios
-          .get("https://localhost:7253/api/Cinemas")
+          .get("https://localhost:7253/api/Rooms")
           .then(
             (res) =>
               (this.selectListData = JSON.parse(JSON.stringify(res.data)))
@@ -91,22 +88,23 @@ export default {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    getCinemasNameById(id) {
+    getRoomById(id) {
       try {
         axios
-          .get(`https://localhost:7253/api/Cinemas/${id}`)
-          .then((res) => (this.cinemasName = res.data.name));
+          .get(`https://localhost:7253/api/Rooms/${id}`)
+          .then((res) => (this.roomName = res.data.name));
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    createRoom(form_data) {
+    createSeat(form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
-      formData.append("cinemasId", form_data.cinemasId);
+      formData.append("roomID", form_data.roomID);
+      formData.append("status", form_data.status);
 
       axios
-        .post("https://localhost:7253/api/Rooms", formData, {
+        .post("https://localhost:7253/api/Seats", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
@@ -122,13 +120,14 @@ export default {
           }
         });
     },
-    updateRoom(id, form_data) {
+    updateSeat(id, form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
-      formData.append("cinemasId", form_data.cinemasId);
+      formData.append("roomID", form_data.roomID);
+      formData.append("status", form_data.status);
 
       axios
-        .put(`https://localhost:7253/api/Rooms/${id}`, formData, {
+        .put(`https://localhost:7253/api/Seats/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
@@ -143,9 +142,9 @@ export default {
           }
         });
     },
-    deleteRoom(id) {
+    deleteSeat(id) {
       axios
-        .delete(`https://localhost:7253/api/Rooms/${id}`)
+        .delete(`https://localhost:7253/api/Seats/${id}`)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
