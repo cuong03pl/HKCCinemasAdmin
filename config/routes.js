@@ -7,10 +7,10 @@ import CinemasManagePage from "@/Pages/CinemasManagePage.vue"
 import ActorManagePage from "@/Pages/ActorManagePage.vue"
 import TrailerManagePage from "@/Pages/TrailerManagePage.vue"
 import CategoryManagePage from "@/Pages/CategoryManagePage.vue"
+import CinemasCategoryManagePage from "@/Pages/CinemasCategoryManagePage.vue"
+import RoomManage from "@/Pages/RoomManage.vue"
 
-// 2. Define some routes
-// Each route should map to a component.
-// We'll talk about nested routes later.
+
 export  const routes =   [
     {
       path: "/",
@@ -23,7 +23,9 @@ export  const routes =   [
         {path: "/cinemas-manage", component: CinemasManagePage},
         {path: "/actor-manage", component: ActorManagePage},
         {path: "/category-manage", component: CategoryManagePage},
-        {path: "/trailer-manage", component: TrailerManagePage}
+        {path: "/trailer-manage", component: TrailerManagePage},
+        {path: "/cinemas-category-manage", component: CinemasCategoryManagePage},
+        {path: "/room-manage", component: RoomManage}
       ]
     }
   ]

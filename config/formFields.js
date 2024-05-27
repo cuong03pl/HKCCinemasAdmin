@@ -15,12 +15,21 @@ export const formFields = {
             {title: "Ảnh phim", id: "image", placeholder: "Nhập ảnh phim", isFile: true},
         ],
     user: [
-        {title: "Tài khoản", id: "username", placeholder: "Nhập tài khoản", isText: true},
-        {title: "Mật khẩu", id: "password", placeholder: "Nhập mật khẩu", isText: true  },
+        {title: "Tài khoản", id: "userName", placeholder: "Nhập tài khoản", isText: true},
+        {title: "Mật khẩu", id: "email", placeholder: "Nhập mật khẩu", isText: true  },
     ],
     cinemas: [
         {title: "Tên rạp", id: "name", placeholder: "Nhập tên rạp", isText: true},
         {title: "Địa chỉ rạp", id: "address", placeholder: "Nhập địa chỉ rạp", isText: true},
+        {title: "Ưu đãi", id: "specialOffer", placeholder: "Nhập ưu đãi", isText: true},
+        {title: "Thể loại", id: "cinemasCategoryId", placeholder: "Chọn thể loại", isSelectnotMuti: true},
+        {title: "Ảnh rạp", id: "image", placeholder: "Nhập ảnh rạp", isFile: true},
+        {title: "Background", id: "background", placeholder: "Nhập ảnh rạp", isFile: true},
+
+
+    ],
+    cinemas_category: [
+        {title: "Tên rạp", id: "name", placeholder: "Nhập tên rạp", isText: true},
         {title: "Ảnh rạp", id: "image", placeholder: "Nhập ảnh rạp", isFile: true},
     ],
     actor: [

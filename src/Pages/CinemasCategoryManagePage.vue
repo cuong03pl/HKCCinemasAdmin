@@ -1,25 +1,27 @@
 <template>
   <div>
     <div>
-      <span class="text-[30px] font-bold"> Quản lý rạp phim </span>
+      <span class="text-[30px] font-bold">
+        Quản lý rạp chiếu phim (Công ty)
+      </span>
       <ButtonHandleCreate
-        @handleCreate="createNewCinemas"
+        @handleCreate="createNewCinemasCategory"
+        :selectListData="selectListData"
         :class="'mt-4 mb-4'"
         :formFields="formFields"
-        :selectListData="selectListData"
       />
     </div>
     <div>
       <div
         class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
       >
-        <span class="w-[15%]">Ảnh rạp phim</span>
-        <span class="w-[30%]">Tên rạp</span>
-        <span class="w-[30%]">Địa chỉ</span>
-        <span class="w-[25%]">Chức năng </span>
+        <span class="w-[15%]">Ảnh rạp chiếu</span>
+        <span class="w-[30%]">Tên rạp chiếu</span>
+        <span class="w-[35%]"></span>
+        <span class="w-[20%]">Chức năng </span>
       </div>
       <div
-        v-for="(item, index) in filmList"
+        v-for="(item, index) in cinemasCategoryList"
         :key="index"
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
@@ -31,11 +33,11 @@
           />
         </div>
         <span class="w-[30%]">{{ item.name }}</span>
-        <span class="w-[30%]">{{ item.address }}</span>
-        <span class="w-[25%]">
+        <span class="w-[35%]">{{}}</span>
+        <span class="w-[20%]">
           <ButtonHandleModal
-            @handleDelete="deleteCinemas"
-            @handleUpdate="updateCinemas"
+            @handleDelete="deleteCinemasCategory"
+            @handleUpdate="updateCinemasCategory"
             :data="item"
             :formFields="formFields"
             :selectListData="selectListData"
@@ -60,78 +62,34 @@ import { formFields } from "../../config/formFields";
 export default {
   data() {
     return {
-      filmList: [],
+      cinemasCategoryList: [],
       toggleModal: false,
       toggleModalDelete: false,
       toggleModalMessage: false,
-      selectListData: [],
       message: Object,
-      formFields: formFields.cinemas,
+      selectListData: [],
+      formFields: formFields.cinemas_category,
     };
   },
   created() {
-    this.getAllCategories();
     this.loadData();
   },
 
   methods: {
     loadData() {
-      axios.get("https://localhost:7253/api/Cinemas").then((res) => {
-        this.filmList = res.data;
+      axios.get("https://localhost:7253/api/CinemasCategories").then((res) => {
+        this.cinemasCategoryList = res.data;
         console.log(res);
       });
     },
-    getAllCategories() {
-      try {
-        axios
-          .get("https://localhost:7253/api/CinemasCategories")
-          .then((res) => {
-            console.log(res);
-            this.selectListData = JSON.parse(JSON.stringify(res.data));
-          });
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
-      }
-    },
-    createNewCinemas(form_data) {
+
+    createNewCinemasCategory(form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
-      formData.append("address", form_data.address);
-      formData.append("specialOffer", form_data.specialOffer);
-      formData.append("formFileImage", form_data.image);
-      formData.append("formFileBackground", form_data.background);
-      formData.append("cinemasCategoryId", form_data.cinemasCategoryId);
+      formData.append("formFile", form_data.image);
 
       axios
-        .post("https://localhost:7253/api/Cinemas", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((res) => {
-          console.log(res);
-          this.toggleModalMessage = true;
-          this.message = res.data;
-          this.loadData();
-          this.toggleModal = false;
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
-          }
-        });
-    },
-    updateCinemas(id, form_data) {
-      var formData = new FormData();
-      formData.append("name", form_data.name);
-      formData.append("address", form_data.address);
-      formData.append("specialOffer", form_data.specialOffer);
-      formData.append("formFileImage", form_data.image);
-      formData.append("formFileBackground", form_data.background);
-      formData.append("cinemasCategoryId", form_data.cinemasCategoryId);
-
-      axios
-        .put(`https://localhost:7253/api/Cinemas/${id}`, formData, {
+        .post("https://localhost:7253/api/CinemasCategories", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
@@ -148,9 +106,30 @@ export default {
           }
         });
     },
-    deleteCinemas(id) {
+    updateCinemasCategory(id, form_data) {
+      var formData = new FormData();
+      formData.append("name", form_data.name);
+      formData.append("formFile", form_data.image);
+
       axios
-        .delete(`https://localhost:7253/api/Cinemas/${id}`)
+        .put(`https://localhost:7253/api/CinemasCategories/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((res) => {
+          this.toggleModalMessage = true;
+          this.message = res.data;
+          this.loadData();
+        })
+        .catch((err) => {
+          if (err.response.status == 400) {
+            this.message = "Vui lòng nhập đầy đủ thông tin";
+            this.toggleModalMessage = true;
+          }
+        });
+    },
+    deleteCinemasCategory(id) {
+      axios
+        .delete(`https://localhost:7253/api/CinemasCategories/${id}`)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -164,7 +143,6 @@ export default {
     handleClose(n) {
       this.toggleModalMessage = n;
     },
-    convertTime,
   },
   components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
 };
