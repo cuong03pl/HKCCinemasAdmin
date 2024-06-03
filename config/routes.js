@@ -8,8 +8,11 @@ import ActorManagePage from "@/Pages/ActorManagePage.vue"
 import TrailerManagePage from "@/Pages/TrailerManagePage.vue"
 import CategoryManagePage from "@/Pages/CategoryManagePage.vue"
 import CinemasCategoryManagePage from "@/Pages/CinemasCategoryManagePage.vue"
-import RoomManage from "@/Pages/RoomManage.vue"
-import SeatManage from "@/Pages/SeatManage.vue"
+import RoomManagePage from "@/Pages/RoomManagePage.vue"
+import SeatManagePage from "@/Pages/SeatManagePage.vue"
+import CommentManagePage from "@/Pages/CommentManagePage.vue"
+import ShowDateManagePage from "@/Pages/ShowDateManagePage.vue"
+import ScheduleManagePage from "@/Pages/ScheduleManagePage.vue"
 
 
 export  const routes =   [
@@ -26,8 +29,11 @@ export  const routes =   [
         {path: "/category-manage", component: CategoryManagePage},
         {path: "/trailer-manage", component: TrailerManagePage},
         {path: "/cinemas-category-manage", component: CinemasCategoryManagePage},
-        {path: "/room-manage", component: RoomManage},
-        {path: "/seat-manage", component: SeatManage}
+        {path: "/room-manage", component: RoomManagePage},
+        {path: "/seat-manage", component: SeatManagePage},
+        {path: "/comment-manage", component: CommentManagePage},
+        {path: "/showdate-manage", component: ShowDateManagePage},
+        {path: "/schedule-manage", component: ScheduleManagePage},
       ]
     }
   ]

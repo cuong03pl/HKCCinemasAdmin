@@ -78,7 +78,6 @@ export default {
     loadData() {
       axios.get("https://localhost:7253/api/Cinemas").then((res) => {
         this.filmList = res.data;
-        console.log(res);
       });
     },
     getAllCategories() {
@@ -86,7 +85,6 @@ export default {
         axios
           .get("https://localhost:7253/api/CinemasCategories")
           .then((res) => {
-            console.log(res);
             this.selectListData = JSON.parse(JSON.stringify(res.data));
           });
       } catch (error) {
@@ -107,7 +105,6 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-          console.log(res);
           this.toggleModalMessage = true;
           this.message = res.data;
           this.loadData();
@@ -135,7 +132,6 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-          console.log(res);
           this.toggleModalMessage = true;
           this.message = res.data;
           this.loadData();

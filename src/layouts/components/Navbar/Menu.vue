@@ -117,6 +117,36 @@ export default {
             fill: "#fff",
           },
         },
+        {
+          title: "Quản lý bình luận",
+          to: "/comment-manage",
+          icon: {
+            item: UserIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
+        {
+          title: "Quản lý ngày chiếu",
+          to: "/showdate-manage",
+          icon: {
+            item: UserIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
+        {
+          title: "Quản lý suất chiếu",
+          to: "/schedule-manage",
+          icon: {
+            item: UserIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
       ],
     };
   },

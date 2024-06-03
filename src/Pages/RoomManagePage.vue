@@ -27,7 +27,7 @@
           {{ item.name }}
         </div>
         <span class="w-[30%]">{{
-          getCinemasNameById(item.cinemasId) || cinemasName
+          this.getCinemasNameById(item.cinemasId)
         }}</span>
         <span class="w-[35%]">{{}}</span>
         <span class="w-[20%]">
@@ -76,7 +76,6 @@ export default {
     loadData() {
       axios.get("https://localhost:7253/api/Rooms").then((res) => {
         this.roomList = res.data;
-        console.log(res);
       });
     },
     getCinemas() {
@@ -92,13 +91,8 @@ export default {
       }
     },
     getCinemasNameById(id) {
-      try {
-        axios
-          .get(`https://localhost:7253/api/Cinemas/${id}`)
-          .then((res) => (this.cinemasName = res.data.name));
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
-      }
+      const cinema = this.selectListData.find((cinema) => cinema.id === id);
+      return cinema ? cinema.name : "";
     },
     createRoom(form_data) {
       var formData = new FormData();

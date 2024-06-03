@@ -1,6 +1,7 @@
 <template>
   <div class="flex gap-2 items-center">
     <button
+      v-if="!onlyDelete"
       @click="handleOpen"
       class="bg-[#0d6efd] h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold"
     >
@@ -20,6 +21,7 @@
     @handleUpdate="handleUpdate"
     :formFields="formFields"
     :selectListData="selectListData"
+    @handleChange="handleChange"
   />
   <ModalDelete
     :isOpen="toggleModalDelete"
@@ -37,7 +39,9 @@ export default {
     formFields: Array,
     data: Object,
     selectListData: Array,
+    onlyDelete: Boolean,
   },
+  created() {},
   data() {
     return {
       toggleModal: false,
@@ -46,6 +50,7 @@ export default {
   },
   watch: {
     selectListData(newG, oldG) {},
+    data(newD, oldD) {},
   },
   methods: {
     handleOpen() {
@@ -65,6 +70,9 @@ export default {
     },
     handleUpdate(id, data) {
       this.$emit("handleUpdate", id, data);
+    },
+    handleChange(data) {
+      this.$emit("handleChange", data);
     },
   },
   components: { Modal, ModalDelete },

@@ -1,11 +1,9 @@
 <template>
   <div>
     <div>
-      <span class="text-[30px] font-bold">
-        Quản lý rạp chiếu phim (Công ty)
-      </span>
+      <span class="text-[30px] font-bold"> Quản lý ngày chiếu </span>
       <ButtonHandleCreate
-        @handleCreate="createNewCinemasCategory"
+        @handleCreate="createShowDate"
         :selectListData="selectListData"
         :class="'mt-4 mb-4'"
         :formFields="formFields"
@@ -15,29 +13,21 @@
       <div
         class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
       >
-        <span class="w-[15%]">Ảnh rạp chiếu</span>
-        <span class="w-[30%]">Tên rạp chiếu</span>
-        <span class="w-[35%]"></span>
+        <span class="w-[50%]">Ngày chiếu</span>
+        <span class="w-[30%]">Rạp</span>
         <span class="w-[20%]">Chức năng </span>
       </div>
       <div
-        v-for="(item, index) in cinemasCategoryList"
+        v-for="(item, index) in showdateList"
         :key="index"
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
-        <div class="w-[15%] flex items-center justify-center">
-          <img
-            class="w-full h-full"
-            :src="`https://localhost:7253/${item.image}`"
-            alt=""
-          />
-        </div>
-        <span class="w-[30%]">{{ item.name }}</span>
-        <span class="w-[35%]">{{}}</span>
+        <span class="w-[50%]">{{ convertTime(item.date) }}</span>
+        <span class="w-[30%]">{{ item.cinemasName }}</span>
         <span class="w-[20%]">
           <ButtonHandleModal
-            @handleDelete="deleteCinemasCategory"
-            @handleUpdate="updateCinemasCategory"
+            @handleDelete="deleteShowDate"
+            @handleUpdate="updateShowDate"
             :data="item"
             :formFields="formFields"
             :selectListData="selectListData"
@@ -62,33 +52,69 @@ import { formFields } from "../../config/formFields";
 export default {
   data() {
     return {
-      cinemasCategoryList: [],
+      showdateList: [],
       toggleModal: false,
       toggleModalDelete: false,
       toggleModalMessage: false,
       message: Object,
       selectListData: [],
-      formFields: formFields.cinemas_category,
+      formFields: formFields.showDate,
     };
   },
   created() {
     this.loadData();
+    this.initializeData();
   },
 
   methods: {
-    loadData() {
-      axios.get("https://localhost:7253/api/CinemasCategories").then((res) => {
-        this.cinemasCategoryList = res.data;
+    async initializeData() {
+      this.getCinemas();
+      await this.loadData();
+      console.log(this.scheduleList);
+      this.showdateList.forEach(async (item) => {
+        item.cinemasName = await this.getCinemasName(item.cinemasId);
       });
     },
+    async loadData() {
+      try {
+        const res = await axios.get("https://localhost:7253/api/ShowDates");
+        this.showdateList = res.data;
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
+      }
+    },
 
-    createNewCinemasCategory(form_data) {
+    getCinemas() {
+      try {
+        axios
+          .get("https://localhost:7253/api/Cinemas")
+          .then(
+            (res) =>
+              (this.selectListData = JSON.parse(JSON.stringify(res.data)))
+          );
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+      }
+    },
+
+    async getCinemasName(id) {
+      try {
+        const res = await axios.get(`https://localhost:7253/api/Cinemas/${id}`);
+
+        return res.data.name;
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu phim:", error);
+        return null;
+      }
+    },
+
+    createShowDate(form_data) {
       var formData = new FormData();
-      formData.append("name", form_data.name);
-      formData.append("formFile", form_data.image);
+      formData.append("date", form_data.date);
+      formData.append("cinemasId", form_data.cinemasId);
 
       axios
-        .post("https://localhost:7253/api/CinemasCategories", formData, {
+        .post("https://localhost:7253/api/ShowDates", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
@@ -104,13 +130,13 @@ export default {
           }
         });
     },
-    updateCinemasCategory(id, form_data) {
+    updateShowDate(id, form_data) {
       var formData = new FormData();
-      formData.append("name", form_data.name);
-      formData.append("formFile", form_data.image);
+      formData.append("date", form_data.date);
+      formData.append("cinemasId", form_data.cinemasId);
 
       axios
-        .put(`https://localhost:7253/api/CinemasCategories/${id}`, formData, {
+        .put(`https://localhost:7253/api/ShowDates/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
@@ -125,9 +151,9 @@ export default {
           }
         });
     },
-    deleteCinemasCategory(id) {
+    deleteShowDate(id) {
       axios
-        .delete(`https://localhost:7253/api/CinemasCategories/${id}`)
+        .delete(`https://localhost:7253/api/ShowDates/${id}`)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -141,6 +167,7 @@ export default {
     handleClose(n) {
       this.toggleModalMessage = n;
     },
+    convertTime,
   },
   components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
 };

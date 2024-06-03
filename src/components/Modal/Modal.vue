@@ -1,77 +1,3 @@
-<script>
-import axios from "axios";
-import CloseIcon from "../Icon/CloseIcon.vue";
-export default {
-  components: { CloseIcon, CloseIcon },
-  props: {
-    isOpen: Boolean,
-    formFields: Array,
-    data: Object,
-    isCreate: Boolean,
-    selectListData: Array,
-  },
-  data() {
-    return {
-      open: this.isOpen,
-      FormData: this.isCreate ? this.initFormCreate() : this.initFormUpdate(),
-      username: "",
-      selectData: [],
-      selectList: [],
-      image: null,
-      background: null,
-    };
-  },
-  watch: {
-    selectListData(newG, oldG) {
-      this.selectList = newG;
-    },
-  },
-  methods: {
-    initFormUpdate() {
-      const init = {};
-      this.formFields.forEach((field) => {
-        console.log(this.data[field.id]);
-        init[field.id] = this.data[field.id]; // tạo ra 1 abcd: ""
-      });
-      return init;
-    },
-    initFormCreate() {
-      const init = {};
-      this.formFields.forEach((field) => {
-        init[field.id] = ""; // tạo ra 1 abcd: ""
-      });
-      return init;
-    },
-    handleSubmit() {
-      this.isCreate
-        ? this.$emit("handleCreate", this.FormData)
-        : this.$emit("handleUpdate", this.data.id, this.FormData);
-      console.log(this.FormData);
-      // this.$emit('handleClose', false);
-    },
-    handleFileChange(event) {
-      var file = event.target.files[0];
-      var id = event.target.id;
-      this.FormData[id] = file;
-      if (file) {
-        const objectUrl = URL.createObjectURL(file);
-        if (id == "background") {
-          this.background = objectUrl;
-        } else {
-          this.image = objectUrl;
-        }
-      }
-    },
-    handleFallBack() {
-      this.image =
-        "https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg";
-      this.background =
-        "https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg";
-    },
-  },
-};
-</script>
-
 <template>
   <Teleport to="body">
     <div
@@ -115,23 +41,48 @@ export default {
               </option>
             </select>
             <select
-              v-if="item.isSelectnotMuti"
+              v-if="item.isSelectnotMuti && item.isChange"
               v-model="FormData[item.id]"
-              :options="selectListData"
+              @change="handleChange"
               class="block border-[2px] mt-1 focus:border-[green] rounded-md outline-none w-[100%] text-[16px] border-[#ccc] px-4 py-2"
             >
               <option
-                v-for="(item, index) in selectListData"
+                v-for="(item, index) in selectListData[item.id] ||
+                selectListData"
                 :key="index"
                 :value="item.id"
               >
-                {{ item.name || item.title }}
+                {{ item.name || item.title || item.date }}
+              </option>
+            </select>
+            <select
+              v-if="item.isSelectnotMuti && !item.isChange"
+              v-model="FormData[item.id]"
+              class="block border-[2px] mt-1 focus:border-[green] rounded-md outline-none w-[100%] text-[16px] border-[#ccc] px-4 py-2"
+            >
+              <option
+                v-for="(item, index) in selectListData[item.id] ||
+                selectListData"
+                :key="index"
+                :value="item.id"
+              >
+                {{
+                  item.name ||
+                  item.title ||
+                  (item.date ? convertTime(item.date) : "")
+                }}
               </option>
             </select>
             <input
               v-model="FormData[item.id]"
               type="date"
               v-if="item.isDate"
+              class="block border-[2px] mt-1 focus:border-[green] rounded-md outline-none w-[100%] text-[16px] border-[#ccc] px-4 py-2"
+            />
+            <input
+              v-model="FormData[item.id]"
+              type="time"
+              v-if="item.isTime"
               class="block border-[2px] mt-1 focus:border-[green] rounded-md outline-none w-[100%] text-[16px] border-[#ccc] px-4 py-2"
             />
 
@@ -189,6 +140,83 @@ export default {
   </Teleport>
 </template>
 
+<script>
+import axios from "axios";
+import CloseIcon from "../Icon/CloseIcon.vue";
+import convertTime from "../../../config/functions";
+export default {
+  components: { CloseIcon, CloseIcon },
+  props: {
+    isOpen: Boolean,
+    formFields: Array,
+    data: Object,
+    isCreate: Boolean,
+    selectListData: Array,
+  },
+  data() {
+    return {
+      open: this.isOpen,
+      FormData: this.isCreate ? this.initFormCreate() : this.initFormUpdate(),
+      username: "",
+      selectData: [],
+      selectList: [],
+      image: null,
+      background: null,
+    };
+  },
+  watch: {
+    selectListData(newG, oldG) {
+      this.selectList = newG;
+    },
+  },
+  methods: {
+    initFormUpdate() {
+      const init = {};
+      this.formFields.forEach((field) => {
+        init[field.id] = this.data[field.id]; // tạo ra 1 abcd: ""
+      });
+      return init;
+    },
+    initFormCreate() {
+      const init = {};
+      this.formFields.forEach((field) => {
+        init[field.id] = ""; // tạo ra 1 abcd: ""
+      });
+      return init;
+    },
+    handleSubmit() {
+      this.isCreate
+        ? this.$emit("handleCreate", this.FormData)
+        : this.$emit("handleUpdate", this.data.id, this.FormData);
+
+      // this.$emit('handleClose', false);
+    },
+    handleFileChange(event) {
+      var file = event.target.files[0];
+      var id = event.target.id;
+      this.FormData[id] = file;
+      if (file) {
+        const objectUrl = URL.createObjectURL(file);
+        if (id == "background") {
+          this.background = objectUrl;
+        } else {
+          this.image = objectUrl;
+        }
+      }
+    },
+    handleChange(e) {
+      this.$emit("handleChange", e.target);
+    },
+    handleFallBack() {
+      this.image =
+        "https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg";
+      this.background =
+        "https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg";
+    },
+    convertTime,
+  },
+};
+</script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style scoped>

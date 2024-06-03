@@ -53,5 +53,18 @@ export const formFields = {
         {title: "Trạng thái", id: "status", placeholder: "Nhập trạng thái chỗ ngồi", isText: true},
         {title: "Phòng chiếu", id: "roomID", placeholder: "Nhập rạp chiếu",  isSelectnotMuti: true},
     ],
+    showDate: [
+        {title: "Ngày", id: "date", placeholder: "Nhập ngày", isDate: true},
+        {title: "Rạp chiếu", id: "cinemasId", placeholder: "Nhập rạp chiếu",  isSelectnotMuti: true},
+    ],
+    schedule: [
+        {title: "Thời gian bắt đầu", id: "startTime", placeholder: "Nhập thời gian bắt đầu", isTime: true},
+        {title: "Thời gian kết thúc", id: "endTime", placeholder: "Nhập thời gian kết thúc", isTime: true},
+        {title: "Phim", id: "filmId", placeholder: "Nhập phim",  isSelectnotMuti: true},
+        {title: "Rạp chiếu", id: "cinemasId", placeholder: "Nhập rạp chiếu",  isSelectnotMuti: true, isChange: true},
+        {title: "Phòng", id: "roomId", placeholder: "Nhập phòng",  isSelectnotMuti: true},
+        {title: "Ngày chiếu", id: "showDateId", placeholder: "Nhập ngày chiếu",  isSelectnotMuti: true},
+    ],
+   
 
 }

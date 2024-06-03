@@ -58,7 +58,6 @@ export default {
     loadUser() {
       axios.get("https://localhost:7253/api/Users").then((res) => {
         this.userList = res.data;
-        console.log(res);
       });
     },
     createNewUser(form_data) {
@@ -100,7 +99,6 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-          console.log(res);
           this.toggleModalMessage = true;
           this.message = res.data;
           this.loadUser();

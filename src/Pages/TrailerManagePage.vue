@@ -120,7 +120,6 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-          console.log(res);
           this.toggleModalMessage = true;
           this.message = res.data;
           this.trailerList.push(JSON.parse(res.config.data));
