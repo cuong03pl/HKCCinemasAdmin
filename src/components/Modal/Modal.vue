@@ -69,7 +69,8 @@
                 {{
                   item.name ||
                   item.title ||
-                  (item.date ? convertTime(item.date) : "")
+                  (item.date ? convertTime(item.date) : "") ||
+                  `${item.cinemas.name} - ${item.film.title} - từ ${item.startTime} đến ${item.endTime}`
                 }}
               </option>
             </select>
@@ -167,6 +168,7 @@ export default {
   watch: {
     selectListData(newG, oldG) {
       this.selectList = newG;
+      console.log(this.selectListData);
     },
   },
   methods: {

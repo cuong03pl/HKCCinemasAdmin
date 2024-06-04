@@ -13,6 +13,7 @@ import SeatManagePage from "@/Pages/SeatManagePage.vue"
 import CommentManagePage from "@/Pages/CommentManagePage.vue"
 import ShowDateManagePage from "@/Pages/ShowDateManagePage.vue"
 import ScheduleManagePage from "@/Pages/ScheduleManagePage.vue"
+import TicketManagePage from "@/Pages/TicketManagePage.vue"
 
 
 export  const routes =   [
@@ -33,6 +34,7 @@ export  const routes =   [
         {path: "/seat-manage", component: SeatManagePage},
         {path: "/comment-manage", component: CommentManagePage},
         {path: "/showdate-manage", component: ShowDateManagePage},
+        {path: "/ticket-manage", component: TicketManagePage},
         {path: "/schedule-manage", component: ScheduleManagePage},
       ]
     }

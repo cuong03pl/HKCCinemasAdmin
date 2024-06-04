@@ -65,6 +65,9 @@ export const formFields = {
         {title: "Phòng", id: "roomId", placeholder: "Nhập phòng",  isSelectnotMuti: true},
         {title: "Ngày chiếu", id: "showDateId", placeholder: "Nhập ngày chiếu",  isSelectnotMuti: true},
     ],
-   
+    ticket: [
+        {title: "Giá vé", id: "price", placeholder: "Nhập giá vé", isText: true},
+        {title: "Xuất chiếu", id: "scheduleId", placeholder: "Nhập xuất chiếu",  isSelectnotMuti: true},
+    ],
 
 }

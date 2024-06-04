@@ -86,7 +86,6 @@ export default {
       this.getCinemas();
       await this.loadData();
       this.getFilms();
-      console.log(this.scheduleList);
       this.scheduleList.forEach(async (item) => {
         console.log(item);
         item.filmName = await this.getFilmNameById(item.filmId);
@@ -138,6 +137,7 @@ export default {
               showDateId: res.data,
             };
           });
+        console.log(this.selectListData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
