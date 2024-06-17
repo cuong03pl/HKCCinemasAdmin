@@ -24,11 +24,9 @@
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
         <div class="w-[15%]">
-          {{ item.name }}
+          {{ item.roomName }}
         </div>
-        <span class="w-[30%]">{{
-          this.getCinemasNameById(item.cinemasId)
-        }}</span>
+        <span class="w-[30%]">{{ item.cinemas.name }}</span>
         <span class="w-[35%]">{{}}</span>
         <span class="w-[20%]">
           <ButtonHandleModal
@@ -90,15 +88,12 @@ export default {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    getCinemasNameById(id) {
-      const cinema = this.selectListData.find((cinema) => cinema.id === id);
-      return cinema ? cinema.name : "";
-    },
+
     createRoom(form_data) {
       var formData = new FormData();
-      formData.append("name", form_data.name);
+      formData.append("roomName", form_data.roomName);
       formData.append("cinemasId", form_data.cinemasId);
-
+      console.log(formData);
       axios
         .post("https://localhost:7253/api/Rooms", formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -118,7 +113,7 @@ export default {
     },
     updateRoom(id, form_data) {
       var formData = new FormData();
-      formData.append("name", form_data.name);
+      formData.append("roomName", form_data.roomName);
       formData.append("cinemasId", form_data.cinemasId);
 
       axios

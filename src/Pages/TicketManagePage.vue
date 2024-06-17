@@ -55,7 +55,7 @@ import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
 import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
-import convertTime from "../../config/functions";
+import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
 export default {
   data() {
@@ -78,7 +78,6 @@ export default {
     loadData() {
       axios.get("https://localhost:7253/api/Tickets").then((res) => {
         this.ticketList = res.data;
-        console.log(res);
       });
     },
     fetchApi() {

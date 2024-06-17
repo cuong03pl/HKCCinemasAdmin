@@ -104,12 +104,10 @@ export default {
     },
     getFilmName(id) {
       return axios.get(`https://localhost:7253/api/Films/${id}`).then((res) => {
-        console.log(res.data.title);
         return res.data.title;
       });
     },
     createNewTrailer(form_data) {
-      console.log(form_data);
       var formData = new FormData();
       formData.append("link", form_data.link);
       formData.append("filmId", form_data.filmId);

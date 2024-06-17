@@ -65,7 +65,7 @@ import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
 import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
-import convertTime from "../../config/functions";
+import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
 export default {
   data() {
@@ -112,6 +112,7 @@ export default {
       formData.append("country", form_data.country);
       formData.append("rating", form_data.rating);
       formData.append("formFile", form_data.image);
+      formData.append("formFileBackground", form_data.background);
       formData.append("releaseDate", form_data.releaseDate);
       formData.append("endDate", form_data.endDate);
       if (form_data.categoryIds) {
@@ -147,6 +148,7 @@ export default {
       formData.append("country", form_data.country);
       formData.append("rating", form_data.rating);
       formData.append("formFile", form_data.image);
+      formData.append("formFileBackground", form_data.background);
       formData.append("releaseDate", form_data.releaseDate);
       formData.append("endDate", form_data.endDate);
       form_data.categoryIds?.forEach((item) => {

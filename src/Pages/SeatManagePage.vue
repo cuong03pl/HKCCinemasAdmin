@@ -15,7 +15,8 @@
       >
         <span class="w-[15%]">Tên chỗ ngồi</span>
         <span class="w-[30%]">Tên phòng</span>
-        <span class="w-[35%]"></span>
+        <span class="w-[25%]">Tên rạp</span>
+        <span class="w-[10%]">Trạng thái</span>
         <span class="w-[20%]">Chức năng </span>
       </div>
       <div
@@ -26,8 +27,11 @@
         <div class="w-[15%]">
           {{ item.name }}
         </div>
-        <span class="w-[30%]">{{ getRoomById(item.roomID) || roomName }}</span>
-        <span class="w-[35%]">{{}}</span>
+        <span class="w-[30%]">{{ item.room.roomName }}</span>
+        <span class="w-[25%]">{{ item.cinemas.name }}</span>
+        <span class="w-[10%]">{{
+          item.status == 1 ? "Còn trống" : "Đã đặt"
+        }}</span>
         <span class="w-[20%]">
           <ButtonHandleModal
             @handleDelete="deleteSeat"
@@ -63,27 +67,41 @@ export default {
       selectListData: [],
       formFields: formFields.seat,
       roomName: "",
+      statusData: [
+        {
+          id: 0,
+          name: "Đã đặt",
+        },
+        {
+          id: 1,
+          name: "Còn trống",
+        },
+      ],
     };
   },
   created() {
     this.getRooms();
     this.loadData();
+    this.selectListData = { status: this.statusData };
   },
 
   methods: {
     loadData() {
       axios.get("https://localhost:7253/api/Seats").then((res) => {
         this.seatList = res.data;
+        console.log(res);
       });
     },
     getRooms() {
       try {
-        axios
-          .get("https://localhost:7253/api/Rooms")
-          .then(
-            (res) =>
-              (this.selectListData = JSON.parse(JSON.stringify(res.data)))
-          );
+        axios.get("https://localhost:7253/api/Rooms").then((res) => {
+          (this.selectListData = {
+            ...this.selectListData,
+            roomID: res.data,
+          }),
+            console.log(this.selectListData);
+          console.log(res);
+        });
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }

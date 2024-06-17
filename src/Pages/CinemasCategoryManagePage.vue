@@ -57,7 +57,6 @@ import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
 import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
-import convertTime from "../../config/functions";
 import { formFields } from "../../config/formFields";
 export default {
   data() {

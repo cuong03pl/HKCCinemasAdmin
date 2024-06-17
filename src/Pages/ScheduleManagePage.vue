@@ -23,15 +23,15 @@
         <span class="w-[20%]">Chức năng </span>
       </div>
       <div
-        v-for="(item, index) in scheduleList"
+        v-for="(item, index) in this.scheduleList"
         :key="index"
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
-        <span class="w-[20%]">{{ item.cinemasName }}</span>
-        <span class="w-[20%]">{{ item.filmName }}</span>
-        <span class="w-[10%]">{{ item.roomName }}</span>
+        <span class="w-[20%]">{{ item.cinemas.name }}</span>
+        <span class="w-[20%]">{{ item.film.title }}</span>
+        <span class="w-[10%]">{{ item.room.roomName }}</span>
         <span class="w-[10%]">{{
-          item.showDate ? convertTime(item.showDate) : ""
+          item.showDate ? convertTime(item.showDate.date) : ""
         }}</span>
         <span class="w-[10%]">{{ item.startTime }}</span>
         <span class="w-[10%]">{{ item.endTime }}</span>
@@ -60,7 +60,7 @@ import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
-import convertTime from "../../config/functions";
+import { convertTime } from "../../config/functions";
 export default {
   data() {
     return {
@@ -71,10 +71,6 @@ export default {
       message: Object,
       selectListData: [],
       formFields: formFields.schedule,
-      cinemasName: "",
-      selectedCinemaId: "",
-      roomName: "",
-      showDate: "",
     };
   },
   mounted() {
@@ -83,16 +79,9 @@ export default {
 
   methods: {
     async initializeData() {
-      this.getCinemas();
       await this.loadData();
-      this.getFilms();
-      this.scheduleList.forEach(async (item) => {
-        console.log(item);
-        item.filmName = await this.getFilmNameById(item.filmId);
-        item.roomName = await this.getRoomNameById(item.roomId);
-        item.cinemasName = await this.getCinemasNameById(item.cinemasId);
-        item.showDate = await this.getShowDateById(item.showDateId);
-      });
+      await this.getCinemas();
+      await this.getFilms();
     },
     async loadData() {
       try {
@@ -102,74 +91,100 @@ export default {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
     },
-    getCinemas() {
+
+    async getCinemas() {
       try {
-        axios.get("https://localhost:7253/api/Cinemas").then((res) => {
-          this.selectListData = {
-            cinemasId: res.data,
-          };
-        });
+        const res = await axios.get("https://localhost:7253/api/Cinemas");
+        this.selectListData = {
+          cinemasId: res.data,
+        };
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
+        console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
     },
-    getFilms() {
+    async getFilms() {
       try {
-        axios.get("https://localhost:7253/api/Films").then((res) => {
-          this.selectListData = {
-            ...this.selectListData,
-            filmId: res.data,
-          };
-        });
+        const res = await axios.get(
+          "https://localhost:7253/api/Films/getNowShowingFilms"
+        );
+        this.selectListData = {
+          ...this.selectListData,
+          filmId: res.data,
+        };
+        console.log(this.selectListData);
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
+        console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
     },
+
     getShowDate(selectedCinemaId) {
       try {
         axios
           .get(
             `https://localhost:7253/api/ShowDates/GetAllShowDateByCinemasId/${selectedCinemaId.value}`
           )
-          .then((res) => {
-            this.selectListData = {
-              ...this.selectListData,
-              showDateId: res.data,
-            };
-          });
-        console.log(this.selectListData);
+          .then(
+            (res) =>
+              (this.selectListData = {
+                ...this.selectListData,
+                showDateId: res.data,
+              })
+          );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-
     getRoomByCinemasId(selectedCinemaId) {
       try {
         axios
           .get(
             `https://localhost:7253/api/Rooms/GetRoomByCinemasId/${selectedCinemaId}`
           )
-          .then((res) => {
-            this.selectListData = {
-              ...this.selectListData,
-              roomId: res.data,
-            };
-          });
+          .then(
+            (res) =>
+              (this.selectListData = {
+                ...this.selectListData,
+                roomId: res.data,
+              })
+          );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
 
-    createSchedule(form_data) {
+    async isCinemaRoomOccupied(form_data) {
+      try {
+        const res = await axios.get(
+          "https://localhost:7253/api/Rooms/isCinemaRoomOccupied",
+          {
+            params: {
+              Id: 1,
+              FilmId: form_data.filmId,
+              RoomId: form_data.roomId,
+              ShowDateId: form_data.showDateId,
+              CinemasId: form_data.cinemasId,
+              StartTime: form_data.startTime,
+            },
+          }
+        );
+        return res;
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
+      }
+    },
+    async createSchedule(form_data) {
       var formData = new FormData();
-      formData.append("name", form_data.name);
       formData.append("filmId", form_data.filmId);
       formData.append("cinemasId", form_data.cinemasId);
       formData.append("roomId", form_data.roomId);
       formData.append("showDateId", form_data.showDateId);
       formData.append("startTime", form_data.startTime);
-      formData.append("endTime", form_data.endTime);
-
+      var data = await this.isCinemaRoomOccupied(form_data);
+      if (data.data) {
+        this.message = "Phòng chiếu này đã bị trùng giờ";
+        this.toggleModalMessage = true;
+        return;
+      }
       axios
         .post("https://localhost:7253/api/Schedules", formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -180,6 +195,7 @@ export default {
           this.initializeData();
         })
         .catch((err) => {
+          console.log(err);
           if (err.response.status == 400) {
             this.message = "Vui lòng nhập đầy đủ thông tin";
             this.toggleModalMessage = true;
@@ -194,7 +210,6 @@ export default {
       formData.append("roomId", form_data.roomId);
       formData.append("showDateId", form_data.showDateId);
       formData.append("startTime", form_data.startTime);
-      formData.append("endTime", form_data.endTime);
 
       axios
         .put(`https://localhost:7253/api/Schedules/${id}`, formData, {
@@ -229,55 +244,10 @@ export default {
       this.toggleModalMessage = n;
     },
     handleCinemaChange(cinemaId) {
-      console.log(cinemaId);
       this.selectedCinemaId = cinemaId.value;
       this.getRoomByCinemasId(cinemaId.value);
       this.getShowDate(cinemaId);
-    },
-
-    async getCinemasNameById(id) {
-      try {
-        const res = await axios.get(`https://localhost:7253/api/Cinemas/${id}`);
-
-        return res.data.name;
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu phim:", error);
-        return null;
-      }
-    },
-
-    async getFilmNameById(id) {
-      try {
-        const res = await axios.get(`https://localhost:7253/api/Films/${id}`);
-
-        return res.data.title;
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu phim:", error);
-        return null;
-      }
-    },
-    async getRoomNameById(id) {
-      console.log(id);
-      try {
-        const res = await axios.get(`https://localhost:7253/api/Rooms/${id}`);
-        return res.data.name;
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu phim:", error);
-        return null;
-      }
-    },
-
-    async getShowDateById(id) {
-      console.log(id);
-      try {
-        const res = await axios.get(
-          `https://localhost:7253/api/ShowDates/${id}`
-        );
-        return res.data.date;
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu phim:", error);
-        return null;
-      }
+      console.log(this.selectListData);
     },
 
     convertTime,

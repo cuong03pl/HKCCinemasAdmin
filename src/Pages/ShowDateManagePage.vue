@@ -23,7 +23,7 @@
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
         <span class="w-[50%]">{{ convertTime(item.date) }}</span>
-        <span class="w-[30%]">{{ item.cinemasName }}</span>
+        <span class="w-[30%]">{{ item?.cinemasName }}</span>
         <span class="w-[20%]">
           <ButtonHandleModal
             @handleDelete="deleteShowDate"
@@ -47,7 +47,7 @@ import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
 import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
-import convertTime from "../../config/functions";
+import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
 export default {
   data() {
@@ -70,7 +70,7 @@ export default {
     async initializeData() {
       this.getCinemas();
       await this.loadData();
-      console.log(this.scheduleList);
+      console.log(this.showdateList);
       this.showdateList.forEach(async (item) => {
         item.cinemasName = await this.getCinemasName(item.cinemasId);
       });
@@ -79,6 +79,7 @@ export default {
       try {
         const res = await axios.get("https://localhost:7253/api/ShowDates");
         this.showdateList = res.data;
+        console.log(res);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
