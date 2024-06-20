@@ -186,6 +186,8 @@ export default {
       const init = {};
       this.formFields.forEach((field) => {
         init[field.id] = this.data[field.id]; // tạo ra 1 abcd: ""
+        console.log("up" + this.data[field.id]);
+        console.log(field.id);
       });
       return init;
     },

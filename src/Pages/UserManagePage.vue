@@ -40,6 +40,12 @@ import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
+import {
+  createNewUser,
+  deleteUser,
+  getAllUsers,
+  updateUser,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -55,55 +61,43 @@ export default {
     this.loadUser();
   },
   methods: {
-    loadUser() {
-      axios.get("https://localhost:7253/api/Users").then((res) => {
+    async loadUser() {
+      await getAllUsers().then((res) => {
         this.userList = res.data;
       });
     },
-    createNewUser(form_data) {
-      console.log(form_data);
-      var formData = new FormData();
-      formData.append("userName", form_data.userName);
-      formData.append("email", form_data.email);
-
-      axios
-        .post("https://localhost:7253/api/Users/createUser", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
-          this.userList.push(JSON.parse(res.config.data));
-          console.log(this.userList);
-        });
+    // createNewUser(form_data) {
+    //   console.log(form_data);
+    //   var formData = new FormData();
+    //   formData.append("userName", form_data.userName);
+    //   formData.append("email", form_data.email);
+    //   createNewUser(formData).then((res) => {
+    //     console.log(res);
+    //     this.toggleModalMessage = true;
+    //     this.message = res;
+    //     this.userList.push(JSON.parse(res.config.data));
+    //     console.log(this.userList);
+    //   });
+    // },
+    async deleteUser(id) {
+      await deleteUser(id).then((res) => {
+        this.toggleModalMessage = true;
+        this.message = res;
+        this.loadUser();
+      });
     },
-    deleteUser(id) {
-      axios
-        .delete(`https://localhost:7253/api/Users/deleteUser/${id}`)
-        .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
-          this.loadUser();
-        });
-    },
-    updateUser(id, form_data) {
-      console.log(form_data);
-      console.log(form_data.username);
-      var formData = new FormData();
-      formData.append("id", id);
-      formData.append("username", form_data.userName);
-      formData.append("email", form_data.email);
-      console.log(formData);
-      axios
-        .put(`https://localhost:7253/api/Users/updateUser/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
-          this.loadUser();
-        });
-    },
+    //  updateUser (id, form_data) {
+    //     var formData = new FormData();
+    //     formData.append("id", id);
+    //     formData.append("username", form_data.userName);
+    //     formData.append("email", form_data.email);
+    //     console.log(formData);
+    //     updateUser(id, formData).then((res) => {
+    //       this.toggleModalMessage = true;
+    //       this.message = res;
+    //       this.loadUser();
+    //     });
+    //   },
     handleClose(n) {
       this.toggleModalMessage = n;
     },

@@ -61,6 +61,17 @@ import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
 import { convertTime } from "../../config/functions";
+import {
+  GetAllSchedules,
+  getAllCinemas,
+  GetNowShowingFilms,
+  GetAllShowDateByCinemasId,
+  GetRoomByCinemasId,
+  IsCinemaRoomOccupied,
+  createNewSchedule,
+  updateSchedule,
+  deleteSchedule,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -85,8 +96,9 @@ export default {
     },
     async loadData() {
       try {
-        const res = await axios.get("https://localhost:7253/api/Schedules");
+        const res = await GetAllSchedules();
         this.scheduleList = res.data;
+        console.log(res);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -94,9 +106,9 @@ export default {
 
     async getCinemas() {
       try {
-        const res = await axios.get("https://localhost:7253/api/Cinemas");
+        const res = await getAllCinemas();
         this.selectListData = {
-          cinemasId: res.data,
+          cinemasId: res,
         };
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
@@ -104,49 +116,38 @@ export default {
     },
     async getFilms() {
       try {
-        const res = await axios.get(
-          "https://localhost:7253/api/Films/getNowShowingFilms"
-        );
+        const res = await GetNowShowingFilms();
         this.selectListData = {
           ...this.selectListData,
-          filmId: res.data,
+          filmId: res,
         };
-        console.log(this.selectListData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
     },
 
-    getShowDate(selectedCinemaId) {
+    async getShowDate(selectedCinemaId) {
       try {
-        axios
-          .get(
-            `https://localhost:7253/api/ShowDates/GetAllShowDateByCinemasId/${selectedCinemaId.value}`
-          )
-          .then(
-            (res) =>
-              (this.selectListData = {
-                ...this.selectListData,
-                showDateId: res.data,
-              })
-          );
+        await GetAllShowDateByCinemasId(selectedCinemaId.value).then(
+          (res) =>
+            (this.selectListData = {
+              ...this.selectListData,
+              showDateId: res,
+            })
+        );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    getRoomByCinemasId(selectedCinemaId) {
+    async getRoomByCinemasId(selectedCinemaId) {
       try {
-        axios
-          .get(
-            `https://localhost:7253/api/Rooms/GetRoomByCinemasId/${selectedCinemaId}`
-          )
-          .then(
-            (res) =>
-              (this.selectListData = {
-                ...this.selectListData,
-                roomId: res.data,
-              })
-          );
+        await GetRoomByCinemasId(selectedCinemaId).then(
+          (res) =>
+            (this.selectListData = {
+              ...this.selectListData,
+              roomId: res,
+            })
+        );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
@@ -154,19 +155,16 @@ export default {
 
     async isCinemaRoomOccupied(form_data) {
       try {
-        const res = await axios.get(
-          "https://localhost:7253/api/Rooms/isCinemaRoomOccupied",
-          {
-            params: {
-              Id: 1,
-              FilmId: form_data.filmId,
-              RoomId: form_data.roomId,
-              ShowDateId: form_data.showDateId,
-              CinemasId: form_data.cinemasId,
-              StartTime: form_data.startTime,
-            },
-          }
-        );
+        const res = await IsCinemaRoomOccupied({
+          params: {
+            Id: 1,
+            FilmId: form_data.filmId,
+            RoomId: form_data.roomId,
+            ShowDateId: form_data.showDateId,
+            CinemasId: form_data.cinemasId,
+            StartTime: form_data.startTime,
+          },
+        });
         return res;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
@@ -185,10 +183,7 @@ export default {
         this.toggleModalMessage = true;
         return;
       }
-      axios
-        .post("https://localhost:7253/api/Schedules", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewSchedule(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -202,7 +197,7 @@ export default {
           }
         });
     },
-    updateSchedule(id, form_data) {
+    async updateSchedule(id, form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("filmId", form_data.filmId);
@@ -211,10 +206,7 @@ export default {
       formData.append("showDateId", form_data.showDateId);
       formData.append("startTime", form_data.startTime);
 
-      axios
-        .put(`https://localhost:7253/api/Schedules/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await updateSchedule(id, formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -227,9 +219,8 @@ export default {
           }
         });
     },
-    deleteSchedule(id) {
-      axios
-        .delete(`https://localhost:7253/api/Schedules/${id}`)
+    async deleteSchedule(id) {
+      await deleteSchedule(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

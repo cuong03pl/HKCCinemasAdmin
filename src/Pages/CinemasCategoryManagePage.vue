@@ -58,6 +58,12 @@ import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
+import {
+  createNewCinemasCategories,
+  deleteCinemasCategory,
+  getAllCinemasCategories,
+  updateCinemasCategory,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -75,21 +81,18 @@ export default {
   },
 
   methods: {
-    loadData() {
-      axios.get("https://localhost:7253/api/CinemasCategories").then((res) => {
+    async loadData() {
+      await getAllCinemasCategories().then((res) => {
         this.cinemasCategoryList = res.data;
       });
     },
 
-    createNewCinemasCategory(form_data) {
+    async createNewCinemasCategory(form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("formFile", form_data.image);
 
-      axios
-        .post("https://localhost:7253/api/CinemasCategories", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewCinemasCategories(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -103,15 +106,12 @@ export default {
           }
         });
     },
-    updateCinemasCategory(id, form_data) {
+    async updateCinemasCategory(id, form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("formFile", form_data.image);
 
-      axios
-        .put(`https://localhost:7253/api/CinemasCategories/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await updateCinemasCategory(id, formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -124,9 +124,8 @@ export default {
           }
         });
     },
-    deleteCinemasCategory(id) {
-      axios
-        .delete(`https://localhost:7253/api/CinemasCategories/${id}`)
+    async deleteCinemasCategory(id) {
+      await deleteCinemasCategory(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

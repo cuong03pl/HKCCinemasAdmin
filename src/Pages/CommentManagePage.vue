@@ -51,6 +51,12 @@ import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
+import {
+  deleteComment,
+  GetAllComments,
+  getFilmById,
+  getUserById,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -70,33 +76,27 @@ export default {
   },
 
   methods: {
-    loadData() {
-      axios
-        .get("https://localhost:7253/api/Comments/GetAllComment")
-        .then((res) => (this.commentList = res.data));
+    async loadData() {
+      await GetAllComments().then((res) => (this.commentList = res.data));
     },
-    getUserName(id) {
+    async getUserName(id) {
       try {
-        axios
-          .get(`https://localhost:7253/api/Users/getUserById/${id}`)
-          .then((res) => (this.userName = res.data.userName));
+        await getUserById(id).then(
+          (res) => (this.userName = res.data.userName)
+        );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    getFilmName(id) {
-      console.log(123);
+    async getFilmName(id) {
       try {
-        axios
-          .get(`https://localhost:7253/api/Films/${id}`)
-          .then((res) => (this.filmName = res.data.title));
+        await getFilmById(id).then((res) => (this.filmName = res.data.title));
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    deleteComment(id) {
-      axios
-        .delete(`https://localhost:7253/api/Comments/deleteComment/${id}`)
+    async deleteComment(id) {
+      await deleteComment(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

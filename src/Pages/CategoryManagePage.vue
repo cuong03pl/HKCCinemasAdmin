@@ -47,6 +47,12 @@ import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
+import {
+  createNewCategory,
+  deleteCategory,
+  getAllCategories,
+  updateCategory,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -63,19 +69,14 @@ export default {
   },
 
   methods: {
-    loadData() {
-      axios
-        .get("https://localhost:7253/api/Categories/getAllCategories")
-        .then((res) => (this.categoryList = res.data));
+    async loadData() {
+      await getAllCategories().then((res) => (this.categoryList = res.data));
     },
 
-    createNewCategory(form_data) {
+    async createNewCategory(form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
-      axios
-        .post("https://localhost:7253/api/Categories", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewCategory(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -89,13 +90,10 @@ export default {
           }
         });
     },
-    updateCategory(id, form_data) {
+    async updateCategory(id, form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
-      axios
-        .put(`https://localhost:7253/api/Categories/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await updateCategory(id, formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -109,9 +107,8 @@ export default {
           }
         });
     },
-    deleteCategory(id) {
-      axios
-        .delete(`https://localhost:7253/api/Categories/${id}`)
+    async deleteCategory(id) {
+      await deleteCategory(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

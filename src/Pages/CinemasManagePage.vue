@@ -57,6 +57,13 @@ import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
+import {
+  createNewCinemas,
+  deleteCinemas,
+  getAllCinemas,
+  getAllCinemasCategories,
+  updateCinemas,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -75,23 +82,21 @@ export default {
   },
 
   methods: {
-    loadData() {
-      axios.get("https://localhost:7253/api/Cinemas").then((res) => {
+    async loadData() {
+      await getAllCinemas().then((res) => {
         this.filmList = res.data;
       });
     },
-    getAllCategories() {
+    async getAllCategories() {
       try {
-        axios
-          .get("https://localhost:7253/api/CinemasCategories")
-          .then((res) => {
-            this.selectListData = JSON.parse(JSON.stringify(res.data));
-          });
+        await getAllCinemasCategories().then((res) => {
+          this.selectListData = JSON.parse(JSON.stringify(res.data));
+        });
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    createNewCinemas(form_data) {
+    async createNewCinemas(form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("address", form_data.address);
@@ -100,10 +105,7 @@ export default {
       formData.append("formFileBackground", form_data.background);
       formData.append("cinemasCategoryId", form_data.cinemasCategoryId);
 
-      axios
-        .post("https://localhost:7253/api/Cinemas", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewCinemas(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -118,7 +120,7 @@ export default {
           }
         });
     },
-    updateCinemas(id, form_data) {
+    async updateCinemas(id, form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("address", form_data.address);
@@ -127,10 +129,7 @@ export default {
       formData.append("formFileBackground", form_data.background);
       formData.append("cinemasCategoryId", form_data.cinemasCategoryId);
 
-      axios
-        .put(`https://localhost:7253/api/Cinemas/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await updateCinemas(id, formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -144,9 +143,8 @@ export default {
           }
         });
     },
-    deleteCinemas(id) {
-      axios
-        .delete(`https://localhost:7253/api/Cinemas/${id}`)
+    async deleteCinemas(id) {
+      await deleteCinemas(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

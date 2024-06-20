@@ -56,6 +56,14 @@ import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
+import {
+  GetAllRooms,
+  GetAllSeats,
+  GetRoomById,
+  createNewSeat,
+  updateSeat,
+  deleteSeat,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -86,15 +94,14 @@ export default {
   },
 
   methods: {
-    loadData() {
-      axios.get("https://localhost:7253/api/Seats").then((res) => {
+    async loadData() {
+      await GetAllSeats().then((res) => {
         this.seatList = res.data;
-        console.log(res);
       });
     },
-    getRooms() {
+    async getRooms() {
       try {
-        axios.get("https://localhost:7253/api/Rooms").then((res) => {
+        await GetAllRooms().then((res) => {
           (this.selectListData = {
             ...this.selectListData,
             roomID: res.data,
@@ -106,48 +113,20 @@ export default {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    getRoomById(id) {
+    async getRoomById(id) {
       try {
-        axios
-          .get(`https://localhost:7253/api/Rooms/${id}`)
-          .then((res) => (this.roomName = res.data.name));
+        await GetRoomById(id).then((res) => (this.roomName = res.data.name));
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    createSeat(form_data) {
+    async createSeat(form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("roomID", form_data.roomID);
       formData.append("status", form_data.status);
 
-      axios
-        .post("https://localhost:7253/api/Seats", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
-          this.loadData();
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
-          }
-        });
-    },
-    updateSeat(id, form_data) {
-      var formData = new FormData();
-      formData.append("name", form_data.name);
-      formData.append("roomID", form_data.roomID);
-      formData.append("status", form_data.status);
-
-      axios
-        .put(`https://localhost:7253/api/Seats/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewSeat(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -160,9 +139,27 @@ export default {
           }
         });
     },
-    deleteSeat(id) {
-      axios
-        .delete(`https://localhost:7253/api/Seats/${id}`)
+    async updateSeat(id, form_data) {
+      var formData = new FormData();
+      formData.append("name", form_data.name);
+      formData.append("roomID", form_data.roomID);
+      formData.append("status", form_data.status);
+
+      await updateSeat(id, formData)
+        .then((res) => {
+          this.toggleModalMessage = true;
+          this.message = res.data;
+          this.loadData();
+        })
+        .catch((err) => {
+          if (err.response.status == 400) {
+            this.message = "Vui lòng nhập đầy đủ thông tin";
+            this.toggleModalMessage = true;
+          }
+        });
+    },
+    async deleteSeat(id) {
+      await deleteSeat(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

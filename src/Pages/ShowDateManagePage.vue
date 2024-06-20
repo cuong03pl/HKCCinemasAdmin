@@ -49,6 +49,14 @@ import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
+import {
+  GetAllShowDates,
+  getAllCinemas,
+  GetCinemasById,
+  createNewShowDate,
+  updateShowdate,
+  deleteShowdate,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -70,29 +78,24 @@ export default {
     async initializeData() {
       this.getCinemas();
       await this.loadData();
-      console.log(this.showdateList);
       this.showdateList.forEach(async (item) => {
         item.cinemasName = await this.getCinemasName(item.cinemasId);
       });
     },
     async loadData() {
       try {
-        const res = await axios.get("https://localhost:7253/api/ShowDates");
+        const res = await GetAllShowDates();
         this.showdateList = res.data;
-        console.log(res);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
     },
 
-    getCinemas() {
+    async getCinemas() {
       try {
-        axios
-          .get("https://localhost:7253/api/Cinemas")
-          .then(
-            (res) =>
-              (this.selectListData = JSON.parse(JSON.stringify(res.data)))
-          );
+        await getAllCinemas().then(
+          (res) => (this.selectListData = JSON.parse(JSON.stringify(res.data)))
+        );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
@@ -100,8 +103,7 @@ export default {
 
     async getCinemasName(id) {
       try {
-        const res = await axios.get(`https://localhost:7253/api/Cinemas/${id}`);
-
+        const res = await GetCinemasById(id);
         return res.data.name;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu phim:", error);
@@ -109,15 +111,12 @@ export default {
       }
     },
 
-    createShowDate(form_data) {
+    async createShowDate(form_data) {
       var formData = new FormData();
       formData.append("date", form_data.date);
       formData.append("cinemasId", form_data.cinemasId);
 
-      axios
-        .post("https://localhost:7253/api/ShowDates", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewShowDate(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -131,15 +130,12 @@ export default {
           }
         });
     },
-    updateShowDate(id, form_data) {
+    async updateShowDate(id, form_data) {
       var formData = new FormData();
       formData.append("date", form_data.date);
       formData.append("cinemasId", form_data.cinemasId);
 
-      axios
-        .put(`https://localhost:7253/api/ShowDates/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await updateShowdate(id, formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -152,9 +148,8 @@ export default {
           }
         });
     },
-    deleteShowDate(id) {
-      axios
-        .delete(`https://localhost:7253/api/ShowDates/${id}`)
+    async deleteShowDate(id) {
+      await deleteShowdate(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

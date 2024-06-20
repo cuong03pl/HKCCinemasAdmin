@@ -57,6 +57,14 @@ import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
+import {
+  createNewTicket,
+  deleteTicket,
+  GetAllSchedules,
+  GetAllTickets,
+  GetCinemasById,
+  updateTicket,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -75,23 +83,21 @@ export default {
   },
 
   methods: {
-    loadData() {
-      axios.get("https://localhost:7253/api/Tickets").then((res) => {
+    async loadData() {
+      await GetAllTickets().then((res) => {
         this.ticketList = res.data;
       });
     },
-    fetchApi() {
+    async fetchApi() {
       try {
-        axios
-          .get("https://localhost:7253/api/Schedules")
-          .then((res) => (this.selectListData = res.data));
+        await GetAllSchedules().then((res) => (this.selectListData = res.data));
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
     async getCinemasName(id) {
       try {
-        const res = await axios.get(`https://localhost:7253/api/Cinemas/${id}`);
+        const res = await GetCinemasById(id);
 
         return res.data.name;
       } catch (error) {
@@ -99,15 +105,12 @@ export default {
         return null;
       }
     },
-    createTicket(form_data) {
+    async createTicket(form_data) {
       var formData = new FormData();
       formData.append("price", form_data.price);
       formData.append("scheduleId", form_data.scheduleId);
 
-      axios
-        .post("https://localhost:7253/api/Tickets", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewTicket(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -120,7 +123,7 @@ export default {
           }
         });
     },
-    updateTicket(id, form_data) {
+    async updateTicket(id, form_data) {
       var formData = new FormData();
       formData.append("price", form_data.price);
       formData.append("scheduleId", form_data.scheduleId);
@@ -129,10 +132,7 @@ export default {
           formData.append("filmIds[]", item);
         });
       }
-      axios
-        .put(`https://localhost:7253/api/Tickets/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await updateTicket(id, formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -145,9 +145,8 @@ export default {
           }
         });
     },
-    deleteTicket(id) {
-      axios
-        .delete(`https://localhost:7253/api/Tickets/${id}`)
+    async deleteTicket(id) {
+      await deleteTicket(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

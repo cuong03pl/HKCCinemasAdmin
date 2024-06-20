@@ -60,6 +60,13 @@ import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
+import {
+  createNewTrailer,
+  deleteTrailer,
+  GetAllTrailers,
+  getFilmById,
+  getFilmList,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -72,63 +79,53 @@ export default {
       formFields: formFields.trailer,
     };
   },
-  created() {
+  mounted() {
     this.fetchApi();
     this.loadData();
   },
 
   methods: {
-    loadData() {
-      axios.get("https://localhost:7253/api/Trailers").then((res) => {
+    async loadData() {
+      await GetAllTrailers().then((res) => {
         const trailers = res.data;
-        const trailerPromises = trailers.map(async (item) => {
-          const title = await this.getFilmName(item.filmId);
+        const trailerPromises = trailers.map((item) => {
+          const title = this.getFilmName(item.filmId);
           return { ...item, filmTitle: title };
         });
-        Promise.all(trailerPromises).then((completedTrailers) => {
-          this.trailerList = completedTrailers;
-        });
+        this.trailerList = trailerPromises;
       });
     },
-    fetchApi() {
+    async fetchApi() {
       try {
-        axios
-          .get("https://localhost:7253/api/Films")
-          .then(
-            (res) =>
-              (this.selectListData = JSON.parse(JSON.stringify(res.data)))
-          );
+        await getFilmList().then(
+          (res) => (this.selectListData = JSON.parse(JSON.stringify(res.data)))
+        );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    getFilmName(id) {
-      return axios.get(`https://localhost:7253/api/Films/${id}`).then((res) => {
+    async getFilmName(id) {
+      return await getFilmById(id).then((res) => {
         return res.data.title;
       });
     },
-    createNewTrailer(form_data) {
+    async createNewTrailer(form_data) {
       var formData = new FormData();
       formData.append("link", form_data.link);
       formData.append("filmId", form_data.filmId);
-      console.log(123);
-      console.log(formData);
-      axios
-        .post("https://localhost:7253/api/Trailers", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewTrailer(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
+          console.log(res);
           this.trailerList.push(JSON.parse(res.config.data));
         })
         .catch((error) => {
           console.error("Error:", error); // Log lỗi nếu có
         });
     },
-    deleteTrailer(id) {
-      axios
-        .delete(`https://localhost:7253/api/Trailers/${id}`)
+    async deleteTrailer(id) {
+      await deleteTrailer(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

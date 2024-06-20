@@ -57,6 +57,13 @@ import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
+import {
+  createNewActor,
+  deleteActor,
+  getAllActors,
+  getFilmList,
+  updateActor,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -75,24 +82,21 @@ export default {
   },
 
   methods: {
-    loadData() {
-      axios
-        .get("https://localhost:7253/api/Actors/getAllActors")
-        .then((res) => (this.actorList = res.data));
+    async loadData() {
+      await getAllActors().then((res) => {
+        this.actorList = res.data;
+      });
     },
-    fetchApi() {
+    async fetchApi() {
       try {
-        axios
-          .get("https://localhost:7253/api/Films")
-          .then(
-            (res) =>
-              (this.selectListData = JSON.parse(JSON.stringify(res.data)))
-          );
+        await getFilmList().then(
+          (res) => (this.selectListData = JSON.parse(JSON.stringify(res.data)))
+        );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
-    createNewActor(form_data) {
+    async createNewActor(form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("formFile", form_data.image);
@@ -101,10 +105,7 @@ export default {
           formData.append("filmIds[]", item);
         });
       }
-      axios
-        .post("https://localhost:7253/api/Actors", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewActor(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -117,7 +118,7 @@ export default {
           }
         });
     },
-    updateActor(id, form_data) {
+    async updateActor(id, form_data) {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("formFile", form_data.image);
@@ -126,10 +127,7 @@ export default {
           formData.append("filmIds[]", item);
         });
       }
-      axios
-        .put(`https://localhost:7253/api/Actors/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await updateActor(id, formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -142,9 +140,8 @@ export default {
           }
         });
     },
-    deleteActor(id) {
-      axios
-        .delete(`https://localhost:7253/api/Actors/${id}`)
+    async deleteActor(id) {
+      await deleteActor(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;

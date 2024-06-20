@@ -52,6 +52,13 @@ import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
+import {
+  GetAllRooms,
+  getAllCinemas,
+  createNewRoom,
+  deleteRoom,
+  updateRoom,
+} from "@/Services/FetchAPI";
 export default {
   data() {
     return {
@@ -71,33 +78,29 @@ export default {
   },
 
   methods: {
-    loadData() {
-      axios.get("https://localhost:7253/api/Rooms").then((res) => {
-        this.roomList = res.data;
+    async loadData() {
+      await GetAllRooms().then((res) => {
+        const rooms = res.data.map((item) => {
+          return { ...item, cinemasId: item.cinemas.id };
+        });
+        this.roomList = rooms;
       });
     },
-    getCinemas() {
+    async getCinemas() {
       try {
-        axios
-          .get("https://localhost:7253/api/Cinemas")
-          .then(
-            (res) =>
-              (this.selectListData = JSON.parse(JSON.stringify(res.data)))
-          );
+        await getAllCinemas().then(
+          (res) => (this.selectListData = JSON.parse(JSON.stringify(res.data)))
+        );
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
 
-    createRoom(form_data) {
+    async createRoom(form_data) {
       var formData = new FormData();
       formData.append("roomName", form_data.roomName);
       formData.append("cinemasId", form_data.cinemasId);
-      console.log(formData);
-      axios
-        .post("https://localhost:7253/api/Rooms", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await createNewRoom(formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -111,15 +114,12 @@ export default {
           }
         });
     },
-    updateRoom(id, form_data) {
+    async updateRoom(id, form_data) {
       var formData = new FormData();
       formData.append("roomName", form_data.roomName);
       formData.append("cinemasId", form_data.cinemasId);
 
-      axios
-        .put(`https://localhost:7253/api/Rooms/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      await updateRoom(id, formData)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
@@ -132,9 +132,8 @@ export default {
           }
         });
     },
-    deleteRoom(id) {
-      axios
-        .delete(`https://localhost:7253/api/Rooms/${id}`)
+    async deleteRoom(id) {
+      await deleteRoom(id)
         .then((res) => {
           this.toggleModalMessage = true;
           this.message = res.data;
