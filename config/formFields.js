@@ -88,7 +88,7 @@ export const formFields = {
       isText: true,
     },
     {
-      title: "Mật khẩu",
+      title: "Email",
       id: "email",
       placeholder: "Nhập mật khẩu",
       isText: true,

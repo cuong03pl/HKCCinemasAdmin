@@ -84,9 +84,18 @@ export default {
 
   methods: {
     async loadData() {
-      await GetAllTickets().then((res) => {
-        this.ticketList = res.data;
-      });
+      try {
+        const res = await GetAllTickets();
+        const tickets = res.data.map((item) => {
+          return {
+            ...item,
+            scheduleId: item.scheduleId,
+          };
+        });
+        this.ticketList = tickets;
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
+      }
     },
     async fetchApi() {
       try {

@@ -59,6 +59,15 @@ export const GetAllShowDates = async (params) => {
   const res = await get("ShowDates", params);
   return res;
 };
+export const GetAllFilmByActorId = async (id, params) => {
+  const res = await get(`Films/GetAllFilmByActor/${id}`, params);
+  return res;
+};
+
+export const GetAllCategoryIdByFilmId = async (id, params) => {
+  const res = await get(`Categories/getAllCategoryIdByFilmId/${id}`, params);
+  return res;
+};
 // get one
 
 export const GetAllShowDateByCinemasId = async (id, params) => {

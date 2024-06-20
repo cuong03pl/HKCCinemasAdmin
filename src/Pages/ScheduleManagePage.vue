@@ -97,8 +97,16 @@ export default {
     async loadData() {
       try {
         const res = await GetAllSchedules();
-        this.scheduleList = res.data;
-        console.log(res);
+        const schedules = res.data.map((item) => {
+          return {
+            ...item,
+            cinemasId: item.cinemas.id,
+            filmId: item.film.id,
+            roomId: item.room.id,
+            showDateId: item.showDate.id,
+          };
+        });
+        this.scheduleList = schedules;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -108,7 +116,7 @@ export default {
       try {
         const res = await getAllCinemas();
         this.selectListData = {
-          cinemasId: res,
+          cinemasId: res.data,
         };
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
@@ -119,7 +127,7 @@ export default {
         const res = await GetNowShowingFilms();
         this.selectListData = {
           ...this.selectListData,
-          filmId: res,
+          filmId: res.data,
         };
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
@@ -132,7 +140,7 @@ export default {
           (res) =>
             (this.selectListData = {
               ...this.selectListData,
-              showDateId: res,
+              showDateId: res.data,
             })
         );
       } catch (error) {
@@ -145,7 +153,7 @@ export default {
           (res) =>
             (this.selectListData = {
               ...this.selectListData,
-              roomId: res,
+              roomId: res.data,
             })
         );
       } catch (error) {

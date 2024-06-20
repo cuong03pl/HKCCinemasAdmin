@@ -95,9 +95,18 @@ export default {
 
   methods: {
     async loadData() {
-      await GetAllSeats().then((res) => {
-        this.seatList = res.data;
-      });
+      try {
+        const res = await GetAllSeats();
+        const seats = res.data.map((item) => {
+          return {
+            ...item,
+            roomID: item.room.id,
+          };
+        });
+        this.seatList = seats;
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
+      }
     },
     async getRooms() {
       try {

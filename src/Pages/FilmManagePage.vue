@@ -73,6 +73,7 @@ import {
   getAllCategories,
   getFilmList,
   updateFilm,
+  GetAllCategoryIdByFilmId,
 } from "@/Services/FetchAPI";
 export default {
   data() {
@@ -88,12 +89,25 @@ export default {
   },
   created() {
     this.getAllCategories();
-    this.loadFilm();
+    this.loadData();
   },
 
   methods: {
-    async loadFilm() {
-      await getFilmList().then((res) => (this.filmList = res.data));
+    async loadData() {
+      try {
+        // Fetch all actors first
+        const res = await getFilmList();
+        const films = await Promise.all(
+          res.data.map(async (item) => {
+            const categories = await GetAllCategoryIdByFilmId(item.id);
+            return { ...item, categoryIds: categories.data };
+          })
+        );
+        console.log(films);
+        this.filmList = films;
+      } catch (error) {
+        console.error("Error fetching actors or films:", error);
+      }
     },
     async getAllCategories() {
       try {

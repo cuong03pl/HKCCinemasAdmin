@@ -58,6 +58,7 @@ import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
 import {
+  GetAllFilmByActorId,
   createNewActor,
   deleteActor,
   getAllActors,
@@ -83,9 +84,20 @@ export default {
 
   methods: {
     async loadData() {
-      await getAllActors().then((res) => {
-        this.actorList = res.data;
-      });
+      try {
+        // Fetch all actors first
+        const res = await getAllActors();
+        const actors = await Promise.all(
+          res.data.map(async (item) => {
+            const films = await GetAllFilmByActorId(item.id);
+            console.log(films);
+            return { ...item, filmIds: films.data };
+          })
+        );
+        this.actorList = actors;
+      } catch (error) {
+        console.error("Error fetching actors or films:", error);
+      }
     },
     async fetchApi() {
       try {

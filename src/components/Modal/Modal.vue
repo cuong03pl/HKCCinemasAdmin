@@ -185,9 +185,17 @@ export default {
     initFormUpdate() {
       const init = {};
       this.formFields.forEach((field) => {
-        init[field.id] = this.data[field.id]; // tạo ra 1 abcd: ""
-        console.log("up" + this.data[field.id]);
-        console.log(field.id);
+        if (field.isDate) {
+          init[field.id] = this.data[field.id]
+            ? this.data[field.id].split("T")[0]
+            : "";
+        } else if (field.isSelect) {
+          init[field.id] = Array.isArray(this.data[field.id])
+            ? this.data[field.id]
+            : [];
+        } else {
+          init[field.id] = this.data[field.id] || "";
+        }
       });
       return init;
     },
