@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <span class="text-[30px] font-bold"> Quản lý phòng chiếu phim </span>
+      <span class="text-[30px] font-bold"> Quản lý suất chiếu </span>
       <ButtonHandleCreate
         @handleCreate="createSchedule"
         :selectListData="selectListData"

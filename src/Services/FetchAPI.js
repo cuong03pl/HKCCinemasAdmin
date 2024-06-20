@@ -258,3 +258,19 @@ export const IsCinemaRoomOccupied = async (params) => {
   const res = await get("Rooms/isCinemaRoomOccupied", params);
   return res;
 };
+
+// get count
+export const GetCountFilm = async (params) => {
+  const res = await get("Films/getCount", params);
+  return res;
+};
+
+export const GetCountCinemas = async (params) => {
+  const res = await get("Cinemas/getCount", params);
+  return res;
+};
+
+export const GetCountUser = async (params) => {
+  const res = await get("Users/getCountUser", params);
+  return res;
+};

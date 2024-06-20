@@ -19,7 +19,7 @@ export default {
       menu_data: [
         {
           title: "Dashboard",
-          to: "/dashboard",
+          to: "/",
           icon: {
             item: DashboardIcon,
             height: 18,
