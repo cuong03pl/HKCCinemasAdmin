@@ -68,6 +68,16 @@ export const GetAllCategoryIdByFilmId = async (id, params) => {
   const res = await get(`Categories/getAllCategoryIdByFilmId/${id}`, params);
   return res;
 };
+export const GetAllRoles = async (params) => {
+  const res = await get(`Account/getRoles`, params);
+  console.log(res);
+  return res;
+};
+export const GetAllRolesByUser = async (id, params) => {
+  const res = await post(`Account/getRolesByUser/${id}`, params);
+  console.log(res);
+  return res;
+};
 // get one
 
 export const GetAllShowDateByCinemasId = async (id, params) => {
@@ -145,6 +155,11 @@ export const createNewTrailer = async (data, params) => {
   const res = await post(`Trailers`, data, params);
   return res;
 };
+
+export const createNewRole = async (data, params) => {
+  const res = await post(`Account/createRole`, data, params);
+  return res;
+};
 // update
 export const updateFilm = async (id, data, params) => {
   const res = await put(`Films/${id}`, data, params);
@@ -193,6 +208,11 @@ export const updateTicket = async (id, data, params) => {
 };
 export const updateTrailer = async (id, data, params) => {
   const res = await put(`Trailers/${id}`, data, params);
+  return res;
+};
+
+export const updateRole = async (id, data, params) => {
+  const res = await put(`Account/updateRole/${id}`, data, params);
   return res;
 };
 // delete
@@ -253,6 +273,12 @@ export const deleteTrailer = async (id, data, params) => {
   const res = await deleteMethod(`Trailers/${id}`, data, params);
   return res;
 };
+
+export const deleteRole = async (id, data, params) => {
+  const res = await deleteMethod(`Account/deleteRole/${id}`, data, params);
+  return res;
+};
+
 //  check
 export const IsCinemaRoomOccupied = async (params) => {
   const res = await get("Rooms/isCinemaRoomOccupied", params);

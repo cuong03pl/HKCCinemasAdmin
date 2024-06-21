@@ -257,4 +257,13 @@ export const formFields = {
       isTicket: true,
     },
   ],
+
+  role: [
+    {
+      title: "Tên role",
+      id: "name",
+      placeholder: "Nhập tên role",
+      isText: true,
+    },
+  ],
 };

@@ -6,8 +6,9 @@
     <div>
       <div class="flex justify-between font-medium py-[16px] px-3 bg-white">
         <!-- <span class="w-[25%]">ID</span> -->
-        <span class="w-[40%]">UserName</span>
-        <span class="w-[40%]">Email</span>
+        <span class="w-[30%]">UserName</span>
+        <span class="w-[20%]">Email</span>
+        <span class="w-[30%]">Roles</span>
         <span class="w-[20%]">Chức năng </span>
       </div>
       <div
@@ -16,8 +17,13 @@
         class="flex justify-around items-center border-t border-t-[#0000002f] h-[48px] px-[16px] hover:bg-[#e5e5e5]"
       >
         <!-- <span class="w-[25%]">{{ item.id }}</span> -->
-        <span class="w-[40%]">{{ item.userName }}</span>
-        <span class="w-[40%]">{{ item.email }}</span>
+        <span class="w-[30%]">{{ item.userName }}</span>
+        <span class="w-[20%]">{{ item.email }}</span>
+        <span class="w-[30%]">
+          <span v-for="(role, index) in item.roles.data" :key="index">{{
+            role
+          }}</span>
+        </span>
         <span class="w-[20%]">
           <ButtonHandleModal
             @handleDelete="deleteUser"
@@ -41,10 +47,9 @@ import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
 import {
-  createNewUser,
   deleteUser,
+  GetAllRolesByUser,
   getAllUsers,
-  updateUser,
 } from "@/Services/FetchAPI";
 export default {
   data() {
@@ -62,9 +67,21 @@ export default {
   },
   methods: {
     async loadUser() {
-      await getAllUsers().then((res) => {
-        this.userList = res.data;
-      });
+      try {
+        const res = await getAllUsers();
+        const users = await Promise.all(
+          res.data.map(async (item) => {
+            var roles = await GetAllRolesByUser(item.id);
+            return {
+              ...item,
+              roles: roles,
+            };
+          })
+        );
+        this.userList = users;
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
+      }
     },
     // createNewUser(form_data) {
     //   console.log(form_data);

@@ -1,4 +1,3 @@
-import HomePage from "@/Pages/HomePage.vue";
 import DashboardPage from "@/Pages/DashboardPage.vue";
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import UserManagePage from "@/Pages/UserManagePage.vue";
@@ -14,6 +13,7 @@ import CommentManagePage from "@/Pages/CommentManagePage.vue";
 import ShowDateManagePage from "@/Pages/ShowDateManagePage.vue";
 import ScheduleManagePage from "@/Pages/ScheduleManagePage.vue";
 import TicketManagePage from "@/Pages/TicketManagePage.vue";
+import RoleManagePage from "@/Pages/RoleManagePage.vue";
 
 export const routes = [
   {
@@ -21,7 +21,6 @@ export const routes = [
     component: DefaultLayout,
     children: [
       { path: "/", component: DashboardPage },
-      { path: "/home", component: HomePage },
       { path: "/user-manage", component: UserManagePage },
       { path: "/film-manage", component: FilmManagePage },
       { path: "/cinemas-manage", component: CinemasManagePage },
@@ -38,6 +37,7 @@ export const routes = [
       { path: "/showdate-manage", component: ShowDateManagePage },
       { path: "/ticket-manage", component: TicketManagePage },
       { path: "/schedule-manage", component: ScheduleManagePage },
+      { path: "/role-manage", component: RoleManagePage },
     ],
   },
 ];

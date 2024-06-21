@@ -157,6 +157,16 @@ export default {
             fill: "#fff",
           },
         },
+        {
+          title: "Quản lý role",
+          to: "/role-manage",
+          icon: {
+            item: UserIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
       ],
     };
   },
