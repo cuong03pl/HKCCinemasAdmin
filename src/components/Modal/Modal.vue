@@ -16,7 +16,7 @@
             @click="$emit('handleClose', false)"
           />
         </div>
-        <div class="grid grid-cols-2 gap-4 mt-2">
+        <div v-if="formFields" class="grid grid-cols-2 gap-4 mt-2">
           <div
             v-for="(field, index) in formFields"
             :key="index"
