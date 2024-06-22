@@ -75,7 +75,6 @@ export const GetAllRoles = async (params) => {
 };
 export const GetAllRolesByUser = async (id, params) => {
   const res = await post(`Account/getRolesByUser/${id}`, params);
-  console.log(res);
   return res;
 };
 // get one
@@ -158,6 +157,11 @@ export const createNewTrailer = async (data, params) => {
 
 export const createNewRole = async (data, params) => {
   const res = await post(`Account/createRole`, data, params);
+  return res;
+};
+
+export const setRole = async (id, data, params) => {
+  const res = await post(`Account/setRole/${id}`, data, params);
   return res;
 };
 // update

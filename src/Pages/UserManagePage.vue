@@ -20,19 +20,29 @@
         <span class="w-[30%]">{{ item.userName }}</span>
         <span class="w-[20%]">{{ item.email }}</span>
         <span class="w-[30%]">
-          <span v-for="(role, index) in item.roles.data" :key="index">{{
-            role
-          }}</span>
+          <span v-for="(role, index) in item.roles" :key="index"
+            >{{ role.name }}
+            <span v-if="item.roles.length > 1 && index < item.roles.length - 1"
+              >,
+            </span>
+          </span>
         </span>
-        <span class="w-[20%]">
+        <span class="w-[20%] flex gap-2">
           <ButtonHandleModal
             @handleDelete="deleteUser"
             :data="item"
             :formFields="formFields"
           />
+          <ButtonHandleSetRole
+            @handleUpdate="changeRole"
+            :data="item"
+            :selectListData="rolesList"
+            :formFields="formFields2"
+          />
         </span>
       </div>
     </div>
+
     <ModelMessage
       :isOpen="toggleModalMessage"
       @handleClose="handleClose"
@@ -42,28 +52,37 @@
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
-import axios from "axios";
 import ButtonHandleCreate from "@/components/Modal/ButtonHandleCreate.vue";
+import ButtonHandleSetRole from "@/components/Modal/ButtonHandleSetRole.vue";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
 import { formFields } from "../../config/formFields";
 import {
   deleteUser,
+  GetAllRoles,
   GetAllRolesByUser,
   getAllUsers,
+  setRole,
 } from "@/Services/FetchAPI";
 export default {
   data() {
     return {
       userList: [],
+      rolesList: [],
       toggleModal: false,
       toggleModalDelete: false,
       toggleModalMessage: false,
+      toggleModalSetRole: false,
       message: Object,
       formFields: formFields.user,
+      formFields2: formFields.userRoles,
+      userId: "",
+      selectedUserRoles: [],
     };
   },
+
   mounted() {
     this.loadUser();
+    this.getAllRoles();
   },
   methods: {
     async loadUser() {
@@ -74,7 +93,8 @@ export default {
             var roles = await GetAllRolesByUser(item.id);
             return {
               ...item,
-              roles: roles,
+              roles: roles.data,
+              selectedUserRoles: roles.data.map((res) => res.id),
             };
           })
         );
@@ -83,19 +103,14 @@ export default {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
     },
-    // createNewUser(form_data) {
-    //   console.log(form_data);
-    //   var formData = new FormData();
-    //   formData.append("userName", form_data.userName);
-    //   formData.append("email", form_data.email);
-    //   createNewUser(formData).then((res) => {
-    //     console.log(res);
-    //     this.toggleModalMessage = true;
-    //     this.message = res;
-    //     this.userList.push(JSON.parse(res.config.data));
-    //     console.log(this.userList);
-    //   });
-    // },
+    async getAllRoles() {
+      try {
+        const res = await GetAllRoles();
+        this.rolesList = res.data;
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
+      }
+    },
     async deleteUser(id) {
       await deleteUser(id).then((res) => {
         this.toggleModalMessage = true;
@@ -103,23 +118,48 @@ export default {
         this.loadUser();
       });
     },
-    //  updateUser (id, form_data) {
-    //     var formData = new FormData();
-    //     formData.append("id", id);
-    //     formData.append("username", form_data.userName);
-    //     formData.append("email", form_data.email);
-    //     console.log(formData);
-    //     updateUser(id, formData).then((res) => {
-    //       this.toggleModalMessage = true;
-    //       this.message = res;
-    //       this.loadUser();
-    //     });
-    //   },
+
     handleClose(n) {
       this.toggleModalMessage = n;
     },
+    handleCloseModalSetRole() {
+      this.toggleModalSetRole = false;
+    },
+    handleOpenModalSetRole(id) {
+      this.toggleModalSetRole = true;
+      this.userId = id;
+    },
+
+    async changeRole(id, roles) {
+      console.log(roles);
+      console.log(id);
+      var formData = new FormData();
+      if (roles) {
+        roles?.selectedUserRoles.forEach((item) => {
+          formData.append("roles[]", item);
+        });
+      }
+      await setRole(id, formData)
+        .then((res) => {
+          this.toggleModalMessage = true;
+          this.message = res.data;
+          this.loadUser();
+        })
+        .catch((err) => {
+          if (err.response.status == 400) {
+            this.message = "Vui lòng nhập đầy đủ thông tin";
+            this.toggleModalMessage = true;
+          }
+        });
+    },
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+
+    ButtonHandleSetRole,
+  },
 };
 </script>
 

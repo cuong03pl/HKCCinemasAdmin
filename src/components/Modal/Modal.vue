@@ -29,7 +29,6 @@
               multiple
               v-if="field.isSelect"
               v-model="FormData[field.id]"
-              :options="selectListData"
               class="block border-[2px] mt-1 focus:border-[green] rounded-md outline-none w-[100%] text-[16px] border-[#ccc] px-4 py-2"
             >
               <option

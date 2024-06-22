@@ -103,7 +103,6 @@ export default {
             return { ...item, categoryIds: categories.data };
           })
         );
-        console.log(films);
         this.filmList = films;
       } catch (error) {
         console.error("Error fetching actors or films:", error);

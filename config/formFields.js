@@ -266,4 +266,13 @@ export const formFields = {
       isText: true,
     },
   ],
+
+  userRoles: [
+    {
+      title: "roles",
+      id: "selectedUserRoles",
+      placeholder: "Chọn roles",
+      isSelect: true,
+    },
+  ],
 };

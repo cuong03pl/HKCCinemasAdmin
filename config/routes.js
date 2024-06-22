@@ -14,6 +14,7 @@ import ShowDateManagePage from "@/Pages/ShowDateManagePage.vue";
 import ScheduleManagePage from "@/Pages/ScheduleManagePage.vue";
 import TicketManagePage from "@/Pages/TicketManagePage.vue";
 import RoleManagePage from "@/Pages/RoleManagePage.vue";
+import LoginPage from "@/Pages/LoginPage.vue";
 
 export const routes = [
   {
@@ -39,5 +40,9 @@ export const routes = [
       { path: "/schedule-manage", component: ScheduleManagePage },
       { path: "/role-manage", component: RoleManagePage },
     ],
+  },
+  {
+    path: "/login",
+    component: LoginPage,
   },
 ];
