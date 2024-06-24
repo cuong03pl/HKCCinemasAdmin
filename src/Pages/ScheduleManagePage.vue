@@ -47,11 +47,6 @@
         </span>
       </div>
     </div>
-    <ModelMessage
-      :isOpen="toggleModalMessage"
-      @handleClose="handleClose"
-      :message="message"
-    />
   </div>
 </template>
 <script>
@@ -72,14 +67,14 @@ import {
   updateSchedule,
   deleteSchedule,
 } from "@/Services/FetchAPI";
+import store from "@/store/store";
 export default {
   data() {
     return {
       scheduleList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      toggleModalMessage: false,
-      message: Object,
+
       selectListData: [],
       formFields: formFields.schedule,
     };
@@ -187,21 +182,28 @@ export default {
       formData.append("startTime", form_data.startTime);
       var data = await this.isCinemaRoomOccupied(form_data);
       if (data.data) {
-        this.message = "Phòng chiếu này đã bị trùng giờ";
-        this.toggleModalMessage = true;
+        store.commit("setNotifyModal", {
+          isOpen: true,
+          message: "Phòng chiếu này đã bị trùng giờ",
+        });
+
         return;
       }
       await createNewSchedule(formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.initializeData();
         })
         .catch((err) => {
           console.log(err);
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
@@ -216,32 +218,38 @@ export default {
 
       await updateSchedule(id, formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.initializeData();
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
     async deleteSchedule(id) {
       await deleteSchedule(id)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.initializeData();
         })
         .catch((err) => {
-          this.message = "Xóa không thành công";
-          this.toggleModalMessage = true;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: "Xóa không thành công",
+          });
         });
     },
-    handleClose(n) {
-      this.toggleModalMessage = n;
-    },
+
     handleCinemaChange(cinemaId) {
       this.selectedCinemaId = cinemaId.value;
       this.getRoomByCinemasId(cinemaId.value);

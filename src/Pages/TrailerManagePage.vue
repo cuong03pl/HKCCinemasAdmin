@@ -47,11 +47,6 @@
         </span>
       </div>
     </div>
-    <ModelMessage
-      :isOpen="toggleModalMessage"
-      @handleClose="handleClose"
-      :message="message"
-    />
   </div>
 </template>
 <script>
@@ -67,14 +62,14 @@ import {
   getFilmById,
   getFilmList,
 } from "@/Services/FetchAPI";
+import store from "@/store/store";
 export default {
   data() {
     return {
       trailerList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      toggleModalMessage: false,
-      message: Object,
+
       selectListData: [],
       formFields: formFields.trailer,
     };
@@ -115,8 +110,10 @@ export default {
       formData.append("filmId", form_data.filmId);
       await createNewTrailer(formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           console.log(res);
           this.trailerList.push(JSON.parse(res.config.data));
         })
@@ -127,17 +124,18 @@ export default {
     async deleteTrailer(id) {
       await deleteTrailer(id)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
-          this.message = "Xóa không thành công";
-          this.toggleModalMessage = true;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: "Xóa không thành công",
+          });
         });
-    },
-    handleClose(n) {
-      this.toggleModalMessage = n;
     },
   },
   components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },

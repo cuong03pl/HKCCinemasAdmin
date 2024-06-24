@@ -53,11 +53,6 @@
         </span>
       </div>
     </div>
-    <ModelMessage
-      :isOpen="toggleModalMessage"
-      @handleClose="handleClose"
-      :message="message"
-    />
   </div>
 </template>
 <script>
@@ -75,14 +70,14 @@ import {
   updateFilm,
   GetAllCategoryIdByFilmId,
 } from "@/Services/FetchAPI";
+import store from "@/store/store";
 export default {
   data() {
     return {
       filmList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      toggleModalMessage: false,
-      message: Object,
+
       selectListData: [],
       formFields: formFields.film,
     };
@@ -138,14 +133,18 @@ export default {
       formData.append("director", form_data.director);
       await createNewFilm(formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadFilm();
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
@@ -170,32 +169,38 @@ export default {
 
       await updateFilm(id, formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadFilm();
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
     async deleteFilm(id) {
       await deleteFilm(id)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadFilm();
         })
         .catch((err) => {
-          this.message = "Xóa không thành công";
-          this.toggleModalMessage = true;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: "Xóa không thành công",
+          });
         });
     },
-    handleClose(n) {
-      this.toggleModalMessage = n;
-    },
+
     convertTime,
   },
   components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },

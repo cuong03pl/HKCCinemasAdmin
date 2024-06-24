@@ -37,11 +37,6 @@
         </span>
       </div>
     </div>
-    <ModelMessage
-      :isOpen="toggleModalMessage"
-      @handleClose="handleClose"
-      :message="message"
-    />
   </div>
 </template>
 <script>
@@ -57,14 +52,14 @@ import {
   getFilmById,
   getUserById,
 } from "@/Services/FetchAPI";
+import store from "@/store/store";
 export default {
   data() {
     return {
       commentList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      toggleModalMessage: false,
-      message: Object,
+
       selectListData: [],
       formFields: formFields.actor,
       userName: "",
@@ -98,18 +93,20 @@ export default {
     async deleteComment(id) {
       await deleteComment(id)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
-          this.message = "Xóa không thành công";
-          this.toggleModalMessage = true;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: "Xóa không thành công",
+          });
         });
     },
-    handleClose(n) {
-      this.toggleModalMessage = n;
-    },
+
     convertTime,
   },
   components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },

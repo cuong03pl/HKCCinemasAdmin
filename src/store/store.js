@@ -1,15 +1,10 @@
+import axios from "axios";
 import { createStore } from "vuex"; // Import createStore from Vuex
-
+import { UserStore } from "./UserStore";
+import { MessageStore } from "./MessageStore";
 export default createStore({
-  state: {
-    user: null,
+  modules: {
+    user: UserStore,
+    message: MessageStore,
   },
-  mutations: {
-    setUser(state, newUser) {
-      console.log(newUser);
-      state.user = newUser;
-    },
-  },
-  actions: {},
-  getters: {},
 });

@@ -42,12 +42,6 @@
         </span>
       </div>
     </div>
-
-    <ModelMessage
-      :isOpen="toggleModalMessage"
-      @handleClose="handleClose"
-      :message="this.message"
-    />
   </div>
 </template>
 <script>
@@ -63,6 +57,7 @@ import {
   getAllUsers,
   setRole,
 } from "@/Services/FetchAPI";
+import store from "@/store/store";
 export default {
   data() {
     return {
@@ -70,9 +65,7 @@ export default {
       rolesList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      toggleModalMessage: false,
       toggleModalSetRole: false,
-      message: Object,
       formFields: formFields.user,
       formFields2: formFields.userRoles,
       userId: "",
@@ -119,9 +112,6 @@ export default {
       });
     },
 
-    handleClose(n) {
-      this.toggleModalMessage = n;
-    },
     handleCloseModalSetRole() {
       this.toggleModalSetRole = false;
     },
@@ -141,14 +131,14 @@ export default {
       }
       await setRole(id, formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadUser();
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
           }
         });
     },

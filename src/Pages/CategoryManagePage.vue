@@ -33,11 +33,6 @@
         </span>
       </div>
     </div>
-    <ModelMessage
-      :isOpen="toggleModalMessage"
-      @handleClose="handleClose"
-      :message="message"
-    />
   </div>
 </template>
 <script>
@@ -53,14 +48,14 @@ import {
   getAllCategories,
   updateCategory,
 } from "@/Services/FetchAPI";
+import store from "@/store/store";
 export default {
   data() {
     return {
       categoryList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      toggleModalMessage: false,
-      message: Object,
+
       formFields: formFields.category,
     };
   },
@@ -78,15 +73,19 @@ export default {
       formData.append("name", form_data.name);
       await createNewCategory(formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
           this.toggleModal = false;
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
@@ -95,33 +94,39 @@ export default {
       formData.append("name", form_data.name);
       await updateCategory(id, formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
           console.log(err);
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
     async deleteCategory(id) {
       await deleteCategory(id)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
-          this.message = "Xóa không thành công";
-          this.toggleModalMessage = true;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: "Xóa không thành công",
+          });
         });
     },
-    handleClose(n) {
-      this.toggleModalMessage = n;
-    },
+
     convertTime,
   },
   components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },

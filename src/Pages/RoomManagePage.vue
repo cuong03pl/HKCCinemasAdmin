@@ -39,11 +39,6 @@
         </span>
       </div>
     </div>
-    <ModelMessage
-      :isOpen="toggleModalMessage"
-      @handleClose="handleClose"
-      :message="message"
-    />
   </div>
 </template>
 <script>
@@ -59,14 +54,14 @@ import {
   deleteRoom,
   updateRoom,
 } from "@/Services/FetchAPI";
+import store from "@/store/store";
 export default {
   data() {
     return {
       roomList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      toggleModalMessage: false,
-      message: Object,
+
       selectListData: [],
       formFields: formFields.room,
       cinemasName: "",
@@ -102,15 +97,19 @@ export default {
       formData.append("cinemasId", form_data.cinemasId);
       await createNewRoom(formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
           console.log(err);
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
@@ -121,31 +120,36 @@ export default {
 
       await updateRoom(id, formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
     async deleteRoom(id) {
       await deleteRoom(id)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
-          this.message = "Xóa không thành công";
-          this.toggleModalMessage = true;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: "Xóa không thành công",
+          });
         });
-    },
-    handleClose(n) {
-      this.toggleModalMessage = n;
     },
   },
   components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },

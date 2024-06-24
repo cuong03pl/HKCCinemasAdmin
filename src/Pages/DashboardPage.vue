@@ -51,10 +51,10 @@ export default {
     this.getCountCinemas();
     this.getCountUser();
   },
+  computed: {},
   methods: {
     async getCountFilm() {
       const res = await GetCountFilm();
-      console.log(res);
       this.card_item = [
         ...this.card_item,
         {
@@ -71,7 +71,6 @@ export default {
     },
     async getCountCinemas() {
       const res = await GetCountCinemas();
-      console.log(res);
       this.card_item = [
         ...this.card_item,
         {
@@ -89,7 +88,6 @@ export default {
 
     async getCountUser() {
       const res = await GetCountUser();
-      console.log(res);
       this.card_item = [
         ...this.card_item,
         {

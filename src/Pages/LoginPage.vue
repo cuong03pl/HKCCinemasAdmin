@@ -11,13 +11,7 @@
             placeholder="Nhập username của bạn"
           />
         </div>
-        <!-- <div class="">
-            <span class="text-[#ee2929] font-normal text-[14px]"
-              >Tài khoản sai</span
-            >
-          </div> -->
       </div>
-
       <div class="mt-[20px]">
         <div
           class="px-[10px] py-[8px] border border-[#ccc] rounded-lg flex items-center"
@@ -31,23 +25,19 @@
           />
           <div class="cursor-pointer">
             <HidePasswordIcon
-              v-if="!this.isShowPassword"
+              v-if="!isShowPassword"
               class="w-[20px] h-[20px]"
               @click="handleShowPassword"
             />
             <ShowPasswordIcon
-              v-if="this.isShowPassword"
+              v-if="isShowPassword"
               class="w-[20px] h-[20px]"
               @click="handleHidePassword"
             />
           </div>
         </div>
       </div>
-      <ModelMessage
-        :isOpen="toggleModalMessage"
-        @handleClose="handleClose"
-        :message="message"
-      />
+
       <div class="mt-[20px]">
         <div class="">
           <RouterLink class="text-[#009578] font-medium" to="/">
@@ -69,8 +59,10 @@ import HidePasswordIcon from "@/components/Icon/HidePasswordIcon.vue";
 import ShowPasswordIcon from "@/components/Icon/ShowPasswordIcon.vue";
 import Modal from "@/components/Modal/Modal.vue";
 import NotifyModal from "@/components/Modal/NotifyModal.vue";
-import axios from "axios";
 import ModelMessage from "@/components/Modal/ModelMessage.vue";
+import axios from "axios";
+import { mapActions } from "vuex";
+
 export default {
   components: {
     Button,
@@ -89,35 +81,31 @@ export default {
       message: "",
     };
   },
+
   methods: {
-    handleLogin() {
+    async handleLogin() {
       const formData = new FormData();
       formData.append("username", this.username);
       formData.append("password", this.password);
-      axios
-        .post("https://localhost:7253/api/Account/login", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((res) => {
-          console.log(res);
-          if (res.status == 200) {
-            this.toggleModalMessage = true;
-            localStorage.setItem("token", res.data);
-            this.message = "Đăng nhập thành công";
-            this.$router.go(-1);
+      try {
+        const res = await axios.post(
+          "https://localhost:7253/api/Account/login",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
           }
-        })
-        .catch((err) => {
-          if (err.response.status == 401) {
-            this.toggleModalMessage = true;
-            this.message = "Username hoặc mật khẩu không chính xác";
-          }
-        });
+        );
+        if (res.status === 200) {
+          localStorage.setItem("token", res.data);
+          await this.$store.dispatch("GetCurrentUser");
+          this.$router.push("/");
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+        }
+      }
     },
 
-    handleClose(n) {
-      this.toggleModalMessage = n;
-    },
     handleShowPassword() {
       this.$refs.password.type = "text";
       this.isShowPassword = true;
@@ -130,4 +118,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+/* Add your component styles here */
+</style>

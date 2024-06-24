@@ -43,11 +43,6 @@
         </span>
       </div>
     </div>
-    <ModelMessage
-      :isOpen="toggleModalMessage"
-      @handleClose="handleClose"
-      :message="message"
-    />
   </div>
 </template>
 <script>
@@ -65,14 +60,14 @@ import {
   getFilmList,
   updateActor,
 } from "@/Services/FetchAPI";
+import store from "@/store/store";
 export default {
   data() {
     return {
       actorList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      toggleModalMessage: false,
-      message: Object,
+
       selectListData: [],
       formFields: formFields.actor,
     };
@@ -119,14 +114,18 @@ export default {
       }
       await createNewActor(formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
@@ -141,32 +140,38 @@ export default {
       }
       await updateActor(id, formData)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            this.message = "Vui lòng nhập đầy đủ thông tin";
-            this.toggleModalMessage = true;
+            store.commit("setNotifyModal", {
+              isOpen: true,
+              message: "Vui lòng nhập đầy đủ thông tin",
+            });
           }
         });
     },
     async deleteActor(id) {
       await deleteActor(id)
         .then((res) => {
-          this.toggleModalMessage = true;
-          this.message = res.data;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: res.data,
+          });
           this.loadData();
         })
         .catch((err) => {
-          this.message = "Xóa không thành công";
-          this.toggleModalMessage = true;
+          store.commit("setNotifyModal", {
+            isOpen: true,
+            message: "Xóa không thành công",
+          });
         });
     },
-    handleClose(n) {
-      this.toggleModalMessage = n;
-    },
+
     convertTime,
   },
   components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },

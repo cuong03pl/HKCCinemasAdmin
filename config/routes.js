@@ -15,15 +15,27 @@ import ScheduleManagePage from "@/Pages/ScheduleManagePage.vue";
 import TicketManagePage from "@/Pages/TicketManagePage.vue";
 import RoleManagePage from "@/Pages/RoleManagePage.vue";
 import LoginPage from "@/Pages/LoginPage.vue";
-
+import store from "@/store/store";
 export const routes = [
   {
     path: "/",
     component: DefaultLayout,
     children: [
-      { path: "/", component: DashboardPage },
-      { path: "/user-manage", component: UserManagePage },
-      { path: "/film-manage", component: FilmManagePage },
+      {
+        path: "/",
+        component: DashboardPage,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
+        path: "/user-manage",
+        component: UserManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/film-manage",
+        component: FilmManagePage,
+        meta: { requiresAuth: true },
+      },
       { path: "/cinemas-manage", component: CinemasManagePage },
       { path: "/actor-manage", component: ActorManagePage },
       { path: "/category-manage", component: CategoryManagePage },
@@ -44,5 +56,6 @@ export const routes = [
   {
     path: "/login",
     component: LoginPage,
+    meta: { requiresAuth: false, requiresAdmin: false },
   },
 ];
