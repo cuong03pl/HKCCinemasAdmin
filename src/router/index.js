@@ -16,10 +16,10 @@ router.beforeEach((to, from, next) => {
         (res) => res.normalizedName == "ADMIN"
       );
       if (data.length > 0) {
-        store.commit("setNotifyModal", {
-          isOpen: true,
-          message: "Đăng nhập thành công",
-        });
+        // store.commit("setNotifyModal", {
+        //   isOpen: true,
+        //   message: "Đăng nhập thành công",
+        // });
         next();
       } else {
         store.commit("setNotifyModal", {

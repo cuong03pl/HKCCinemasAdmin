@@ -188,12 +188,7 @@ export const formFields = {
       placeholder: "Nhập tên chỗ ngồi",
       isText: true,
     },
-    {
-      title: "Trạng thái",
-      id: "status",
-      placeholder: "Nhập trạng thái chỗ ngồi",
-      isSelectnotMuti: true,
-    },
+
     {
       title: "Phòng chiếu",
       id: "roomID",

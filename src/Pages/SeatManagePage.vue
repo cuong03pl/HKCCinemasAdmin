@@ -15,8 +15,7 @@
       >
         <span class="w-[15%]">Tên chỗ ngồi</span>
         <span class="w-[30%]">Tên phòng</span>
-        <span class="w-[25%]">Tên rạp</span>
-        <span class="w-[10%]">Trạng thái</span>
+        <span class="w-[35%]">Tên rạp</span>
         <span class="w-[20%]">Chức năng </span>
       </div>
       <div
@@ -28,10 +27,8 @@
           {{ item.name }}
         </div>
         <span class="w-[30%]">{{ item.room.roomName }}</span>
-        <span class="w-[25%]">{{ item.cinemas.name }}</span>
-        <span class="w-[10%]">{{
-          item.status == 1 ? "Còn trống" : "Đã đặt"
-        }}</span>
+        <span class="w-[35%]">{{ item.cinemas.name }}</span>
+
         <span class="w-[20%]">
           <ButtonHandleModal
             @handleDelete="deleteSeat"
@@ -70,16 +67,6 @@ export default {
       selectListData: [],
       formFields: formFields.seat,
       roomName: "",
-      statusData: [
-        {
-          id: 0,
-          name: "Đã đặt",
-        },
-        {
-          id: 1,
-          name: "Còn trống",
-        },
-      ],
     };
   },
   created() {
@@ -128,7 +115,6 @@ export default {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("roomID", form_data.roomID);
-      formData.append("status", form_data.status);
 
       await createNewSeat(formData)
         .then((res) => {
@@ -151,7 +137,6 @@ export default {
       var formData = new FormData();
       formData.append("name", form_data.name);
       formData.append("roomID", form_data.roomID);
-      formData.append("status", form_data.status);
 
       await updateSeat(id, formData)
         .then((res) => {
