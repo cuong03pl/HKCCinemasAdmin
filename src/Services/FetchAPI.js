@@ -77,6 +77,16 @@ export const GetAllRolesByUser = async (id, params) => {
   const res = await post(`Account/getRolesByUser/${id}`, params);
   return res;
 };
+
+export const GetTop5BestSales = async () => {
+  const res = await get(`BookingUser/GetTop5FIlm`);
+  return res;
+};
+export const GetTotalMoneyWithMonth = async () => {
+  const res = await get(`BookingUser/GetTotalMoney`);
+  return res;
+};
+
 // get one
 
 export const GetAllShowDateByCinemasId = async (id, params) => {
@@ -302,5 +312,10 @@ export const GetCountCinemas = async (params) => {
 
 export const GetCountUser = async (params) => {
   const res = await get("Users/getCountUser", params);
+  return res;
+};
+
+export const GetCountTicket = async (params) => {
+  const res = await get("BookingUser/GetCountTicket", params);
   return res;
 };

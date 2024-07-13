@@ -27,6 +27,39 @@
       </div>
     </div>
   </div>
+
+  <div class="my-6">
+    <div class="font-medium text-[24px] mb-2">
+      Top 5 phim được đặt nhiều nhất
+    </div>
+    <div class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white">
+      <span class="w-[35%]">Tên phim</span>
+      <span class="w-[15%]">Thời gian phim</span>
+      <span class="w-[20%]">Thời gian phát hành</span>
+      <span class="w-[20%]">Thời gian kết thúc</span>
+      <span class="w-[10%]">Số vé đã bán</span>
+    </div>
+    <div
+      class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
+      v-for="(item, index) in bestSales"
+      :key="index"
+    >
+      <span class="w-[35%]">{{ item.title }}</span>
+      <span class="w-[15%]">{{ item.duration }} phút</span>
+      <span class="w-[20%]">{{ convertTime(item.releaseDate) }}</span>
+      <span class="w-[20%]">{{
+        item.endDate && convertTime(item.endDate)
+      }}</span>
+      <span class="w-[10%]">{{ item.soldCount }}</span>
+    </div>
+  </div>
+
+  <div class="my-6">
+    <div class="font-medium text-[24px] mb-2">
+      Thống kê doanh thu theo tháng của năm {{ new Date().getFullYear() }}
+    </div>
+    <chart />
+  </div>
 </template>
 
 <script>
@@ -37,19 +70,27 @@ import FilmIcon from "@/components/Icon/FilmIcon.vue";
 import {
   GetCountCinemas,
   GetCountFilm,
+  GetCountTicket,
   GetCountUser,
+  GetTop5BestSales,
 } from "@/Services/FetchAPI";
+import { convertTimeSpan, convertTime } from "../../config/functions";
+import chart from "@/components/Chart/chart.vue";
 
 export default {
+  components: { chart },
   data() {
     return {
       card_item: [],
+      bestSales: [],
     };
   },
   mounted() {
     this.getCountFilm();
     this.getCountCinemas();
     this.getCountUser();
+    this.getCountTicket();
+    this.GetTop5BestSales();
   },
   computed: {},
   methods: {
@@ -102,6 +143,30 @@ export default {
         },
       ];
     },
+
+    async getCountTicket() {
+      const res = await GetCountTicket();
+      this.card_item = [
+        ...this.card_item,
+        {
+          title: "Vé được đặt",
+          data: res.data,
+          icon: {
+            item: EyeIcon,
+            height: 22,
+            width: 22,
+            fill: "#3C50E0",
+          },
+        },
+      ];
+    },
+    async GetTop5BestSales() {
+      const res = await GetTop5BestSales();
+      this.bestSales = res.data;
+      console.log(res.data);
+    },
+    convertTime,
+    convertTimeSpan,
   },
 };
 </script>
