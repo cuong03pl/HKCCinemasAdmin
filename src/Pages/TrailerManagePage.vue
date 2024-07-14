@@ -81,28 +81,28 @@ export default {
 
   methods: {
     async loadData() {
-      await GetAllTrailers().then((res) => {
-        const trailers = res.data;
-        const trailerPromises = trailers.map((item) => {
-          const title = this.getFilmName(item.filmId);
-          return { ...item, filmTitle: title };
-        });
-        this.trailerList = trailerPromises;
-      });
+      try {
+        const res = await GetAllTrailers();
+        const trailers = await Promise.all(
+          res.data.map(async (item) => {
+            const title = await this.getFilmName(item.filmId);
+            return { ...item, filmTitle: title };
+          })
+        );
+        this.trailerList = trailers;
+      } catch (error) {
+        console.error("Error fetching actors or films:", error);
+      }
     },
     async fetchApi() {
       try {
-        await getFilmList().then(
-          (res) => (this.selectListData = JSON.parse(JSON.stringify(res.data)))
-        );
+        await getFilmList().then((res) => (this.selectListData = res.data));
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
     async getFilmName(id) {
-      return await getFilmById(id).then((res) => {
-        return res.data.title;
-      });
+      return await getFilmById(id).then((res) => res.data.title);
     },
     async createNewTrailer(form_data) {
       var formData = new FormData();

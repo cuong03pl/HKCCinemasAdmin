@@ -19,12 +19,12 @@
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
         <div class="w-[15%]">
-          {{ getUserName(item.userID) || userName }}
+          {{ item.userName }}
         </div>
         <span class="w-[30%] max-w-[330px] text-wrap overflow-hidden">{{
           item.content
         }}</span>
-        <span class="w-[20%]">{{ getFilmName(item.filmId) || filmName }}</span>
+        <span class="w-[20%]">{{ item.filmTitle }}</span>
         <span class="w-[15%]">{{ convertTime(item.time) }}</span>
         <span class="w-[20%]">
           <ButtonHandleModal
@@ -72,20 +72,26 @@ export default {
 
   methods: {
     async loadData() {
-      await GetAllComments().then((res) => (this.commentList = res.data));
+      const res = await GetAllComments();
+      const comments = await Promise.all(
+        res.data.map(async (item) => {
+          const userName = await this.getUserName(item.userID);
+          const filmName = await this.getFilmName(item.filmId);
+          return { ...item, filmTitle: filmName, userName: userName };
+        })
+      );
+      this.commentList = comments;
     },
     async getUserName(id) {
       try {
-        await getUserById(id).then(
-          (res) => (this.userName = res.data.userName)
-        );
+        return await getUserById(id).then((res) => res.data.userName);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     },
     async getFilmName(id) {
       try {
-        await getFilmById(id).then((res) => (this.filmName = res.data.title));
+        return await getFilmById(id).then((res) => res.data.title);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }

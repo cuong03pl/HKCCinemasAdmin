@@ -80,7 +80,6 @@ export default {
   methods: {
     async loadData() {
       try {
-        // Fetch all actors first
         const res = await getAllActors();
         const actors = await Promise.all(
           res.data.map(async (item) => {
