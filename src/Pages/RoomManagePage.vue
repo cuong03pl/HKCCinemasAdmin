@@ -2,12 +2,16 @@
   <div>
     <div>
       <span class="text-[30px] font-bold"> Quản lý phòng chiếu phim </span>
-      <ButtonHandleCreate
-        @handleCreate="createRoom"
-        :selectListData="selectListData"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-      />
+
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createRoom"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
+        <Search @handleSubmit="search" placeholder="Nhập tên rạp" />
+      </div>
     </div>
     <div>
       <div
@@ -24,9 +28,9 @@
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
         <div class="w-[15%]">
-          {{ item.roomName }}
+          {{ item?.roomName }}
         </div>
-        <span class="w-[30%]">{{ item.cinemas.name }}</span>
+        <span class="w-[30%]">{{ item?.cinemas?.name }}</span>
         <span class="w-[35%]">{{}}</span>
         <span class="w-[20%]">
           <ButtonHandleModal
@@ -53,8 +57,10 @@ import {
   createNewRoom,
   deleteRoom,
   updateRoom,
+  SearchRoom,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -151,8 +157,22 @@ export default {
           });
         });
     },
+
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchRoom(keyword);
+          const rooms = await Promise.all(
+            res.data.map(async (item) => {
+              return { ...item, cinemasId: item?.cinemas?.id };
+            })
+          );
+          this.roomList = rooms;
+        } catch (error) {}
+      } else this.loadData();
+    },
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

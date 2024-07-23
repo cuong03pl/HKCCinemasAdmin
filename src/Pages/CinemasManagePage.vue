@@ -2,12 +2,15 @@
   <div>
     <div>
       <span class="text-[30px] font-bold"> Quản lý rạp phim </span>
-      <ButtonHandleCreate
-        @handleCreate="createNewCinemas"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-        :selectListData="selectListData"
-      />
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createNewCinemas"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+          :selectListData="selectListData"
+        />
+        <Search @handleSubmit="search" placeholder="Tìm kiếm rạp chiếu" />
+      </div>
     </div>
     <div>
       <div
@@ -57,9 +60,11 @@ import {
   deleteCinemas,
   getAllCinemas,
   getAllCinemasCategories,
+  SearchCinemas,
   updateCinemas,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -163,10 +168,17 @@ export default {
           });
         });
     },
-
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchCinemas(keyword);
+          this.filmList = res.data;
+        } catch (error) {}
+      } else this.loadData();
+    },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

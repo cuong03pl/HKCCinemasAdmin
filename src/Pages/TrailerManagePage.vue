@@ -2,12 +2,16 @@
   <div>
     <div>
       <span class="text-[30px] font-bold"> Quản lý trailer </span>
-      <ButtonHandleCreate
-        @handleCreate="createNewTrailer"
-        :selectListData="selectListData"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-      />
+
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createNewTrailer"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
+        <Search @handleSubmit="search" placeholder="Nhập tên phim" />
+      </div>
     </div>
     <div>
       <div
@@ -61,8 +65,10 @@ import {
   GetAllTrailers,
   getFilmById,
   getFilmList,
+  SearchTrailer,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -90,9 +96,7 @@ export default {
           })
         );
         this.trailerList = trailers;
-      } catch (error) {
-        console.error("Error fetching actors or films:", error);
-      }
+      } catch (error) {}
     },
     async fetchApi() {
       try {
@@ -137,8 +141,22 @@ export default {
           });
         });
     },
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchTrailer(keyword);
+          const trailers = await Promise.all(
+            res.data.map(async (item) => {
+              const title = await this.getFilmName(item.filmId);
+              return { ...item, filmTitle: title };
+            })
+          );
+          this.trailerList = trailers;
+        } catch (error) {}
+      } else this.loadData();
+    },
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

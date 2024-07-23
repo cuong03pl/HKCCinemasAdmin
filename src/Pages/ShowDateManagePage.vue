@@ -2,12 +2,16 @@
   <div>
     <div>
       <span class="text-[30px] font-bold"> Quản lý ngày chiếu </span>
-      <ButtonHandleCreate
-        @handleCreate="createShowDate"
-        :selectListData="selectListData"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-      />
+
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createShowDate"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
+        <Search @handleSubmit="search" placeholder="Nhập tên rạp chiếu" />
+      </div>
     </div>
     <div>
       <div
@@ -51,8 +55,10 @@ import {
   createNewShowDate,
   updateShowdate,
   deleteShowdate,
+  SearchShowDate,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -167,10 +173,21 @@ export default {
           });
         });
     },
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchShowDate(keyword);
+          this.showdateList = res.data;
+        } catch (error) {}
+      } else this.initializeData();
 
+      this.showdateList.forEach(async (item) => {
+        item.cinemasName = await this.getCinemasName(item.cinemasId);
+      });
+    },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

@@ -2,11 +2,15 @@
   <div>
     <div>
       <span class="text-[30px] font-bold"> Quản lý thể loại phim </span>
-      <ButtonHandleCreate
-        @handleCreate="createNewCategory"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-      />
+
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createNewCategory"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
+        <Search @handleSubmit="search" placeholder="Nhập tên thể loại phim" />
+      </div>
     </div>
     <div>
       <div
@@ -46,9 +50,11 @@ import {
   createNewCategory,
   deleteCategory,
   getAllCategories,
+  SearchCategory,
   updateCategory,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -126,10 +132,17 @@ export default {
           });
         });
     },
-
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchCategory(keyword);
+          this.categoryList = res.data;
+        } catch (error) {}
+      } else this.loadData();
+    },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

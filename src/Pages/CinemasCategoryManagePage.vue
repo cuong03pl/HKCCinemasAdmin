@@ -4,12 +4,15 @@
       <span class="text-[30px] font-bold">
         Quản lý rạp chiếu phim (Công ty)
       </span>
-      <ButtonHandleCreate
-        @handleCreate="createNewCinemasCategory"
-        :selectListData="selectListData"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-      />
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createNewCinemasCategory"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
+        <Search @handleSubmit="search" placeholder="Nhập rạp chiếu" />
+      </div>
     </div>
     <div>
       <div
@@ -57,9 +60,11 @@ import {
   createNewCinemasCategories,
   deleteCinemasCategory,
   getAllCinemasCategories,
+  SearchCinemasCategory,
   updateCinemasCategory,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -143,8 +148,16 @@ export default {
           });
         });
     },
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchCinemasCategory(keyword);
+          this.cinemasCategoryList = res.data;
+        } catch (error) {}
+      } else this.loadData();
+    },
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

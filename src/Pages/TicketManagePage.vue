@@ -2,12 +2,16 @@
   <div>
     <div>
       <span class="text-[30px] font-bold"> Quản lý vé phim </span>
-      <ButtonHandleCreate
-        @handleCreate="createTicket"
-        :selectListData="selectListData"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-      />
+
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createTicket"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
+        <Search @handleSubmit="search" placeholder="Nhập tên phim" />
+      </div>
     </div>
     <div>
       <div
@@ -58,9 +62,11 @@ import {
   GetAllSchedules,
   GetAllTickets,
   GetCinemasById,
+  SearchTicket,
   updateTicket,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -173,10 +179,23 @@ export default {
           });
         });
     },
-
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchTicket(keyword);
+          const tickets = res.data.map((item) => {
+            return {
+              ...item,
+              scheduleId: item.scheduleId,
+            };
+          });
+          this.ticketList = tickets;
+        } catch (error) {}
+      } else this.loadData();
+    },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

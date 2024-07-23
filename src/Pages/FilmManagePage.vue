@@ -2,12 +2,15 @@
   <div>
     <div>
       <span class="text-[30px] font-bold"> Quản lý phim </span>
-      <ButtonHandleCreate
-        @handleCreate="createNewFilm"
-        :selectListData="selectListData"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-      />
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createNewFilm"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
+        <Search @handleSubmit="search" placeholder="Tìm kiếm phim" />
+      </div>
     </div>
     <div>
       <div
@@ -69,8 +72,10 @@ import {
   getFilmList,
   updateFilm,
   GetAllCategoryIdByFilmId,
+  SearchFilm,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -90,7 +95,6 @@ export default {
   methods: {
     async loadData() {
       try {
-        // Fetch all actors first
         const res = await getFilmList();
         const films = await Promise.all(
           res.data.map(async (item) => {
@@ -99,9 +103,7 @@ export default {
           })
         );
         this.filmList = films;
-      } catch (error) {
-        console.error("Error fetching actors or films:", error);
-      }
+      } catch (error) {}
     },
     async getAllCategories() {
       try {
@@ -200,10 +202,23 @@ export default {
           });
         });
     },
-
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchFilm(keyword);
+          const films = await Promise.all(
+            res.data.map(async (item) => {
+              const categories = await GetAllCategoryIdByFilmId(item.id);
+              return { ...item, categoryIds: categories.data };
+            })
+          );
+          this.filmList = films;
+        } catch (error) {}
+      } else this.loadData();
+    },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

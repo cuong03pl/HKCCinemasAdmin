@@ -3,6 +3,9 @@
     <div>
       <span class="text-[30px] font-bold"> Quản lý bình luận </span>
     </div>
+    <div class="flex justify-between items-center my-2">
+      <Search @handleSubmit="search" placeholder="Nhập tên phim" />
+    </div>
     <div>
       <div
         class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
@@ -51,8 +54,10 @@ import {
   GetAllComments,
   getFilmById,
   getUserById,
+  SearchComment,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -112,10 +117,24 @@ export default {
           });
         });
     },
-
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchComment(keyword);
+          const comments = await Promise.all(
+            res.data.map(async (item) => {
+              const userName = await this.getUserName(item.userID);
+              const filmName = await this.getFilmName(item.filmId);
+              return { ...item, filmTitle: filmName, userName: userName };
+            })
+          );
+          this.commentList = comments;
+        } catch (error) {}
+      } else this.loadData();
+    },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

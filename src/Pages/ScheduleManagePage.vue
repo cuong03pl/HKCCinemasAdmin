@@ -2,13 +2,17 @@
   <div>
     <div>
       <span class="text-[30px] font-bold"> Quản lý suất chiếu </span>
-      <ButtonHandleCreate
-        @handleCreate="createSchedule"
-        :selectListData="selectListData"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-        @handleChange="handleCinemaChange"
-      />
+
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createSchedule"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+          @handleChange="handleCinemaChange"
+        />
+        <Search @handleSubmit="search" placeholder="Nhập tên phim" />
+      </div>
     </div>
     <div>
       <div
@@ -66,8 +70,10 @@ import {
   createNewSchedule,
   updateSchedule,
   deleteSchedule,
+  SearchSchedule,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -256,10 +262,26 @@ export default {
       this.getShowDate(cinemaId);
       console.log(this.selectListData);
     },
-
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchSchedule(keyword);
+          const schedules = res.data.map((item) => {
+            return {
+              ...item,
+              cinemasId: item.cinemas.id,
+              filmId: item.film.id,
+              roomId: item.room.id,
+              showDateId: item.showDate.id,
+            };
+          });
+          this.scheduleList = schedules;
+        } catch (error) {}
+      } else this.loadData();
+    },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

@@ -3,6 +3,10 @@
     <div>
       <span class="text-[30px] font-bold"> Quản lý người dùng </span>
     </div>
+
+    <div class="flex justify-between items-center my-4">
+      <Search @handleSubmit="search" placeholder="Nhập tên nguời dùng" />
+    </div>
     <div>
       <div class="flex justify-between font-medium py-[16px] px-3 bg-white">
         <!-- <span class="w-[25%]">ID</span> -->
@@ -55,9 +59,11 @@ import {
   GetAllRoles,
   GetAllRolesByUser,
   getAllUsers,
+  SearchUser,
   setRole,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
@@ -142,6 +148,24 @@ export default {
           }
         });
     },
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchUser(keyword);
+          const users = await Promise.all(
+            res.data.map(async (item) => {
+              var roles = await GetAllRolesByUser(item.id);
+              return {
+                ...item,
+                roles: roles.data,
+                selectedUserRoles: roles.data.map((res) => res.id),
+              };
+            })
+          );
+          this.userList = users;
+        } catch (error) {}
+      } else this.loadData();
+    },
   },
   components: {
     ButtonHandleModal,
@@ -149,6 +173,7 @@ export default {
     ModelMessage,
 
     ButtonHandleSetRole,
+    Search,
   },
 };
 </script>

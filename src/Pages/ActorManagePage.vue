@@ -1,13 +1,18 @@
 <template>
   <div>
     <div>
-      <span class="text-[30px] font-bold"> Quản lý diễn viên </span>
-      <ButtonHandleCreate
-        @handleCreate="createNewActor"
-        :selectListData="selectListData"
-        :class="'mt-4 mb-4'"
-        :formFields="formFields"
-      />
+      <div>
+        <span class="text-[30px] font-bold"> Quản lý diễn viên </span>
+      </div>
+      <div class="flex justify-between items-center">
+        <ButtonHandleCreate
+          @handleCreate="createNewActor"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
+        <Search @handleSubmit="search" placeholder="Nhập tên diễn viên" />
+      </div>
     </div>
     <div>
       <div
@@ -54,6 +59,7 @@ import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
 import {
   GetAllFilmByActorId,
+  SearchActor,
   createNewActor,
   deleteActor,
   getAllActors,
@@ -61,13 +67,14 @@ import {
   updateActor,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import Search from "@/components/Search/Search.vue";
 export default {
   data() {
     return {
       actorList: [],
       toggleModal: false,
       toggleModalDelete: false,
-
+      keyword: "",
       selectListData: [],
       formFields: formFields.actor,
     };
@@ -89,9 +96,7 @@ export default {
           })
         );
         this.actorList = actors;
-      } catch (error) {
-        console.error("Error fetching actors or films:", error);
-      }
+      } catch (error) {}
     },
     async fetchApi() {
       try {
@@ -170,10 +175,23 @@ export default {
           });
         });
     },
-
+    async search(keyword) {
+      if (keyword !== "") {
+        try {
+          const res = await SearchActor(keyword);
+          const actors = await Promise.all(
+            res.data.map(async (item) => {
+              const films = await GetAllFilmByActorId(item.id);
+              return { ...item, filmIds: films.data };
+            })
+          );
+          this.actorList = actors;
+        } catch (error) {}
+      } else this.loadData();
+    },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
 };
 </script>
 

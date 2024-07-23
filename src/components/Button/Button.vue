@@ -86,7 +86,7 @@ export default {
 .menuBtn {
   padding: 8px;
   font-size: 16px;
-  color: white;
+  color: black;
   display: flex;
   gap: 4px;
   font-weight: 600;

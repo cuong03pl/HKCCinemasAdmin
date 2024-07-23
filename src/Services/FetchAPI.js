@@ -319,3 +319,68 @@ export const GetCountTicket = async (params) => {
   const res = await get("BookingUser/GetCountTicket", params);
   return res;
 };
+
+// search
+
+export const SearchFilm = async (keyword) => {
+  const res = await get(`Films/search/${keyword}`);
+  return res;
+};
+export const SearchActor = async (keyword) => {
+  const res = await get(`Actors/search/${keyword}`);
+  return res;
+};
+
+export const SearchCinemas = async (keyword) => {
+  const res = await get(`Cinemas/search/${keyword}`);
+  return res;
+};
+
+export const SearchCategory = async (keyword) => {
+  const res = await get(`Categories/search/${keyword}`);
+  return res;
+};
+export const SearchTrailer = async (keyword) => {
+  const res = await get(`Trailers/search/${keyword}`);
+  return res;
+};
+
+export const SearchTicket = async (keyword) => {
+  const res = await get(`Tickets/search/${keyword}`);
+  return res;
+};
+
+export const SearchShowDate = async (keyword) => {
+  const res = await get(`ShowDates/search/${keyword}`);
+  return res;
+};
+
+export const SearchSeat = async (keyword) => {
+  const res = await get(`Seats/search/${keyword}`);
+  return res;
+};
+
+export const SearchSchedule = async (keyword) => {
+  const res = await get(`Schedules/search/${keyword}`);
+  return res;
+};
+
+export const SearchRoom = async (keyword) => {
+  const res = await get(`Rooms/search/${keyword}`);
+  return res;
+};
+
+export const SearchUser = async (keyword) => {
+  const res = await get(`Users/search/${keyword}`);
+  return res;
+};
+
+export const SearchComment = async (keyword) => {
+  const res = await get(`Comments/search/${keyword}`);
+  return res;
+};
+
+export const SearchCinemasCategory = async (keyword) => {
+  const res = await get(`CinemasCategories/search/${keyword}`);
+  return res;
+};

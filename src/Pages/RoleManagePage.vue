@@ -77,9 +77,7 @@ export default {
       try {
         const res = await GetAllRoles();
         this.roleList = res.data;
-      } catch (error) {
-        console.error("Error fetching actors or films:", error);
-      }
+      } catch (error) {}
     },
     async createNewRole(form_data) {
       var formData = new FormData();
