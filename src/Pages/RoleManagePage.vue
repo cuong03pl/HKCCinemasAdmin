@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <span class="text-[30px] font-bold"> Quản lý diễn viên </span>
+      <span class="text-[30px] font-bold"> Quản lý vai trò </span>
       <ButtonHandleCreate
         @handleCreate="createNewRole"
         :selectListData="selectListData"

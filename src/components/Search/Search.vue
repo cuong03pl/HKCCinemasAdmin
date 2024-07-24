@@ -27,7 +27,7 @@
       />
       <button
         @click="handleSubmit"
-        class="text-white text-nowrap px-2 bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm py-2 flex"
+        class="text-white text-nowrap px-2 bg-btnPrimary hover:opacity-80 font-medium rounded-lg text-sm py-2 flex"
       >
         Tìm kiếm
       </button>

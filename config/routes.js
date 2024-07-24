@@ -15,7 +15,6 @@ import ScheduleManagePage from "@/Pages/ScheduleManagePage.vue";
 import TicketManagePage from "@/Pages/TicketManagePage.vue";
 import RoleManagePage from "@/Pages/RoleManagePage.vue";
 import LoginPage from "@/Pages/LoginPage.vue";
-import store from "@/store/store";
 export const routes = [
   {
     path: "/",
@@ -36,21 +35,66 @@ export const routes = [
         component: FilmManagePage,
         meta: { requiresAuth: true },
       },
-      { path: "/cinemas-manage", component: CinemasManagePage },
-      { path: "/actor-manage", component: ActorManagePage },
-      { path: "/category-manage", component: CategoryManagePage },
-      { path: "/trailer-manage", component: TrailerManagePage },
+      {
+        path: "/cinemas-manage",
+        component: CinemasManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/actor-manage",
+        component: ActorManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/category-manage",
+        component: CategoryManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/trailer-manage",
+        component: TrailerManagePage,
+        meta: { requiresAuth: true },
+      },
       {
         path: "/cinemas-category-manage",
         component: CinemasCategoryManagePage,
+        meta: { requiresAuth: true },
       },
-      { path: "/room-manage", component: RoomManagePage },
-      { path: "/seat-manage", component: SeatManagePage },
-      { path: "/comment-manage", component: CommentManagePage },
-      { path: "/showdate-manage", component: ShowDateManagePage },
-      { path: "/ticket-manage", component: TicketManagePage },
-      { path: "/schedule-manage", component: ScheduleManagePage },
-      { path: "/role-manage", component: RoleManagePage },
+      {
+        path: "/room-manage",
+        component: RoomManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/seat-manage",
+        component: SeatManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/comment-manage",
+        component: CommentManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/showdate-manage",
+        component: ShowDateManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/ticket-manage",
+        component: TicketManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/schedule-manage",
+        component: ScheduleManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/role-manage",
+        component: RoleManagePage,
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

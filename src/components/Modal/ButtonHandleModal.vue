@@ -3,13 +3,13 @@
     <button
       v-if="!onlyDelete"
       @click="handleOpen"
-      class="bg-[#0d6efd] h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold"
+      class="bg-[#0d6efd] hover:opacity-80 h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold"
     >
       Sửa
     </button>
     <button
       @click="handleOpenModalDelete"
-      class="bg-[#dc3545] h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold"
+      class="bg-[#dc3545] hover:opacity-80 h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold"
     >
       Xóa
     </button>

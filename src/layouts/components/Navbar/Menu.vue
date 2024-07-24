@@ -12,8 +12,38 @@
 import DashboardIcon from "@/components/Icon/DashboardIcon.vue";
 import MenuItem from "./MenuItem.vue";
 import UserIcon from "@/components/Icon/UserIcon.vue";
+import FilmIcon from "@/components/Icon/FilmIcon.vue";
+import CinemasIcon from "@/components/Icon/CinemasIcon.vue";
+import ActorIcon from "@/components/Icon/ActorIcon.vue";
+import CategoryIcon from "@/components/Icon/CategoryIcon.vue";
+import TrailerIcon from "@/components/Icon/TrailerIcon.vue";
+import TicketIcon from "@/components/Icon/TicketIcon.vue";
+import RoleIcon from "@/components/Icon/RoleIcon.vue";
+import ScheduleIcon from "@/components/Icon/ScheduleIcon.vue";
+import RoomIcon from "@/components/Icon/RoomIcon.vue";
+import SeatIcon from "@/components/Icon/SeatIcon.vue";
+import CommentIcon from "@/components/Icon/CommentIcon.vue";
+import DateIcon from "@/components/Icon/DateIcon.vue";
+import CinemasCategoryIcon from "@/components/Icon/CinemasCategoryIcon.vue";
 export default {
-  components: { MenuItem, DashboardIcon, UserIcon },
+  components: {
+    MenuItem,
+    DashboardIcon,
+    UserIcon,
+    FilmIcon,
+    CinemasIcon,
+    ActorIcon,
+    CategoryIcon,
+    TrailerIcon,
+    TicketIcon,
+    ScheduleIcon,
+    RoleIcon,
+    RoomIcon,
+    SeatIcon,
+    CommentIcon,
+    DateIcon,
+    CinemasCategoryIcon,
+  },
   data() {
     return {
       menu_data: [
@@ -27,61 +57,22 @@ export default {
             fill: "#fff",
           },
         },
+
         {
-          title: "Quản lý User",
-          to: "/user-manage",
-          icon: {
-            item: UserIcon,
-            height: 18,
-            width: 18,
-            fill: "#fff",
-          },
-        },
-        {
-          title: "Quản lý Film",
-          to: "/film-manage",
-          icon: {
-            item: UserIcon,
-            height: 18,
-            width: 18,
-            fill: "#fff",
-          },
-        },
-        {
-          title: "Quản lý Cinemas",
-          to: "/cinemas-manage",
-          icon: {
-            item: UserIcon,
-            height: 18,
-            width: 18,
-            fill: "#fff",
-          },
-        },
-        {
-          title: "Quản lý diễn viên",
-          to: "/actor-manage",
-          icon: {
-            item: UserIcon,
-            height: 18,
-            width: 18,
-            fill: "#fff",
-          },
-        },
-        {
-          title: "Quản lý danh mục",
+          title: "Quản lý danh mục phim",
           to: "/category-manage",
           icon: {
-            item: UserIcon,
+            item: CategoryIcon,
             height: 18,
             width: 18,
             fill: "#fff",
           },
         },
         {
-          title: "Quản lý Trailer",
-          to: "/trailer-manage",
+          title: "Quản lý phim",
+          to: "/film-manage",
           icon: {
-            item: UserIcon,
+            item: FilmIcon,
             height: 18,
             width: 18,
             fill: "#fff",
@@ -91,7 +82,17 @@ export default {
           title: "Quản lý rạp chiếu phim mẹ",
           to: "/cinemas-category-manage",
           icon: {
-            item: UserIcon,
+            item: CinemasCategoryIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
+        {
+          title: "Quản lý rạp chiếu",
+          to: "/cinemas-manage",
+          icon: {
+            item: CinemasIcon,
             height: 18,
             width: 18,
             fill: "#fff",
@@ -101,17 +102,39 @@ export default {
           title: "Quản lý phòng chiếu",
           to: "/room-manage",
           icon: {
-            item: UserIcon,
+            item: RoomIcon,
             height: 18,
             width: 18,
             fill: "#fff",
           },
         },
         {
+          title: "Quản lý diễn viên",
+          to: "/actor-manage",
+          icon: {
+            item: ActorIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
+
+        {
+          title: "Quản lý trailer",
+          to: "/trailer-manage",
+          icon: {
+            item: TrailerIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
+
+        {
           title: "Quản lý chỗ ngồi",
           to: "/seat-manage",
           icon: {
-            item: UserIcon,
+            item: SeatIcon,
             height: 18,
             width: 18,
             fill: "#fff",
@@ -121,7 +144,7 @@ export default {
           title: "Quản lý bình luận",
           to: "/comment-manage",
           icon: {
-            item: UserIcon,
+            item: CommentIcon,
             height: 18,
             width: 18,
             fill: "#fff",
@@ -131,7 +154,7 @@ export default {
           title: "Quản lý ngày chiếu",
           to: "/showdate-manage",
           icon: {
-            item: UserIcon,
+            item: DateIcon,
             height: 18,
             width: 18,
             fill: "#fff",
@@ -141,7 +164,7 @@ export default {
           title: "Quản lý suất chiếu",
           to: "/schedule-manage",
           icon: {
-            item: UserIcon,
+            item: ScheduleIcon,
             height: 18,
             width: 18,
             fill: "#fff",
@@ -151,6 +174,16 @@ export default {
           title: "Quản lý vé xem",
           to: "/ticket-manage",
           icon: {
+            item: TicketIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
+        {
+          title: "Quản lý người dùng",
+          to: "/user-manage",
+          icon: {
             item: UserIcon,
             height: 18,
             width: 18,
@@ -158,10 +191,10 @@ export default {
           },
         },
         {
-          title: "Quản lý role",
+          title: "Quản lý vai trò",
           to: "/role-manage",
           icon: {
-            item: UserIcon,
+            item: RoleIcon,
             height: 18,
             width: 18,
             fill: "#fff",

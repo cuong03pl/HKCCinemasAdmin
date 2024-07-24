@@ -2,7 +2,7 @@
   <div :class="this.class" class="flex gap-2 items-center">
     <button
       @click="handleOpen"
-      class="bg-[#0d6efd] h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold"
+      class="bg-btnPrimary h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold hover:opacity-80"
     >
       Thêm
     </button>
