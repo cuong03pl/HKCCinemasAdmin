@@ -7,7 +7,6 @@ export const MessageStore = {
   },
   mutations: {
     setNotifyModal(state, payload) {
-      console.log(payload);
       state.isOpen = payload.isOpen;
       state.message = payload.message;
     },

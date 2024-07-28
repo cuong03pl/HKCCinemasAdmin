@@ -51,7 +51,7 @@
                 :key="index"
                 :value="item.id"
               >
-                {{ item?.name || item?.title || item?.date }}
+                {{ item?.name || item?.title || item?.date || item.cinemas.id }}
               </option>
             </select>
             <select
@@ -179,8 +179,20 @@ export default {
     selectListData(newG, oldG) {
       this.selectList = newG;
     },
+    data: {
+      handler(newVal, oldVal) {
+        this.updateFormData();
+      },
+      deep: true,
+    },
   },
+
   methods: {
+    updateFormData() {
+      this.FormData = this.isCreate
+        ? this.initFormCreate()
+        : this.initFormUpdate();
+    },
     initFormUpdate() {
       const init = {};
       this.formFields.forEach((field) => {

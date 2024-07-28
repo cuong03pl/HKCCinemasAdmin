@@ -15,7 +15,6 @@
           />
         </div>
         <span class="font-semibold text-[24px]">
-          {{ console.log(message) }}
           {{ message }}
         </span>
         <div class="flex justify-end mt-3 gap-3">
@@ -43,7 +42,6 @@ export default {
   },
   computed: {
     isOpen() {
-      console.log(this.$store.state.message.isOpen);
       return this.$store.state.message.isOpen;
     },
     message() {

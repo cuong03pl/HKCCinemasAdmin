@@ -27,7 +27,7 @@
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
         <span class="w-[50%]">{{ convertTime(item.date) }}</span>
-        <span class="w-[30%]">{{ item?.cinemasName }}</span>
+        <span class="w-[30%]">{{ item?.cinemas?.name }}</span>
         <span class="w-[20%]">
           <ButtonHandleModal
             @handleDelete="deleteShowDate"
@@ -38,6 +38,9 @@
           />
         </span>
       </div>
+    </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
     </div>
   </div>
 </template>
@@ -56,37 +59,50 @@ import {
   updateShowdate,
   deleteShowdate,
   SearchShowDate,
+  GetCountShowDate,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
       showdateList: [],
       toggleModal: false,
       toggleModalDelete: false,
-
       selectListData: [],
+      count: 0,
       formFields: formFields.showDate,
+      keyword: "",
     };
   },
   created() {
     this.loadData();
     this.initializeData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async initializeData() {
       this.getCinemas();
       await this.loadData();
-      this.showdateList.forEach(async (item) => {
-        item.cinemasName = await this.getCinemasName(item.cinemasId);
-      });
     },
     async loadData() {
       try {
         const res = await GetAllShowDates();
-        this.showdateList = res.data;
+        const showDates = res.data.map((item) => {
+          return {
+            ...item,
+            cinemasId: item.cinemas.id,
+          };
+        });
+        this.showdateList = showDates.slice(0, 5);
+        this.count = showDates[0].count;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -174,20 +190,48 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchShowDate(keyword);
-          this.showdateList = res.data;
-        } catch (error) {}
-      } else this.initializeData();
-
-      this.showdateList.forEach(async (item) => {
-        item.cinemasName = await this.getCinemasName(item.cinemasId);
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
       });
+    },
+    async getCount() {
+      const res = await GetCountShowDate();
+
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchShowDate({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword || this.$route?.query?.q,
+          },
+        });
+        const showDates = res.data.map((item) => {
+          return {
+            ...item,
+            cinemasId: item.cinemas.id,
+          };
+        });
+        this.showdateList = showDates;
+        this.count = showDates[0].count;
+      } catch (error) {}
     },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

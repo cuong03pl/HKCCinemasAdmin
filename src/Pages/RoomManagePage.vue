@@ -43,6 +43,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -58,9 +61,12 @@ import {
   deleteRoom,
   updateRoom,
   SearchRoom,
+  GetCountRoom,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
@@ -71,20 +77,28 @@ export default {
       selectListData: [],
       formFields: formFields.room,
       cinemasName: "",
+      count: 0,
+      keyword: "",
     };
   },
   created() {
     this.getCinemas();
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       await GetAllRooms().then((res) => {
         const rooms = res.data.map((item) => {
           return { ...item, cinemasId: item.cinemas.id };
         });
-        this.roomList = rooms;
+        this.roomList = rooms.slice(0, 5);
+        this.count = res.data[0].count;
       });
     },
     async getCinemas() {
@@ -159,20 +173,45 @@ export default {
     },
 
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchRoom(keyword);
-          const rooms = await Promise.all(
-            res.data.map(async (item) => {
-              return { ...item, cinemasId: item?.cinemas?.id };
-            })
-          );
-          this.roomList = rooms;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountRoom();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchRoom({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        const rooms = await Promise.all(
+          res.data.map(async (item) => {
+            return { ...item, cinemasId: item?.cinemas?.id };
+          })
+        );
+        this.roomList = rooms;
+        this.count = rooms[0].count;
+      } catch (error) {}
     },
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

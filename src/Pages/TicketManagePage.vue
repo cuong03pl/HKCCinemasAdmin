@@ -47,6 +47,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -62,11 +65,14 @@ import {
   GetAllSchedules,
   GetAllTickets,
   GetCinemasById,
+  GetCountTicket,
   SearchTicket,
   updateTicket,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
@@ -75,14 +81,21 @@ export default {
       toggleModalDelete: false,
 
       selectListData: [],
+      count: 0,
       formFields: formFields.ticket,
+      keyword: "",
     };
   },
   created() {
     this.fetchApi();
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       try {
@@ -93,7 +106,8 @@ export default {
             scheduleId: item.scheduleId,
           };
         });
-        this.ticketList = tickets;
+        this.ticketList = tickets.slice(0, 5);
+        this.count = res.data[0].count;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -180,22 +194,47 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchTicket(keyword);
-          const tickets = res.data.map((item) => {
-            return {
-              ...item,
-              scheduleId: item.scheduleId,
-            };
-          });
-          this.ticketList = tickets;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountTicket();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchTicket({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        const tickets = res.data.map((item) => {
+          return {
+            ...item,
+            scheduleId: item.scheduleId,
+          };
+        });
+        this.ticketList = tickets;
+        this.count = tickets[0].count;
+      } catch (error) {}
     },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

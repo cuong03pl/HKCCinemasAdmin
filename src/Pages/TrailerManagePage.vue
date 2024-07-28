@@ -51,6 +51,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -63,12 +66,15 @@ import {
   createNewTrailer,
   deleteTrailer,
   GetAllTrailers,
+  GetCountTrailer,
   getFilmById,
   getFilmList,
   SearchTrailer,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
@@ -77,14 +83,21 @@ export default {
       toggleModalDelete: false,
 
       selectListData: [],
+      count: 0,
       formFields: formFields.trailer,
+      keyword: "",
     };
   },
   mounted() {
     this.fetchApi();
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       try {
@@ -95,7 +108,8 @@ export default {
             return { ...item, filmTitle: title };
           })
         );
-        this.trailerList = trailers;
+        this.trailerList = trailers.slice(0, 5);
+        this.count = res.data[0].count;
       } catch (error) {}
     },
     async fetchApi() {
@@ -118,7 +132,6 @@ export default {
             isOpen: true,
             message: res.data,
           });
-          console.log(res);
           this.trailerList.push(JSON.parse(res.config.data));
         })
         .catch((error) => {
@@ -142,21 +155,46 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchTrailer(keyword);
-          const trailers = await Promise.all(
-            res.data.map(async (item) => {
-              const title = await this.getFilmName(item.filmId);
-              return { ...item, filmTitle: title };
-            })
-          );
-          this.trailerList = trailers;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountTrailer();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchTrailer({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        const trailers = await Promise.all(
+          res.data.map(async (item) => {
+            const title = await this.getFilmName(item.filmId);
+            return { ...item, filmTitle: title };
+          })
+        );
+        this.trailerList = trailers;
+        this.count = trailers[0].count;
+      } catch (error) {}
     },
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

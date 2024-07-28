@@ -35,6 +35,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -55,28 +58,39 @@ import {
   createNewRole,
   updateRole,
   deleteRole,
+  GetCountRole,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
       roleList: [],
       toggleModal: false,
       toggleModalDelete: false,
+      count: 0,
 
       selectListData: [],
       formFields: formFields.role,
+      keyword: "",
     };
   },
   created() {
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       try {
         const res = await GetAllRoles();
-        this.roleList = res.data;
+        this.count = res.data[0].count;
+        this.roleList = res.data.slice(0, 5);
       } catch (error) {}
     },
     async createNewRole(form_data) {
@@ -136,10 +150,31 @@ export default {
           });
         });
     },
+    async getCount() {
+      const res = await GetCountRole();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await GetAllRoles({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        this.roles = res.data;
+      } catch (error) {}
+    },
 
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Pagination,
+  },
 };
 </script>
 

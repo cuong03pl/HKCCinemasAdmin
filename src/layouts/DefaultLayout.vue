@@ -8,7 +8,7 @@
         <Header></Header>
         <main>
           <div
-            className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 bg-[#f1f5f9]"
+            className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 bg-[#dee0e2] min-h-screenMinusHeader"
           >
             <router-view></router-view>
           </div>

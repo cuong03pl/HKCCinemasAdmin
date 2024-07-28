@@ -43,6 +43,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -59,9 +62,12 @@ import {
   updateSeat,
   deleteSeat,
   SearchSeat,
+  GetCountSeat,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
@@ -72,14 +78,21 @@ export default {
       selectListData: [],
       formFields: formFields.seat,
       roomName: "",
+      count: 0,
+      keyword: "",
     };
   },
   created() {
     this.getRooms();
     this.loadData();
     this.selectListData = { status: this.statusData };
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       try {
@@ -90,7 +103,8 @@ export default {
             roomID: item.room.id,
           };
         });
-        this.seatList = seats;
+        this.seatList = seats.slice(0, 5);
+        this.count = res.data[0].count;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -98,12 +112,10 @@ export default {
     async getRooms() {
       try {
         await GetAllRooms().then((res) => {
-          (this.selectListData = {
+          this.selectListData = {
             ...this.selectListData,
             roomID: res.data,
-          }),
-            console.log(this.selectListData);
-          console.log(res);
+          };
         });
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
@@ -177,21 +189,46 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchSeat(keyword);
-          const seats = res.data.map((item) => {
-            return {
-              ...item,
-              roomID: item.room.id,
-            };
-          });
-          this.seatList = seats;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountSeat();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchSeat({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        const seats = res.data.map((item) => {
+          return {
+            ...item,
+            roomID: item.room.id,
+          };
+        });
+        this.seatList = seats;
+        this.count = seats[0].count;
+      } catch (error) {}
     },
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

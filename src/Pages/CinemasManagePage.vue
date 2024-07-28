@@ -22,7 +22,7 @@
         <span class="w-[25%]">Chức năng </span>
       </div>
       <div
-        v-for="(item, index) in filmList"
+        v-for="(item, index) in cinemasList"
         :key="index"
         class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
       >
@@ -46,6 +46,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -60,32 +63,42 @@ import {
   deleteCinemas,
   getAllCinemas,
   getAllCinemasCategories,
+  GetCountCinemas,
   SearchCinemas,
   updateCinemas,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
-      filmList: [],
+      cinemasList: [],
       toggleModal: false,
       toggleModalDelete: false,
+      count: 0,
 
       selectListData: [],
-
+      keyword: "",
       formFields: formFields.cinemas,
     };
   },
   created() {
     this.getAllCategories();
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       await getAllCinemas().then((res) => {
-        this.filmList = res.data;
+        this.cinemasList = res.data.slice(0, 5);
+        this.count = res.data[0].count;
       });
     },
     async getAllCategories() {
@@ -169,16 +182,41 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchCinemas(keyword);
-          this.filmList = res.data;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountCinemas();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchCinemas({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword || this.$route?.query?.q,
+          },
+        });
+        this.cinemasList = res.data;
+        this.count = res.data[0].count;
+      } catch (error) {}
     },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

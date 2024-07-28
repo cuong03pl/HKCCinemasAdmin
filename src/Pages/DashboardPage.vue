@@ -163,7 +163,6 @@ export default {
     async GetTop5BestSales() {
       const res = await GetTop5BestSales();
       this.bestSales = res.data;
-      console.log(res.data);
     },
     convertTime,
     convertTimeSpan,

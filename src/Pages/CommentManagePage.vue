@@ -4,7 +4,7 @@
       <span class="text-[30px] font-bold"> Quản lý bình luận </span>
     </div>
     <div class="flex justify-between items-center my-2">
-      <Search @handleSubmit="search" placeholder="Nhập tên phim" />
+      <Search @handleSubmit="search" placeholder="Nhập tên người bình luận" />
     </div>
     <div>
       <div
@@ -40,6 +40,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -52,29 +55,40 @@ import { formFields } from "../../config/formFields";
 import {
   deleteComment,
   GetAllComments,
+  GetCountComment,
   getFilmById,
   getUserById,
   SearchComment,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
+import { comment } from "postcss";
 export default {
   data() {
     return {
       commentList: [],
       toggleModal: false,
       toggleModalDelete: false,
+      count: 0,
 
       selectListData: [],
       formFields: formFields.actor,
       userName: "",
       filmName: "",
+      keyword: "",
     };
   },
   created() {
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       const res = await GetAllComments();
@@ -85,7 +99,8 @@ export default {
           return { ...item, filmTitle: filmName, userName: userName };
         })
       );
-      this.commentList = comments;
+      this.commentList = comments.slice(0, 5);
+      this.count = res.data[0].count;
     },
     async getUserName(id) {
       try {
@@ -118,23 +133,48 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchComment(keyword);
-          const comments = await Promise.all(
-            res.data.map(async (item) => {
-              const userName = await this.getUserName(item.userID);
-              const filmName = await this.getFilmName(item.filmId);
-              return { ...item, filmTitle: filmName, userName: userName };
-            })
-          );
-          this.commentList = comments;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountComment();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchComment({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 10,
+            Keyword: this.keyword,
+          },
+        });
+        const comments = await Promise.all(
+          res.data.map(async (item) => {
+            const userName = await this.getUserName(item.userID);
+            const filmName = await this.getFilmName(item.filmId);
+            return { ...item, filmTitle: filmName, userName: userName };
+          })
+        );
+        this.commentList = comments;
+        this.count = comment[0].count;
+      } catch (error) {}
     },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

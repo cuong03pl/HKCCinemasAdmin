@@ -11,11 +11,12 @@
   "dependencies": {
     "axios": "^1.6.8",
     "chart.js": "^4.4.3",
-    "vue": "^3.3.11",
+    "vue": "^3.4.34",
     "vue-chartjs": "^5.3.1",
     "vue-multiselect": "^2.1.8",
     "vue-router": "^4.2.5",
     "vue-tippy": "^6.4.1",
+    "vuejs-paginate-next": "^1.0.2",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

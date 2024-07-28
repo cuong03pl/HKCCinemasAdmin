@@ -9,13 +9,11 @@ export const UserStore = {
   mutations: {
     setUser(state, newUser) {
       state.user = newUser;
-      console.log(newUser);
     },
     setUserRole(state, newRole) {
       state.userRole = newRole;
     },
     setIsAdmin(state, isAdmin) {
-      console.log(isAdmin);
       state.isAdmin = isAdmin;
     },
   },
@@ -30,7 +28,6 @@ export const UserStore = {
             },
           }
         );
-        console.log(response.data);
         commit("setUser", response.data);
         await dispatch("handleGetRole", response.data.id);
       } catch (err) {
@@ -52,7 +49,6 @@ export const UserStore = {
         });
     },
     setIsAdmin({ commit }, isAdmin) {
-      console.log(123);
       commit("setIsAdmin", isAdmin);
     },
   },

@@ -12,7 +12,7 @@
         <Search @handleSubmit="search" placeholder="Tìm kiếm phim" />
       </div>
     </div>
-    <div>
+    <div class="min-h-[800px]">
       <div
         class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
       >
@@ -56,6 +56,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -73,25 +76,35 @@ import {
   updateFilm,
   GetAllCategoryIdByFilmId,
   SearchFilm,
+  GetCountFilm,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import Pagination from "@/components/Pagination/Pagination.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import router from "@/router";
 export default {
   data() {
     return {
       filmList: [],
       toggleModal: false,
       toggleModalDelete: false,
-
       selectListData: [],
       formFields: formFields.film,
+      count: 0,
+      keyword: "",
     };
   },
   created() {
     this.getAllCategories();
     this.loadData();
+    this.getCountFilm();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       try {
@@ -102,7 +115,9 @@ export default {
             return { ...item, categoryIds: categories.data };
           })
         );
-        this.filmList = films;
+
+        this.filmList = films.slice(0, 5);
+        this.count = films[0].count;
       } catch (error) {}
     },
     async getAllCategories() {
@@ -203,22 +218,48 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchFilm(keyword);
-          const films = await Promise.all(
-            res.data.map(async (item) => {
-              const categories = await GetAllCategoryIdByFilmId(item.id);
-              return { ...item, categoryIds: categories.data };
-            })
-          );
-          this.filmList = films;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCountFilm() {
+      const res = await GetCountFilm();
+      this.count = res.data;
+    },
+
+    async handlePagination(page) {
+      try {
+        const res = await SearchFilm({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        const films = await Promise.all(
+          res.data.map(async (item) => {
+            const categories = await GetAllCategoryIdByFilmId(item.id);
+            return { ...item, categoryIds: categories.data };
+          })
+        );
+        this.filmList = films;
+        this.count = films[0].count;
+      } catch (error) {}
     },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

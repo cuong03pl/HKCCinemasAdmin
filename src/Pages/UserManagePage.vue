@@ -46,6 +46,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -59,11 +62,14 @@ import {
   GetAllRoles,
   GetAllRolesByUser,
   getAllUsers,
+  GetCountUser,
   SearchUser,
   setRole,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
@@ -75,13 +81,20 @@ export default {
       formFields: formFields.user,
       formFields2: formFields.userRoles,
       userId: "",
+      count: 0,
       selectedUserRoles: [],
+      keyword: "",
     };
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   mounted() {
     this.loadUser();
     this.getAllRoles();
+    this.getCount();
   },
   methods: {
     async loadUser() {
@@ -97,7 +110,8 @@ export default {
             };
           })
         );
-        this.userList = users;
+        this.userList = users.slice(0, 5);
+        this.count = res.data[0].count;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -127,8 +141,6 @@ export default {
     },
 
     async changeRole(id, roles) {
-      console.log(roles);
-      console.log(id);
       var formData = new FormData();
       if (roles) {
         roles?.selectedUserRoles.forEach((item) => {
@@ -149,22 +161,41 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchUser(keyword);
-          const users = await Promise.all(
-            res.data.map(async (item) => {
-              var roles = await GetAllRolesByUser(item.id);
-              return {
-                ...item,
-                roles: roles.data,
-                selectedUserRoles: roles.data.map((res) => res.id),
-              };
-            })
-          );
-          this.userList = users;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountUser();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchUser({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        const users = await Promise.all(
+          res.data.map(async (item) => {
+            var roles = await GetAllRolesByUser(item.id);
+            return {
+              ...item,
+              roles: roles.data,
+              selectedUserRoles: roles.data.map((res) => res.id),
+            };
+          })
+        );
+        this.userList = users;
+        this.count = users[0].count;
+      } catch (error) {}
     },
   },
   components: {
@@ -174,6 +205,7 @@ export default {
 
     ButtonHandleSetRole,
     Search,
+    Pagination,
   },
 };
 </script>

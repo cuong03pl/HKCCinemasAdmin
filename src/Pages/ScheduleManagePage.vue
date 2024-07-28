@@ -51,6 +51,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -71,24 +74,34 @@ import {
   updateSchedule,
   deleteSchedule,
   SearchSchedule,
+  GetCountSchedule,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
       scheduleList: [],
       toggleModal: false,
       toggleModalDelete: false,
+      count: 0,
 
       selectListData: [],
       formFields: formFields.schedule,
+      keyword: "",
     };
   },
   mounted() {
     this.initializeData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async initializeData() {
       await this.loadData();
@@ -107,7 +120,8 @@ export default {
             showDateId: item.showDate.id,
           };
         });
-        this.scheduleList = schedules;
+        this.scheduleList = schedules.slice(0, 5);
+        this.count = res.data[0].count;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -260,28 +274,52 @@ export default {
       this.selectedCinemaId = cinemaId.value;
       this.getRoomByCinemasId(cinemaId.value);
       this.getShowDate(cinemaId);
-      console.log(this.selectListData);
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchSchedule(keyword);
-          const schedules = res.data.map((item) => {
-            return {
-              ...item,
-              cinemasId: item.cinemas.id,
-              filmId: item.film.id,
-              roomId: item.room.id,
-              showDateId: item.showDate.id,
-            };
-          });
-          this.scheduleList = schedules;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountSchedule();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchSchedule({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        const schedules = res.data.map((item) => {
+          return {
+            ...item,
+            cinemasId: item.cinemas.id,
+            filmId: item.film.id,
+            roomId: item.room.id,
+            showDateId: item.showDate.id,
+          };
+        });
+        this.scheduleList = schedules;
+        this.count = schedules[0].count;
+      } catch (error) {}
     },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

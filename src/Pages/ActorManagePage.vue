@@ -48,6 +48,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -59,15 +62,18 @@ import { convertTime } from "../../config/functions";
 import { formFields } from "../../config/formFields";
 import {
   GetAllFilmByActorId,
-  SearchActor,
   createNewActor,
   deleteActor,
   getAllActors,
   getFilmList,
   updateActor,
+  GetCountActor,
+  SearchActor,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import Pagination from "@/components/Pagination/Pagination.vue";
+import { paginationConfig } from "../../config/paginationConfig";
 export default {
   data() {
     return {
@@ -77,13 +83,19 @@ export default {
       keyword: "",
       selectListData: [],
       formFields: formFields.actor,
+      count: 0,
     };
   },
   created() {
     this.fetchApi();
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       try {
@@ -91,11 +103,11 @@ export default {
         const actors = await Promise.all(
           res.data.map(async (item) => {
             const films = await GetAllFilmByActorId(item.id);
-            console.log(films);
             return { ...item, filmIds: films.data };
           })
         );
-        this.actorList = actors;
+        this.actorList = actors.slice(0, 5);
+        this.count = actors[0].count;
       } catch (error) {}
     },
     async fetchApi() {
@@ -175,23 +187,48 @@ export default {
           });
         });
     },
+    async getCount() {
+      const res = await GetCountActor();
+      this.count = res.data;
+    },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchActor(keyword);
-          const actors = await Promise.all(
-            res.data.map(async (item) => {
-              const films = await GetAllFilmByActorId(item.id);
-              return { ...item, filmIds: films.data };
-            })
-          );
-          this.actorList = actors;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchActor({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        const actors = await Promise.all(
+          res.data.map(async (item) => {
+            const films = await GetAllFilmByActorId(item.id);
+            return { ...item, filmIds: films.data };
+          })
+        );
+        this.actorList = actors;
+        this.count = actors[0].count;
+      } catch (error) {}
     },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

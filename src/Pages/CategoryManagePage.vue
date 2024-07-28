@@ -37,6 +37,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -50,28 +53,41 @@ import {
   createNewCategory,
   deleteCategory,
   getAllCategories,
+  GetCountCategory,
   SearchCategory,
   updateCategory,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
       categoryList: [],
       toggleModal: false,
       toggleModalDelete: false,
-
+      count: 0,
+      keyword: "",
       formFields: formFields.category,
     };
   },
   created() {
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
-      await getAllCategories().then((res) => (this.categoryList = res.data));
+      try {
+        const res = await getAllCategories();
+        this.categoryList = res.data.slice(0, 5);
+        this.count = res.data[0].count;
+      } catch (error) {}
     },
 
     async createNewCategory(form_data) {
@@ -133,16 +149,41 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchCategory(keyword);
-          this.categoryList = res.data;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountCategory();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchCategory({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        this.categoryList = res.data;
+        this.count = res.data[0].count;
+      } catch (error) {}
     },
     convertTime,
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

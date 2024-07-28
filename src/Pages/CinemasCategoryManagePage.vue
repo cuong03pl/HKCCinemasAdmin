@@ -48,6 +48,9 @@
         </span>
       </div>
     </div>
+    <div>
+      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+    </div>
   </div>
 </template>
 <script>
@@ -60,17 +63,22 @@ import {
   createNewCinemasCategories,
   deleteCinemasCategory,
   getAllCinemasCategories,
+  GetCountCinemasCategory,
   SearchCinemasCategory,
   updateCinemasCategory,
 } from "@/Services/FetchAPI";
 import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
+import { paginationConfig } from "../../config/paginationConfig";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   data() {
     return {
       cinemasCategoryList: [],
       toggleModal: false,
       toggleModalDelete: false,
+      count: 0,
+      keyword: "",
 
       selectListData: [],
       formFields: formFields.cinemas_category,
@@ -78,12 +86,18 @@ export default {
   },
   created() {
     this.loadData();
+    this.getCount();
   },
-
+  computed: {
+    countPage() {
+      return this.count / paginationConfig.perPage;
+    },
+  },
   methods: {
     async loadData() {
       await getAllCinemasCategories().then((res) => {
-        this.cinemasCategoryList = res.data;
+        this.cinemasCategoryList = res.data.slice(0, 5);
+        this.count = res.data[0].count;
       });
     },
 
@@ -149,15 +163,40 @@ export default {
         });
     },
     async search(keyword) {
-      if (keyword !== "") {
-        try {
-          const res = await SearchCinemasCategory(keyword);
-          this.cinemasCategoryList = res.data;
-        } catch (error) {}
-      } else this.loadData();
+      this.keyword = keyword;
+      this.handlePagination(1);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          q: keyword,
+        },
+      });
+    },
+    async getCount() {
+      const res = await GetCountCinemasCategory();
+      this.count = res.data;
+    },
+    async handlePagination(page) {
+      try {
+        const res = await SearchCinemasCategory({
+          params: {
+            PageNumber: page || this.$route?.query?.PageNumber,
+            PageSize: 5,
+            Keyword: this.keyword,
+          },
+        });
+        this.cinemasCategoryList = res.data;
+        this.count = res.data[0].count;
+      } catch (error) {}
     },
   },
-  components: { ButtonHandleModal, ButtonHandleCreate, ModelMessage, Search },
+  components: {
+    ButtonHandleModal,
+    ButtonHandleCreate,
+    ModelMessage,
+    Search,
+    Pagination,
+  },
 };
 </script>
 

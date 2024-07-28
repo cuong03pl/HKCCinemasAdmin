@@ -70,7 +70,6 @@ export const GetAllCategoryIdByFilmId = async (id, params) => {
 };
 export const GetAllRoles = async (params) => {
   const res = await get(`Account/getRoles`, params);
-  console.log(res);
   return res;
 };
 export const GetAllRolesByUser = async (id, params) => {
@@ -320,67 +319,109 @@ export const GetCountTicket = async (params) => {
   return res;
 };
 
+export const GetCountActor = async (params) => {
+  const res = await get("Actors/getCount", params);
+  return res;
+};
+export const GetCountCategory = async (params) => {
+  const res = await get("Categories/getCount", params);
+  return res;
+};
+export const GetCountCinemasCategory = async (params) => {
+  const res = await get("CinemasCategories/getCount", params);
+  return res;
+};
+
+export const GetCountComment = async (params) => {
+  const res = await get("Comments/getCount", params);
+  return res;
+};
+export const GetCountRoom = async (params) => {
+  const res = await get("Rooms/getCount", params);
+  return res;
+};
+
+export const GetCountSchedule = async (params) => {
+  const res = await get("Schedules/getCount", params);
+  return res;
+};
+export const GetCountSeat = async (params) => {
+  const res = await get("Seats/getCount", params);
+  return res;
+};
+export const GetCountShowDate = async (params) => {
+  const res = await get("ShowDates/getCount", params);
+  return res;
+};
+export const GetCountTrailer = async (params) => {
+  const res = await get("Trailers/getCount", params);
+  return res;
+};
+export const GetCountRole = async (params) => {
+  const res = await get("Account/role/getCount", params);
+  return res;
+};
 // search
 
-export const SearchFilm = async (keyword) => {
-  const res = await get(`Films/search/${keyword}`);
+export const SearchFilm = async (params) => {
+  const res = await get(`Films/search`, params);
   return res;
 };
-export const SearchActor = async (keyword) => {
-  const res = await get(`Actors/search/${keyword}`);
-  return res;
-};
-
-export const SearchCinemas = async (keyword) => {
-  const res = await get(`Cinemas/search/${keyword}`);
+export const SearchActor = async (params) => {
+  const res = await get(`Actors/search`, params);
   return res;
 };
 
-export const SearchCategory = async (keyword) => {
-  const res = await get(`Categories/search/${keyword}`);
-  return res;
-};
-export const SearchTrailer = async (keyword) => {
-  const res = await get(`Trailers/search/${keyword}`);
+export const SearchCinemas = async (params) => {
+  const res = await get(`Cinemas/search`, params);
   return res;
 };
 
-export const SearchTicket = async (keyword) => {
-  const res = await get(`Tickets/search/${keyword}`);
+export const SearchCategory = async (params) => {
+  const res = await get(`Categories/search`, params);
+  return res;
+};
+export const SearchTrailer = async (params) => {
+  const res = await get(`Trailers/search`, params);
   return res;
 };
 
-export const SearchShowDate = async (keyword) => {
-  const res = await get(`ShowDates/search/${keyword}`);
+export const SearchTicket = async (params) => {
+  const res = await get(`Tickets/search`, params);
   return res;
 };
 
-export const SearchSeat = async (keyword) => {
-  const res = await get(`Seats/search/${keyword}`);
+export const SearchShowDate = async (params) => {
+  const res = await get(`ShowDates/search`, params);
   return res;
 };
 
-export const SearchSchedule = async (keyword) => {
-  const res = await get(`Schedules/search/${keyword}`);
+export const SearchSeat = async (params) => {
+  const res = await get(`Seats/search`, params);
   return res;
 };
 
-export const SearchRoom = async (keyword) => {
-  const res = await get(`Rooms/search/${keyword}`);
+export const SearchSchedule = async (params) => {
+  const res = await get(`Schedules/search`, params);
   return res;
 };
 
-export const SearchUser = async (keyword) => {
-  const res = await get(`Users/search/${keyword}`);
+export const SearchRoom = async (params) => {
+  const res = await get(`Rooms/search`, params);
   return res;
 };
 
-export const SearchComment = async (keyword) => {
-  const res = await get(`Comments/search/${keyword}`);
+export const SearchUser = async (params) => {
+  const res = await get(`Users/search`, params);
   return res;
 };
 
-export const SearchCinemasCategory = async (keyword) => {
-  const res = await get(`CinemasCategories/search/${keyword}`);
+export const SearchComment = async (params) => {
+  const res = await get(`Comments/search`, params);
+  return res;
+};
+
+export const SearchCinemasCategory = async (params) => {
+  const res = await get(`CinemasCategories/search`, params);
   return res;
 };
