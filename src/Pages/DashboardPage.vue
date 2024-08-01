@@ -58,7 +58,7 @@
     <div class="font-medium text-[24px] mb-2">
       Thống kê doanh thu theo tháng của năm {{ new Date().getFullYear() }}
     </div>
-    <chart />
+    <Chart />
   </div>
 </template>
 
@@ -75,10 +75,10 @@ import {
   GetTop5BestSales,
 } from "@/Services/FetchAPI";
 import { convertTimeSpan, convertTime } from "../../config/functions";
-import chart from "@/components/Chart/chart.vue";
+import Chart from "@/components/Chart/chart.vue";
 
 export default {
-  components: { chart },
+  components: { Chart },
   data() {
     return {
       card_item: [],

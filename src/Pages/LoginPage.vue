@@ -89,7 +89,7 @@ export default {
       formData.append("password", this.password);
       try {
         const res = await axios.post(
-          "https://localhost:7253/api/Account/login",
+          "https://hkccinemas.azurewebsites.net/api/Account/login",
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -114,8 +114,6 @@ export default {
       this.$refs.password.type = "password";
       this.isShowPassword = false;
     },
-
-    
   },
 };
 </script>

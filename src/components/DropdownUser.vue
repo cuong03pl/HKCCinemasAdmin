@@ -75,7 +75,7 @@ export default {
 
     async GetCurrentUser() {
       await axios
-        .get("https://localhost:7253/api/Account/profile", {
+        .get("https://hkccinemas.azurewebsites.net/api/Account/profile", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`, // Gửi token JWT trong tiêu đề Authorization
           },

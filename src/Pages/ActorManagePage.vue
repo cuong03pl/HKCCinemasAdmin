@@ -31,7 +31,7 @@
         <div class="w-[15%] flex items-center justify-center">
           <img
             class="w-full h-full"
-            :src="`https://localhost:7253/${item.image}`"
+            :src="`https://hkccinemas.azurewebsites.net/${item.image}`"
             alt=""
           />
         </div>

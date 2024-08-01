@@ -21,7 +21,7 @@ export const UserStore = {
     async GetCurrentUser({ commit, dispatch }) {
       try {
         const response = await axios.get(
-          "https://localhost:7253/api/Account/profile",
+          "https://hkccinemas.azurewebsites.net/api/Account/profile",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -37,9 +37,12 @@ export const UserStore = {
 
     async handleGetRole({ commit }, userId) {
       await axios
-        .post(`https://localhost:7253/api/Account/getRolesByUser/${userId}`, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+        .post(
+          `https://hkccinemas.azurewebsites.net/api/Account/getRolesByUser/${userId}`,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        )
         .then((res) => {
           commit("setUserRole", res.data);
         })

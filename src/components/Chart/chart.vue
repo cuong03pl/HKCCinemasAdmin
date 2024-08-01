@@ -50,9 +50,8 @@ export default {
   methods: {
     async getTotalMoney() {
       const res = await GetTotalMoneyWithMonth();
-      console.log(res);
       this.chartData = {
-        labels: res.data?.map((item) => `Tháng ${item.month}`),
+        labels: res?.data?.map((item) => `Tháng ${item?.month}`),
         datasets: [
           {
             label: "Tổng doanh thu (VNĐ)",

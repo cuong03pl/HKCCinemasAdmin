@@ -1,10 +1,9 @@
 import axios from "axios";
 
 export const request = axios.create({
-  baseURL: "https://localhost:7253/api/",
+  baseURL: `${import.meta.env.VITE_API_URL}`,
   headers: { "Content-Type": "multipart/form-data" },
 });
-
 export const get = async (path, params) => {
   const res = await request.get(path, params);
   return res;
