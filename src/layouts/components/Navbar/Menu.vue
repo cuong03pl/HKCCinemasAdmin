@@ -181,6 +181,17 @@ export default {
           },
         },
         {
+          title: "Quản lý đặt vé",
+          to: "/book-manage",
+          icon: {
+            item: TicketIcon,
+            height: 18,
+            width: 18,
+            fill: "#fff",
+          },
+        },
+
+        {
           title: "Quản lý người dùng",
           to: "/user-manage",
           icon: {

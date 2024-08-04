@@ -252,7 +252,6 @@ export const formFields = {
       isTicket: true,
     },
   ],
-
   role: [
     {
       title: "Tên role",
@@ -261,7 +260,6 @@ export const formFields = {
       isText: true,
     },
   ],
-
   userRoles: [
     {
       title: "roles",
@@ -270,4 +268,60 @@ export const formFields = {
       isSelect: true,
     },
   ],
+  // ticket: [
+  //   {
+  //     title: "Người dùng",
+  //     id: "userName",
+  //     placeholder: "Nhập người dùng",
+  //     isText: true,
+  //   },
+  //   {
+  //     title: "Tên phim",
+  //     id: "filmName",
+  //     placeholder: "Nhập tên phim",
+  //     isText: true,
+  //   },
+  //   {
+  //     title: "Giá vé",
+  //     id: "price",
+  //     placeholder: "Nhập giá vé",
+  //     isText: true,
+  //   },
+  //   {
+  //     title: "Rạp chiếu",
+  //     id: "cinemas",
+  //     placeholder: "Nhập rạp chiếu",
+  //     isText: true,
+  //   },
+  //   {
+  //     title: "Chỗ ngồi",
+  //     id: "seat",
+  //     placeholder: "Nhập chỗ ngồi",
+  //     isText: true,
+  //   },
+  //   {
+  //     title: "Phòng chiếu",
+  //     id: "room",
+  //     placeholder: "Nhập phòng chiếu",
+  //     isText: true,
+  //   },
+  //   {
+  //     title: "Ngày chiếu",
+  //     id: "showdate",
+  //     placeholder: "Nhập ngày chiếu",
+  //     isText: true,
+  //   },
+  //   {
+  //     title: "Thời gian bắt đầu",
+  //     id: "starttime",
+  //     placeholder: "Nhập thời gian bắt đầu",
+  //     isText: true,
+  //   },
+  //   {
+  //     title: "Thời gian kết thúc",
+  //     id: "endtime",
+  //     placeholder: "Nhập thời gian kết thúc",
+  //     isText: true,
+  //   },
+  // ],
 };

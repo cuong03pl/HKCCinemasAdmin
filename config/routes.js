@@ -15,6 +15,7 @@ import ScheduleManagePage from "@/Pages/ScheduleManagePage.vue";
 import TicketManagePage from "@/Pages/TicketManagePage.vue";
 import RoleManagePage from "@/Pages/RoleManagePage.vue";
 import LoginPage from "@/Pages/LoginPage.vue";
+import BookingManagePage from "@/Pages/BookingManagePage.vue";
 export const routes = [
   {
     path: "/",
@@ -93,6 +94,11 @@ export const routes = [
       {
         path: "/role-manage",
         component: RoleManagePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/book-manage",
+        component: BookingManagePage,
         meta: { requiresAuth: true },
       },
     ],

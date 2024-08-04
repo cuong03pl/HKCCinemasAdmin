@@ -72,6 +72,10 @@ export const GetAllRoles = async (params) => {
   const res = await get(`Account/getRoles`, params);
   return res;
 };
+export const GetAllBookingDetails = async (params) => {
+  const res = await get(`BookingUser/GetAllBookingDetails`, params);
+  return res;
+};
 export const GetAllRolesByUser = async (id, params) => {
   const res = await post(`Account/getRolesByUser/${id}`, params);
   return res;
