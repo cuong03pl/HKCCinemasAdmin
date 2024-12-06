@@ -1,30 +1,27 @@
 <template>
-  <div className="dark:bg-boxdark-2 dark:text-bodydark">
-    <div class="flex h-screen">
-      <Navbar />
-      <div
-        className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
-      >
-        <Header></Header>
-        <main>
-          <div
-            className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 bg-[#dee0e2] min-h-screenMinusHeader"
-          >
-            <router-view></router-view>
-          </div>
-        </main>
-      </div>
+  <!-- ===== Page Wrapper Start ===== -->
+  <div class="flex h-screen overflow-hidden">
+    <Sidebar />
+    <div
+      class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
+    >
+      <Header />
+      <main>
+        <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+          <slot></slot>
+        </div>
+      </main>
     </div>
   </div>
 </template>
 
 <script>
-import Header from "./components/Header.vue";
-import Navbar from "./components/Navbar/Navbar.vue";
+import Header from "@/layouts/components/Header/Header.vue";
+import Sidebar from "@/layouts/components/Sidebar/Sidebar.vue";
 export default {
   components: {
     Header,
-    Navbar,
+    Sidebar,
   },
 };
 </script>
