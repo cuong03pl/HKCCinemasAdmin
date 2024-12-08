@@ -1,7 +1,7 @@
 <template>
   <aside
     id="sidebar"
-    class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
+    class="top-0 left-0 z-20 flex flex-col hidden flex-shrink-0 w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
     aria-label="Sidebar"
   >
     <div
