@@ -2,9 +2,9 @@
   <div :class="this.class" class="flex gap-2 items-center">
     <button
       @click="handleOpen"
-      class="bg-btnPrimary h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold hover:opacity-80"
+      class="bg-btnPrimary h-[35px] w-[70px] px-2 py-1 flex items-center justify-center rounded-lg text-[white] font-bold hover:opacity-80"
     >
-      Thêm
+      <create-icon :width="20" :height="20" />
     </button>
   </div>
   <Modal
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import CreateIcon from "../Icon/CreateIcon.vue";
 import Modal from "./Modal.vue";
 import ModalDelete from "./ModalDelete.vue";
 
@@ -54,7 +55,7 @@ export default {
       this.$emit("handleChange", data);
     },
   },
-  components: { Modal, ModalDelete },
+  components: { Modal, ModalDelete, CreateIcon },
 };
 </script>
 

@@ -3,40 +3,25 @@
     <div
       class="py-2 h-[40px] flex items-center border border-gray-300 rounded-lg bg-gray-50"
     >
-      <div class="flex items-center ps-3 pointer-events-none">
-        <svg
-          class="w-4 h-4 text-gray-500"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 20 20"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-          />
-        </svg>
-      </div>
       <input
         v-model="keyword"
-        class="block w-full text-sm px-2 text-gray-900 outline-none"
+        class="block w-full text-[16px] px-4 text-gray-900 outline-none bg-transparent"
         :placeholder="placeholder"
       />
       <button
         @click="handleSubmit"
         class="text-white text-nowrap px-2 bg-btnPrimary hover:opacity-80 font-medium rounded-lg text-sm py-2 flex"
       >
-        Tìm kiếm
+        <SearchIcon :width="20" :height="20" />
       </button>
     </div>
   </div>
 </template>
 
 <script>
+import SearchIcon from "../Icon/SearchIcon.vue";
 export default {
+  components: { SearchIcon },
   props: {
     placeholder: String,
   },

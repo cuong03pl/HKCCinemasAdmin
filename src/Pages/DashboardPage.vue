@@ -17,13 +17,11 @@
           :fill="item.icon.fill"
         />
       </div>
-      <div class="mt-4 flex items-end justify-between">
-        <div>
-          <h4 class="text-[24px] font-bold text-black dark:text-white">
-            {{ item.data }}
-          </h4>
-          <span class="text-sm text-[#525050]">{{ item.title }}</span>
-        </div>
+      <div class="mt-4 flex items-center gap-2">
+        <h4 class="text-[24px] font-bold text-black dark:text-white">
+          {{ item.data }}
+        </h4>
+        <span class="text-sm text-[#525050]">{{ item.title }}</span>
       </div>
     </div>
   </div>
@@ -85,12 +83,12 @@ export default {
       bestSales: [],
     };
   },
-  mounted() {
-    this.getCountFilm();
-    this.getCountCinemas();
-    this.getCountUser();
-    this.getCountTicket();
-    this.GetTop5BestSales();
+  async created() {
+    await this.getCountFilm();
+    await this.getCountCinemas();
+    await this.getCountUser();
+    await this.getCountTicket();
+    await this.GetTop5BestSales();
   },
   computed: {},
   methods: {
@@ -102,7 +100,7 @@ export default {
           title: "Phim",
           data: res.data,
           icon: {
-            item: EyeIcon,
+            item: FilmIcon,
             height: 22,
             width: 22,
             fill: "#3C50E0",
@@ -135,7 +133,7 @@ export default {
           title: "Người dùng",
           data: res.data,
           icon: {
-            item: EyeIcon,
+            item: UserIcon,
             height: 22,
             width: 22,
             fill: "#3C50E0",
@@ -152,7 +150,7 @@ export default {
           title: "Vé được đặt",
           data: res.data,
           icon: {
-            item: EyeIcon,
+            item: CartIcon,
             height: 22,
             width: 22,
             fill: "#3C50E0",

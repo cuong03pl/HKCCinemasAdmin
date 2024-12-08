@@ -3,15 +3,15 @@
     <button
       v-if="!onlyDelete"
       @click="handleOpen"
-      class="bg-[#0d6efd] hover:opacity-80 h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold"
+      class="bg-[#0d6efd] hover:opacity-80 h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold flex items-center justify-center"
     >
-      Sửa
+      <EditIcon :width="20" :height="20" />
     </button>
     <button
       @click="handleOpenModalDelete"
-      class="bg-[#dc3545] hover:opacity-80 h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold"
+      class="bg-[#dc3545] hover:opacity-80 h-[35px] w-[70px] px-2 py-1 rounded-lg text-[white] font-bold flex items-center justify-center"
     >
-      Xóa
+      <DeleteIcon :width="20" :height="20" />
     </button>
   </div>
   <Modal
@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import DeleteIcon from "../Icon/DeleteIcon.vue";
+import EditIcon from "../Icon/EditIcon.vue";
 import Modal from "./Modal.vue";
 import ModalDelete from "./ModalDelete.vue";
 
@@ -75,7 +77,7 @@ export default {
       this.$emit("handleChange", data);
     },
   },
-  components: { Modal, ModalDelete },
+  components: { Modal, ModalDelete, EditIcon, DeleteIcon },
 };
 </script>
 
