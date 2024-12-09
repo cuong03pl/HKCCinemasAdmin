@@ -7,6 +7,7 @@
         v-model="keyword"
         class="block w-full text-[16px] px-4 text-gray-900 outline-none bg-transparent"
         :placeholder="placeholder"
+        @keypress.enter="handleSubmit"
       />
       <button
         @click="handleSubmit"

@@ -161,9 +161,9 @@ export const formFields = {
       isText: true,
     },
     {
-      title: "Id phim",
+      title: "Tên phim",
       id: "filmId",
-      placeholder: "id phim",
+      placeholder: "Tên phim",
       isSelectnotMuti: true,
     },
   ],
