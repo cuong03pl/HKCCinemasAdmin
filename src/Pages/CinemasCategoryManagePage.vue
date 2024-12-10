@@ -25,6 +25,7 @@
           :selectListData="selectListData"
           :class="'mt-4 mb-4'"
           :formFields="formFields"
+          title="New Cinemas Category"
         />
       </div>
     </div>
@@ -93,6 +94,7 @@
                     :data="item"
                     :formFields="formFields"
                     :selectListData="selectListData"
+                    title="Update Cinemas Category"
                   />
                 </td>
               </tr>

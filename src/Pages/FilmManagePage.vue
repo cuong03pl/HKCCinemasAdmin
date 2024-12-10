@@ -22,6 +22,7 @@
           :selectListData="selectListData"
           :class="'mt-4 mb-4'"
           :formFields="formFields"
+          title="New Film"
         />
       </div>
     </div>
@@ -147,6 +148,7 @@
                     :data="item"
                     :formFields="formFields"
                     :selectListData="selectListData"
+                    title="Update Film"
                   />
                 </td>
               </tr>

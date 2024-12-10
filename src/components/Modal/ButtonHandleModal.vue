@@ -22,6 +22,7 @@
     :formFields="formFields"
     :selectListData="selectListData"
     @handleChange="handleChange"
+    :title="title"
   />
   <ModalDelete
     :isOpen="toggleModalDelete"
@@ -42,6 +43,7 @@ export default {
     data: Object,
     selectListData: Array,
     onlyDelete: Boolean,
+    title: String,
   },
   created() {},
   data() {

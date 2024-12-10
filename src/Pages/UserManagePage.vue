@@ -93,12 +93,14 @@
                     @handleDelete="deleteUser"
                     :data="item"
                     :formFields="formFields"
+                    title="Update User"
                   />
                   <ButtonHandleSetRole
                     @handleUpdate="changeRole"
                     :data="item"
                     :selectListData="rolesList"
                     :formFields="formFields2"
+                    title="Update Role"
                   />
                 </td>
               </tr>

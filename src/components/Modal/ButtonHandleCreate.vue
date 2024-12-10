@@ -16,6 +16,7 @@
     @handleClose="handleClose"
     :formFields="formFields"
     :selectListData="selectListData"
+    :title="title"
   ></Modal>
 </template>
 
@@ -31,6 +32,7 @@ export default {
     class: String,
     handleCreate: Function,
     selectListData: Array,
+    title: String,
   },
   data() {
     return {

@@ -4,7 +4,7 @@
       @click="handleOpen"
       class="bg-[#0d6efd] h-[35px] w-[100px] px-2 py-1 rounded-lg text-[white] font-bold"
     >
-      Set role
+      {{ title }}
     </button>
   </div>
   <Modal
@@ -14,6 +14,7 @@
     :formFields="formFields"
     :selectListData="selectListData"
     @handleUpdate="handleUpdate"
+    :title="title"
   ></Modal>
 </template>
 
@@ -27,6 +28,7 @@ export default {
     data: Object,
     class: String,
     selectListData: Array,
+    title: String,
   },
   data() {
     return {

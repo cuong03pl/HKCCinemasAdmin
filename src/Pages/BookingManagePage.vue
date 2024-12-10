@@ -15,14 +15,8 @@
         class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
       >
         <!-- Start search -->
-        <Search @handleSubmit="search" placeholder="Search for users" />
+        <Search @handleSubmit="search" placeholder="Search for bookings" />
         <!-- End search -->
-        <ButtonHandleCreate
-          @handleCreate="createNewActor"
-          :selectListData="selectListData"
-          :class="'mt-4 mb-4'"
-          :formFields="formFields"
-        />
       </div>
     </div>
   </div>

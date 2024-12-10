@@ -8,7 +8,7 @@
         class="bg-white p-6 rounded-xl w-[900px] overflow-scroll max-h-[600px] modal-content"
       >
         <div class="flex justify-between items-center">
-          <div class="font-bold text-[24px]">THÔNG TIN NHÂN VIÊN</div>
+          <div class="font-bold text-[24px]">{{ title }}</div>
           <CloseIcon
             :height="24"
             :width="24"
@@ -163,6 +163,7 @@ export default {
     data: Object,
     isCreate: Boolean,
     selectListData: Array,
+    title: String,
   },
   data() {
     return {

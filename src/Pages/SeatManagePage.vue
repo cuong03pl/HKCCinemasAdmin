@@ -22,6 +22,7 @@
           :selectListData="selectListData"
           :class="'mt-4 mb-4'"
           :formFields="formFields"
+          title="New Seat"
         />
       </div>
     </div>
@@ -93,6 +94,7 @@
                     :data="item"
                     :formFields="formFields"
                     :selectListData="selectListData"
+                    title="Update Seat"
                   />
                 </td>
               </tr>

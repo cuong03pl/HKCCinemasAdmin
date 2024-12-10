@@ -23,6 +23,7 @@
           :class="'mt-4 mb-4'"
           :formFields="formFields"
           @handleChange="handleCinemaChange"
+          title="New Schedule"
         />
       </div>
     </div>
@@ -128,6 +129,7 @@
                     :formFields="formFields"
                     :selectListData="selectListData"
                     @handleChange="handleCinemaChange"
+                    title="Update Schedule"
                   />
                 </td>
               </tr>
