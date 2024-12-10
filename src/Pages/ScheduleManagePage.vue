@@ -4,7 +4,7 @@
   >
     <div class="w-full mb-1">
       <div class="mb-4">
-        <Breadcrumb />
+        <Breadcrumb name="Schedule" />
         <h1
           class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
         >
@@ -168,6 +168,7 @@ import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
 import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
+import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 export default {
   data() {
     return {
@@ -407,6 +408,7 @@ export default {
     ModelMessage,
     Search,
     Pagination,
+    Breadcrumb,
   },
 };
 </script>
