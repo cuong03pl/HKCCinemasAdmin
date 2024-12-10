@@ -5,7 +5,7 @@
       <Sidebar />
       <div class="relative w-full overflow-y-auto overflow-x-hidden">
         <main>
-          <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 mt-[62px]">
+          <div class="mx-auto max-w-screen-2xl mt-[62px]">
             <router-view></router-view>
           </div>
         </main>

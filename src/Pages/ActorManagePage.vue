@@ -1,55 +1,108 @@
 <template>
-  <div>
-    <div>
-      <div>
-        <span class="text-[30px] font-bold"> Quản lý diễn viên </span>
+  <div
+    class="p-4 md:p-6 2xl:p-10 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
+  >
+    <div class="w-full mb-1">
+      <div class="mb-4">
+        <Breadcrumb />
+        <h1
+          class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+        >
+          All actors
+        </h1>
       </div>
-      <div class="flex justify-between items-center">
+      <div
+        class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
+      >
+        <!-- Start search -->
+        <Search @handleSubmit="search" placeholder="Search for actors" />
+        <!-- End search -->
         <ButtonHandleCreate
           @handleCreate="createNewActor"
           :selectListData="selectListData"
           :class="'mt-4 mb-4'"
           :formFields="formFields"
         />
-        <Search @handleSubmit="search" placeholder="Nhập tên diễn viên" />
       </div>
     </div>
-    <div>
-      <div
-        class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
-      >
-        <span class="w-[15%]">Ảnh diễn viên</span>
-        <span class="w-[30%]">Tên diễn viên</span>
-        <span class="w-[35%]"></span>
-        <span class="w-[20%]">Chức năng </span>
-      </div>
-      <div
-        v-for="(item, index) in actorList"
-        :key="index"
-        class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
-      >
-        <div class="w-[15%] flex items-center justify-center">
-          <img
-            class="w-full h-full"
-            :src="`https://hkccinemas.azurewebsites.net/${item.image}`"
-            alt=""
-          />
+  </div>
+  <div class="flex flex-col">
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden shadow">
+          <table
+            class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+          >
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Ảnh diễn viên
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Tên diễn viên
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Chức năng
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+            >
+              <tr
+                v-for="(item, index) in actorList"
+                :key="index"
+                class="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <td
+                  class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400"
+                >
+                  <div
+                    class="max-w-[30%] text-base font-semibold text-gray-900 dark:text-white"
+                  >
+                    <img
+                      class="w-full h-full"
+                      :src="`https://hkccinemas.azurewebsites.net/${item.image}`"
+                      alt=""
+                    />
+                  </div>
+                </td>
+
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.name }}
+                </td>
+
+                <td class="p-4 space-x-2 whitespace-nowrap">
+                  <ButtonHandleModal
+                    @handleDelete="deleteActor"
+                    @handleUpdate="updateActor"
+                    :data="item"
+                    :formFields="formFields"
+                    :selectListData="selectListData"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <Pagination
+              :pageCount="countPage"
+              @handlePagination="handlePagination"
+            />
+          </div>
         </div>
-        <span class="w-[30%]">{{ item.name }}</span>
-        <span class="w-[35%]">{{}}</span>
-        <span class="w-[20%]">
-          <ButtonHandleModal
-            @handleDelete="deleteActor"
-            @handleUpdate="updateActor"
-            :data="item"
-            :formFields="formFields"
-            :selectListData="selectListData"
-          />
-        </span>
       </div>
-    </div>
-    <div>
-      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
     </div>
   </div>
 </template>
@@ -74,6 +127,7 @@ import store from "@/store/store";
 import Search from "@/components/Search/Search.vue";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import { paginationConfig } from "../../config/paginationConfig";
+import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 export default {
   data() {
     return {
@@ -228,6 +282,7 @@ export default {
     ModelMessage,
     Search,
     Pagination,
+    Breadcrumb,
   },
 };
 </script>

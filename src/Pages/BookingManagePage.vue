@@ -1,58 +1,160 @@
 <template>
-  <div>
-    <div>
-      <div>
-        <span class="text-[30px] font-bold"> Quản lý đặt vé </span>
-      </div>
-      <div class="flex justify-between items-center">
-        <Search @handleSubmit="search" placeholder="Nhập tên người dùng" />
-      </div>
-    </div>
-    <div>
-      <div
-        class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
-      >
-        <span class="w-[10%]">Tên người dùng</span>
-        <span class="w-[20%]">Tên phim</span>
-        <span class="w-[10%]">Giá vé</span>
-        <span class="w-[20%]">Rạp chiếu</span>
-        <span class="w-[10%]">Chỗ ngồi</span>
-        <span class="w-[10%]">Phòng chiếu</span>
-        <span class="w-[10%]">Ngày chiếu</span>
-        <span class="w-[10%]">Thời gian bắt đầu</span>
-        <span class="w-[10%]">Thời gian kết thúc</span>
-
-        <!-- <span class="w-[20%]">Chức năng </span> -->
+  <div
+    class="p-4 md:p-6 2xl:p-10 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
+  >
+    <div class="w-full mb-1">
+      <div class="mb-4">
+        <Breadcrumb />
+        <h1
+          class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+        >
+          All bookings
+        </h1>
       </div>
       <div
-        v-for="(item, index) in bookingList"
-        :key="index"
-        class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
+        class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
       >
-        <span class="w-[10%]">{{ item?.user?.userName }}</span>
-        <span class="w-[20%]">{{ item?.schedule?.film?.title }}</span>
-        <span class="w-[10%]">{{ item?.ticket?.price }}</span>
-        <span class="w-[20%]">{{ item?.schedule?.cinemas?.name }}</span>
-        <span class="w-[10%]">{{ item?.seat?.name }}</span>
-        <span class="w-[10%]">{{ item?.schedule?.room?.roomName }}</span>
-        <span class="w-[10%]">{{
-          convertTime(item?.schedule?.showDate?.date)
-        }}</span>
-        <span class="w-[10%]">{{ item?.schedule?.startTime }}</span>
-        <span class="w-[10%]">{{ item?.schedule?.endTime }}</span>
-        <!-- <span class="w-[20%]">
-          <ButtonHandleModal
-            @handleDelete="deleteActor"
-            @handleUpdate="updateActor"
-            :data="item"
-            :formFields="formFields"
-            :selectListData="selectListData"
-          />
-        </span> -->
+        <!-- Start search -->
+        <Search @handleSubmit="search" placeholder="Search for users" />
+        <!-- End search -->
+        <ButtonHandleCreate
+          @handleCreate="createNewActor"
+          :selectListData="selectListData"
+          :class="'mt-4 mb-4'"
+          :formFields="formFields"
+        />
       </div>
     </div>
-    <div>
-      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+  </div>
+  <div class="flex flex-col">
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden shadow">
+          <table
+            class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+          >
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Tên người dùng
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Tên phim
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Giá vé
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Rạp chiếu
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Chỗ ngồi
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Phòng chiếu
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Ngày chiếu
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Thời gian bắt đầu
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Thời gian kết thúc
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+            >
+              <tr
+                v-for="(item, index) in bookingList"
+                :key="index"
+                class="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.user?.userName }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.schedule?.film?.title }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.ticket?.price }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.schedule?.cinemas?.name }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.seat?.name }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.schedule?.room?.roomName }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ convertTime(item?.schedule?.showDate?.date) }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.schedule?.startTime }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.schedule?.endTime }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <Pagination
+              :pageCount="countPage"
+              @handlePagination="handlePagination"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -62,9 +164,10 @@ import { convertTime } from "../../config/functions";
 import Search from "@/components/Search/Search.vue";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import { paginationConfig } from "../../config/paginationConfig";
+import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 
 export default {
-  components: { Search, Pagination },
+  components: { Search, Pagination, Breadcrumb },
   data() {
     return {
       bookingList: [],

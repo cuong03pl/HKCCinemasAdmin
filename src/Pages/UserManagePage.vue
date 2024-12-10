@@ -1,53 +1,117 @@
 <template>
-  <div>
-    <div>
-      <span class="text-[30px] font-bold"> Quản lý người dùng </span>
-    </div>
-
-    <div class="flex justify-between items-center my-4">
-      <Search @handleSubmit="search" placeholder="Nhập tên nguời dùng" />
-    </div>
-    <div>
-      <div class="flex justify-between font-medium py-[16px] px-3 bg-white">
-        <!-- <span class="w-[25%]">ID</span> -->
-        <span class="w-[30%]">UserName</span>
-        <span class="w-[20%]">Email</span>
-        <span class="w-[30%]">Roles</span>
-        <span class="w-[20%]">Chức năng </span>
+  <div
+    class="p-4 md:p-6 2xl:p-10 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
+  >
+    <div class="w-full mb-1">
+      <div class="mb-4">
+        <Breadcrumb />
+        <h1
+          class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+        >
+          All users
+        </h1>
       </div>
       <div
-        v-for="(item, index) in userList"
-        :key="index"
-        class="flex justify-around items-center border-t border-t-[#0000002f] h-[48px] px-[16px] hover:bg-[#e5e5e5]"
+        class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
       >
-        <!-- <span class="w-[25%]">{{ item.id }}</span> -->
-        <span class="w-[30%]">{{ item.userName }}</span>
-        <span class="w-[20%]">{{ item.email }}</span>
-        <span class="w-[30%]">
-          <span v-for="(role, index) in item.roles" :key="index"
-            >{{ role.name }}
-            <span v-if="item.roles.length > 1 && index < item.roles.length - 1"
-              >,
-            </span>
-          </span>
-        </span>
-        <span class="w-[20%] flex gap-2">
-          <ButtonHandleModal
-            @handleDelete="deleteUser"
-            :data="item"
-            :formFields="formFields"
-          />
-          <ButtonHandleSetRole
-            @handleUpdate="changeRole"
-            :data="item"
-            :selectListData="rolesList"
-            :formFields="formFields2"
-          />
-        </span>
+        <!-- Start search -->
+        <Search @handleSubmit="search" placeholder="Search for users" />
       </div>
     </div>
-    <div>
-      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
+  </div>
+  <div class="flex flex-col">
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden shadow">
+          <table
+            class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+          >
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Username
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Email
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Chức vụ
+                </th>
+
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Chức năng
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+            >
+              <tr
+                v-for="(item, index) in userList"
+                :key="index"
+                class="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.userName }}
+                </td>
+
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.email }}
+                </td>
+
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  <span v-for="(role, index) in item.roles" :key="index"
+                    >{{ role.name }}
+                    <span
+                      v-if="
+                        item.roles.length > 1 && index < item.roles.length - 1
+                      "
+                      >,
+                    </span>
+                  </span>
+                </td>
+                <td class="p-4 space-x-2 whitespace-nowrap flex">
+                  <ButtonHandleModal
+                    @handleDelete="deleteUser"
+                    :data="item"
+                    :formFields="formFields"
+                  />
+                  <ButtonHandleSetRole
+                    @handleUpdate="changeRole"
+                    :data="item"
+                    :selectListData="rolesList"
+                    :formFields="formFields2"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <Pagination
+              :pageCount="countPage"
+              @handlePagination="handlePagination"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

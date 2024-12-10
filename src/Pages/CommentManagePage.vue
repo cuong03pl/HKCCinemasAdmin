@@ -1,47 +1,116 @@
 <template>
-  <div>
-    <div>
-      <span class="text-[30px] font-bold"> Quản lý bình luận </span>
-    </div>
-    <div class="flex justify-between items-center my-2">
-      <Search @handleSubmit="search" placeholder="Nhập tên người bình luận" />
-    </div>
-    <div>
-      <div
-        class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
-      >
-        <span class="w-[15%]">Người bình luận</span>
-        <span class="w-[30%]">Nội dung</span>
-        <span class="w-[20%]">Tên phim</span>
-        <span class="w-[15%]">Thời gian</span>
-        <span class="w-[20%]">Chức năng </span>
+  <div
+    class="p-4 md:p-6 2xl:p-10 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
+  >
+    <div class="w-full mb-1">
+      <div class="mb-4">
+        <Breadcrumb />
+        <h1
+          class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+        >
+          All comments
+        </h1>
       </div>
       <div
-        v-for="(item, index) in commentList"
-        :key="index"
-        class="flex justify-around items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
+        class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
       >
-        <div class="w-[15%]">
-          {{ item.userName }}
+        <!-- Start search -->
+        <Search @handleSubmit="search" placeholder="Search for comments" />
+        <!-- End search -->
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col">
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden shadow">
+          <table
+            class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+          >
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Người bình luận
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Nội dung
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Tên phim
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Thời gian
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Chức năng
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+            >
+              <tr
+                v-for="(item, index) in commentList"
+                :key="index"
+                class="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.userName }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.content }}
+                </td>
+
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.filmTitle }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ convertTime(item?.time) }}
+                </td>
+
+                <td class="p-4 space-x-2 whitespace-nowrap">
+                  <ButtonHandleModal
+                    @handleDelete="deleteComment"
+                    :onlyDelete="true"
+                    :data="item"
+                    :formFields="formFields"
+                    :selectListData="selectListData"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <Pagination
+              :pageCount="countPage"
+              @handlePagination="handlePagination"
+            />
+          </div>
         </div>
-        <span class="w-[30%] max-w-[330px] text-wrap overflow-hidden">{{
-          item.content
-        }}</span>
-        <span class="w-[20%]">{{ item.filmTitle }}</span>
-        <span class="w-[15%]">{{ convertTime(item.time) }}</span>
-        <span class="w-[20%]">
-          <ButtonHandleModal
-            @handleDelete="deleteComment"
-            :onlyDelete="true"
-            :data="item"
-            :formFields="formFields"
-            :selectListData="selectListData"
-          />
-        </span>
       </div>
-    </div>
-    <div>
-      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
     </div>
   </div>
 </template>

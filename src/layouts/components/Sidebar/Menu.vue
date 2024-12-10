@@ -193,6 +193,10 @@ export default {
               title: "Quản lý vai trò",
               to: "/role-manage",
             },
+            {
+              title: "Quản lý bình luận",
+              to: "/comment-manage",
+            },
           ],
         },
       ],

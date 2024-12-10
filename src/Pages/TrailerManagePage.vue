@@ -1,58 +1,122 @@
 <template>
-  <div>
-    <div>
-      <span class="text-[30px] font-bold"> Quản lý trailer </span>
-
-      <div class="flex justify-between items-center">
+  <div
+    class="p-4 md:p-6 2xl:p-10 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
+  >
+    <div class="w-full mb-1">
+      <div class="mb-4">
+        <Breadcrumb />
+        <h1
+          class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+        >
+          All trailers
+        </h1>
+      </div>
+      <div
+        class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
+      >
+        <!-- Start search -->
+        <Search @handleSubmit="search" placeholder="Search for trailers" />
+        <!-- End search -->
         <ButtonHandleCreate
           @handleCreate="createNewTrailer"
           :selectListData="selectListData"
           :class="'mt-4 mb-4'"
           :formFields="formFields"
         />
-        <Search @handleSubmit="search" placeholder="Nhập tên phim" />
       </div>
     </div>
-    <div>
-      <div
-        class="flex justify-between font-medium py-[16px] px-3 gap-2 bg-white"
-      >
-        <span class="w-[30%]">Demo</span>
-        <span class="w-[30%]">Phim</span>
-        <span class="w-[30%]">Link</span>
-        <span class="w-[10%]">Chức năng </span>
+  </div>
+  <div class="flex flex-col">
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden shadow">
+          <table
+            class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+          >
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Demo
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Phim
+                </th>
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Link
+                </th>
+
+                <th
+                  scope="col"
+                  class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
+                >
+                  Chức năng
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+            >
+              <tr
+                v-for="(item, index) in trailerList"
+                :key="index"
+                class="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <td
+                  class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400"
+                >
+                  <span class="max-w-[50%] block">
+                    <iframe
+                      :key="index"
+                      :src="item.link"
+                      width="100%"
+                      height="100%"
+                      frameborder="0"
+                      allow="autoplay; encrypted-media"
+                      allowfullscreen
+                    ></iframe>
+                  </span>
+                </td>
+
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.filmTitle }}
+                </td>
+                <td
+                  class="max-w-sm p-4 overflow-hidden text-base font-normal text-white truncate xl:max-w-xs"
+                >
+                  {{ item?.link }}
+                </td>
+
+                <td class="p-4 space-x-2 whitespace-nowrap">
+                  <ButtonHandleModal
+                    @handleDelete="deleteTrailer"
+                    @handleUpdate="updateActor"
+                    :data="item"
+                    :formFields="formFields"
+                    :selectListData="selectListData"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <Pagination
+              :pageCount="countPage"
+              @handlePagination="handlePagination"
+            />
+          </div>
+        </div>
       </div>
-      <div
-        v-for="(item, index) in trailerList"
-        :key="index"
-        class="flex justify-between items-center gap-2 border-t border-t-[#0000002f] px-[16px] hover:bg-[#e5e5e5] py-[8px]"
-      >
-        <span class="w-[30%] block">
-          <iframe
-            :key="index"
-            :src="item.link"
-            width="100%"
-            height="100%"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-          ></iframe>
-        </span>
-        <span class="w-[30%] block break-words">{{ item.filmTitle }}</span>
-        <span class="w-[30%] block break-words"> {{ item.link }}</span>
-        <span class="w-[10%]">
-          <ButtonHandleModal
-            @handleDelete="deleteTrailer"
-            @handleUpdate="updateActor"
-            :data="item"
-            :formFields="formFields"
-            :selectListData="selectListData"
-          />
-        </span>
-      </div>
-    </div>
-    <div>
-      <Pagination :pageCount="countPage" @handlePagination="handlePagination" />
     </div>
   </div>
 </template>
