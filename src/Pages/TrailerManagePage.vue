@@ -113,8 +113,11 @@
           </table>
           <div>
             <Pagination
-              :pageCount="countPage"
+              :pageCount="Math.ceil(countPage)"
               @handlePagination="handlePagination"
+              :pageSize="pageSize"
+              :currentPage="currentPage"
+              :count="count"
             />
           </div>
         </div>
@@ -151,6 +154,8 @@ export default {
 
       selectListData: [],
       count: 0,
+      pageSize: 5,
+      currentPage: 1,
       formFields: formFields.trailer,
       keyword: "",
     };
@@ -159,6 +164,7 @@ export default {
     this.fetchApi();
     this.loadData();
     this.getCount();
+    this.currentPage = Number(this.$route.query.PageNumber) || 1;
   },
   computed: {
     countPage() {
@@ -175,7 +181,9 @@ export default {
             return { ...item, filmTitle: title };
           })
         );
-        this.trailerList = trailers.slice(0, 5);
+        const start = (this.currentPage - 1) * this.pageSize;
+        const end = start + this.pageSize;
+        this.trailerList = trailers.slice(start, end);
         this.count = res.data[0].count;
       } catch (error) {}
     },
@@ -236,11 +244,18 @@ export default {
       this.count = res.data;
     },
     async handlePagination(page) {
+      this.currentPage = page;
       try {
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            PageNumber: page,
+          },
+        });
         const res = await SearchTrailer({
           params: {
             PageNumber: page || this.$route?.query?.PageNumber,
-            PageSize: 5,
+            PageSize: this.pageSize,
             Keyword: this.keyword,
           },
         });

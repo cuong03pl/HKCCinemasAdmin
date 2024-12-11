@@ -105,8 +105,11 @@
           </table>
           <div>
             <Pagination
-              :pageCount="countPage"
+              :pageCount="Math.ceil(countPage)"
               @handlePagination="handlePagination"
+              :pageSize="pageSize"
+              :currentPage="currentPage"
+              :count="count"
             />
           </div>
         </div>
@@ -142,7 +145,8 @@ export default {
       toggleModal: false,
       toggleModalDelete: false,
       count: 0,
-
+      pageSize: 5,
+      currentPage: 1,
       selectListData: [],
       formFields: formFields.actor,
       userName: "",
@@ -153,6 +157,7 @@ export default {
   created() {
     this.loadData();
     this.getCount();
+    this.currentPage = Number(this.$route.query.PageNumber);
   },
   computed: {
     countPage() {
@@ -169,7 +174,9 @@ export default {
           return { ...item, filmTitle: filmName, userName: userName };
         })
       );
-      this.commentList = comments.slice(0, 5);
+      const start = (this.currentPage - 1) * this.pageSize;
+      const end = start + this.pageSize;
+      this.commentList = comments.slice(start, end);
       this.count = res.data[0].count;
     },
     async getUserName(id) {
@@ -217,11 +224,18 @@ export default {
       this.count = res.data;
     },
     async handlePagination(page) {
+      this.currentPage = page;
       try {
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            PageNumber: page,
+          },
+        });
         const res = await SearchComment({
           params: {
             PageNumber: page || this.$route?.query?.PageNumber,
-            PageSize: 10,
+            PageSize: this.pageSize,
             Keyword: this.keyword,
           },
         });

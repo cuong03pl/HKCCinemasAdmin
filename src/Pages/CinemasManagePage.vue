@@ -110,8 +110,11 @@
           </table>
           <div>
             <Pagination
-              :pageCount="countPage"
+              :pageCount="Math.ceil(countPage)"
               @handlePagination="handlePagination"
+              :pageSize="pageSize"
+              :currentPage="currentPage"
+              :count="count"
             />
           </div>
         </div>
@@ -146,17 +149,19 @@ export default {
       cinemasList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      count: 0,
-
       selectListData: [],
       keyword: "",
       formFields: formFields.cinemas,
+      count: 0,
+      pageSize: 5,
+      currentPage: 1,
     };
   },
   created() {
     this.getAllCategories();
     this.loadData();
     this.getCount();
+    this.currentPage = Number(this.$route.query.PageNumber) || 1;
   },
   computed: {
     countPage() {
@@ -166,7 +171,9 @@ export default {
   methods: {
     async loadData() {
       await getAllCinemas().then((res) => {
-        this.cinemasList = res.data.slice(0, 5);
+        const start = (this.currentPage - 1) * this.pageSize;
+        const end = start + this.pageSize;
+        this.cinemasList = res.data.slice(start, end);
         this.count = res.data[0].count;
       });
     },
@@ -265,11 +272,19 @@ export default {
       this.count = res.data;
     },
     async handlePagination(page) {
+      this.currentPage = page;
       try {
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            PageNumber: page,
+          },
+        });
+
         const res = await SearchCinemas({
           params: {
             PageNumber: page || this.$route?.query?.PageNumber,
-            PageSize: 5,
+            PageSize: this.pageSize,
             Keyword: this.keyword || this.$route?.query?.q,
           },
         });

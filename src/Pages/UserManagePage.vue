@@ -108,8 +108,11 @@
           </table>
           <div>
             <Pagination
-              :pageCount="countPage"
+              :pageCount="Math.ceil(countPage)"
               @handlePagination="handlePagination"
+              :pageSize="pageSize"
+              :currentPage="currentPage"
+              :count="count"
             />
           </div>
         </div>
@@ -149,6 +152,8 @@ export default {
       formFields2: formFields.userRoles,
       userId: "",
       count: 0,
+      pageSize: 5,
+      currentPage: 1,
       selectedUserRoles: [],
       keyword: "",
     };
@@ -162,6 +167,7 @@ export default {
     this.loadUser();
     this.getAllRoles();
     this.getCount();
+    this.currentPage = Number(this.$route.query.PageNumber) || 1;
   },
   methods: {
     async loadUser() {
@@ -177,7 +183,9 @@ export default {
             };
           })
         );
-        this.userList = users.slice(0, 5);
+        const start = (this.currentPage - 1) * this.pageSize;
+        const end = start + this.pageSize;
+        this.userList = users.slice(start, end);
         this.count = res.data[0].count;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
@@ -242,11 +250,18 @@ export default {
       this.count = res.data;
     },
     async handlePagination(page) {
+      this.currentPage = page;
       try {
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            PageNumber: page,
+          },
+        });
         const res = await SearchUser({
           params: {
             PageNumber: page || this.$route?.query?.PageNumber,
-            PageSize: 5,
+            PageSize: this.pageSize,
             Keyword: this.keyword,
           },
         });
