@@ -1,6 +1,6 @@
 <template>
   <div
-    class="p-4 md:p-6 2xl:p-10 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
+    class="p-4 md:p-6 2xl:p-10 bg-white block sm:flex items-center justify-between border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
   >
     <div class="w-full mb-1">
       <div class="mb-4">
@@ -20,7 +20,7 @@
       </div>
     </div>
   </div>
-  <div class="flex flex-col">
+  <div v-if="count > 0" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -116,6 +116,8 @@
       </div>
     </div>
   </div>
+
+  <EmptyList v-if="count <= 0" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -138,6 +140,7 @@ import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import { comment } from "postcss";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
+import EmptyList from "@/components/EmptyList/EmptyList.vue";
 export default {
   data() {
     return {
@@ -157,7 +160,7 @@ export default {
   created() {
     this.loadData();
     this.getCount();
-    this.currentPage = Number(this.$route.query.PageNumber);
+    this.currentPage = Number(this.$route.query.PageNumber) || 1;
   },
   computed: {
     countPage() {
@@ -268,6 +271,7 @@ export default {
     Search,
     Pagination,
     Breadcrumb,
+    EmptyList,
   },
 };
 </script>

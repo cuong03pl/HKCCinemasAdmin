@@ -1,6 +1,6 @@
 <template>
   <div
-    class="p-4 md:p-6 2xl:p-10 bg-white block border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
+    class="p-4 md:p-6 2xl:p-10 bg-white block border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
   >
     <div
       class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5"
