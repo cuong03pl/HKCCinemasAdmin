@@ -89,15 +89,6 @@
               </tr>
             </tbody>
           </table>
-          <div>
-            <Pagination
-              :pageCount="Math.ceil(countPage)"
-              @handlePagination="handlePagination"
-              :pageSize="pageSize"
-              :currentPage="currentPage"
-              :count="count"
-            />
-          </div>
         </div>
       </div>
     </div>
@@ -133,9 +124,6 @@ export default {
       roleList: [],
       toggleModal: false,
       toggleModalDelete: false,
-      count: 0,
-      pageSize: 1,
-      currentPage: 1,
       selectListData: [],
       formFields: formFields.role,
       keyword: "",
@@ -144,24 +132,13 @@ export default {
   created() {
     this.loadData();
     this.getCount();
-    this.currentPage = Number(this.$route.query.PageNumber) || 1;
   },
-  computed: {
-    countPage() {
-      console.log(this.count);
-      console.log(this.pageSize);
 
-      return this.count / this.pageSize;
-    },
-  },
   methods: {
     async loadData() {
       try {
         const res = await GetAllRoles();
-        const start = (this.currentPage - 1) * this.pageSize;
-        const end = start + this.pageSize;
-        this.roleList = res.data.slice(start, end);
-        this.count = res.data.length;
+        this.roleList = res.data;
       } catch (error) {}
     },
     async createNewRole(form_data) {
@@ -224,29 +201,6 @@ export default {
     async getCount() {
       const res = await GetCountRole();
       this.count = res.data;
-    },
-    async handlePagination(page) {
-      console.log(page);
-
-      this.currentPage = page;
-      try {
-        this.$router.push({
-          query: {
-            ...this.$route.query,
-            PageNumber: page,
-          },
-        });
-        const res = await GetAllRoles({
-          params: {
-            PageNumber: page || this.$route?.query?.PageNumber,
-            PageSize: this.pageSize,
-            Keyword: this.keyword,
-          },
-        });
-        console.log(res);
-
-        this.roles = res.data;
-      } catch (error) {}
     },
 
     convertTime,
