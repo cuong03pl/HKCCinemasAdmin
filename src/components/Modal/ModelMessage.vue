@@ -2,7 +2,7 @@
   <Teleport to="body">
     <div
       v-if="isOpen"
-      class="bg-[#36445c4d] fixed z-[9999999] h-full w-full top-0 right-0 left-0 flex justify-center items-center modal-overlay"
+      class="bg-[#36445c4d] fixed h-full w-full top-0 right-0 left-0 flex justify-center items-center modal-overlay z-[999999]"
     >
       <div class="bg-white p-6 rounded-xl w-[900px] modal-content">
         <div class="flex justify-between items-center">

@@ -105,7 +105,7 @@
           </table>
           <div>
             <Pagination
-              :pageCount="Math.ceil(countPage)"
+              :pageCount="countPage"
               @handlePagination="handlePagination"
               :pageSize="pageSize"
               :currentPage="currentPage"
@@ -161,7 +161,7 @@ export default {
   },
   computed: {
     countPage() {
-      return this.count / paginationConfig.perPage;
+      return Math.ceil(this.count / paginationConfig.perPage);
     },
   },
   methods: {
@@ -174,6 +174,12 @@ export default {
           return { ...item, filmTitle: filmName, userName: userName };
         })
       );
+      if (this.currentPage > this.countPage) {
+        await this.handlePagination(this.countPage);
+      }
+      if (this.currentPage <= 0) {
+        await this.handlePagination(1);
+      }
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
       this.commentList = comments.slice(start, end);
@@ -195,12 +201,15 @@ export default {
     },
     async deleteComment(id) {
       await deleteComment(id)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
+          if (this.commentList.length === 0 && this.currentPage > 1) {
+            await this.handlePagination(this.currentPage - 1);
+          }
         })
         .catch((err) => {
           store.commit("setNotifyModal", {

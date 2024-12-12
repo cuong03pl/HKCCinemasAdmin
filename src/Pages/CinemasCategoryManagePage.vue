@@ -102,7 +102,7 @@
           </table>
           <div>
             <Pagination
-              :pageCount="Math.ceil(countPage)"
+              :pageCount="countPage"
               @handlePagination="handlePagination"
               :pageSize="pageSize"
               :currentPage="currentPage"
@@ -154,12 +154,21 @@ export default {
   },
   computed: {
     countPage() {
-      return this.count / this.pageSize;
+      //
+      return Math.ceil(this.count / this.pageSize);
     },
   },
   methods: {
     async loadData() {
-      await getAllCinemasCategories().then((res) => {
+      await getAllCinemasCategories().then(async (res) => {
+        ///
+        if (this.currentPage > this.countPage) {
+          await this.handlePagination(this.countPage);
+        }
+        if (this.currentPage <= 0) {
+          await this.handlePagination(1);
+        }
+        ////
         const start = (this.currentPage - 1) * this.pageSize;
         const end = start + this.pageSize;
         this.cinemasCategoryList = res.data.slice(start, end);
@@ -173,12 +182,12 @@ export default {
       formData.append("formFile", form_data.image);
 
       await createNewCinemasCategories(formData)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
         })
         .catch((err) => {
           console.log(err);
@@ -196,12 +205,12 @@ export default {
       formData.append("formFile", form_data.image);
 
       await updateCinemasCategory(id, formData)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
         })
         .catch((err) => {
           if (err.response.status == 400) {
@@ -214,12 +223,16 @@ export default {
     },
     async deleteCinemasCategory(id) {
       await deleteCinemasCategory(id)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+
+          await this.loadData();
+          if (this.cinemasCategoryList.length === 0 && this.currentPage > 1) {
+            await this.handlePagination(this.currentPage - 1);
+          }
         })
         .catch((err) => {
           store.commit("setNotifyModal", {

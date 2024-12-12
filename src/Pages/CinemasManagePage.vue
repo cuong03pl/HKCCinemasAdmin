@@ -110,7 +110,7 @@
           </table>
           <div>
             <Pagination
-              :pageCount="Math.ceil(countPage)"
+              :pageCount="countPage"
               @handlePagination="handlePagination"
               :pageSize="pageSize"
               :currentPage="currentPage"
@@ -165,12 +165,18 @@ export default {
   },
   computed: {
     countPage() {
-      return this.count / paginationConfig.perPage;
+      return Math.ceil(this.count / paginationConfig.perPage);
     },
   },
   methods: {
     async loadData() {
-      await getAllCinemas().then((res) => {
+      await getAllCinemas().then(async (res) => {
+        if (this.currentPage > this.countPage) {
+          await this.handlePagination(this.countPage);
+        }
+        if (this.currentPage <= 0) {
+          await this.handlePagination(1);
+        }
         const start = (this.currentPage - 1) * this.pageSize;
         const end = start + this.pageSize;
         this.cinemasList = res.data.slice(start, end);
@@ -196,12 +202,12 @@ export default {
       formData.append("cinemasCategoryId", form_data.cinemasCategoryId);
 
       await createNewCinemas(formData)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
           this.toggleModal = false;
         })
         .catch((err) => {
@@ -224,12 +230,12 @@ export default {
       formData.append("cinemasCategoryId", form_data.cinemasCategoryId);
 
       await updateCinemas(id, formData)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
         })
         .catch((err) => {
           console.log(err);
@@ -243,12 +249,15 @@ export default {
     },
     async deleteCinemas(id) {
       await deleteCinemas(id)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
+          if (this.cinemasList.length === 0 && this.currentPage > 1) {
+            await this.handlePagination(this.currentPage - 1);
+          }
         })
         .catch((err) => {
           store.commit("setNotifyModal", {

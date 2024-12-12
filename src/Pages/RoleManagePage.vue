@@ -145,12 +145,12 @@ export default {
       var formData = new FormData();
       formData.append("rolename", form_data.name);
       await createNewRole(formData)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
         })
         .catch((err) => {
           if (err.response.status == 400) {
@@ -166,12 +166,12 @@ export default {
       formData.append("rolename", form_data.name);
 
       await updateRole(id, formData)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
         })
         .catch((err) => {
           if (err.response.status == 400) {
@@ -184,12 +184,12 @@ export default {
     },
     async deleteRole(id) {
       await deleteRole(id)
-        .then((res) => {
+        .then(async (res) => {
           store.commit("setNotifyModal", {
             isOpen: true,
             message: res.data,
           });
-          this.loadData();
+          await this.loadData();
         })
         .catch((err) => {
           store.commit("setNotifyModal", {

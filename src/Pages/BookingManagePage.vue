@@ -143,7 +143,7 @@
           </table>
           <div>
             <Pagination
-              :pageCount="Math.ceil(countPage)"
+              :pageCount="countPage"
               @handlePagination="handlePagination"
               :pageSize="pageSize"
               :currentPage="currentPage"
@@ -179,13 +179,21 @@ export default {
   },
   computed: {
     countPage() {
-      return this.count / paginationConfig.perPage;
+      return Math.ceil(this.count / paginationConfig.perPage);
     },
   },
   methods: {
     async loadData() {
       try {
         const res = await GetAllBookingDetails();
+
+        if (this.currentPage > this.countPage) {
+          await this.handlePagination(this.countPage);
+        }
+        if (this.currentPage <= 0) {
+          await this.handlePagination(1);
+        }
+
         const start = (this.currentPage - 1) * this.pageSize;
         const end = start + this.pageSize;
         this.bookingList = res.data.slice(start, end);
