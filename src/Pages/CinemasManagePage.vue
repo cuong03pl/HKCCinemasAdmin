@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div v-if="count > 0" class="flex flex-col">
+  <div v-if="cinemasList.length > 0" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -121,7 +121,7 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="count <= 0" />
+  <EmptyList v-if="cinemasList.length <= 0" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
