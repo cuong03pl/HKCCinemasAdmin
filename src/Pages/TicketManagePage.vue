@@ -4,18 +4,18 @@
   >
     <div class="w-full mb-1">
       <div class="mb-4">
-        <Breadcrumb name="Ticket" />
+        <Breadcrumb name="Quản lý vé xem" />
         <h1
           class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
         >
-          All tickets
+          Quản lý vé xem
         </h1>
       </div>
       <div
         class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
       >
         <!-- Start search -->
-        <Search @handleSubmit="search" placeholder="Search for tickets" />
+        <Search @handleSubmit="search" placeholder="Nhập tên phim" />
         <!-- End search -->
         <ButtonHandleCreate
           @handleCreate="createTicket"

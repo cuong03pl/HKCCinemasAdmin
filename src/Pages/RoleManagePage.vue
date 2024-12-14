@@ -4,18 +4,18 @@
   >
     <div class="w-full mb-1">
       <div class="mb-4">
-        <Breadcrumb name="Role" />
+        <Breadcrumb name="Quản lý vai trò" />
         <h1
           class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
         >
-          All roles
+          Quản lý vai trò
         </h1>
       </div>
       <div
         class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
       >
         <!-- Start search -->
-        <Search @handleSubmit="search" placeholder="Search for roles" />
+        <Search @handleSubmit="search" placeholder="Nhập tên vai trò" />
         <ButtonHandleCreate
           @handleCreate="createNewRole"
           :selectListData="selectListData"
@@ -130,6 +130,7 @@ export default {
       selectListData: [],
       formFields: formFields.role,
       keyword: "",
+      count: 0,
     };
   },
   created() {

@@ -4,18 +4,18 @@
   >
     <div class="w-full mb-1">
       <div class="mb-4">
-        <Breadcrumb name="Comment" />
+        <Breadcrumb name="Quản lý bình luận" />
         <h1
           class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
         >
-          All comments
+          Quản lý bình luận
         </h1>
       </div>
       <div
         class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
       >
         <!-- Start search -->
-        <Search @handleSubmit="search" placeholder="Search for comments" />
+        <Search @handleSubmit="search" placeholder="Nhập tên người dùng" />
         <!-- End search -->
       </div>
     </div>

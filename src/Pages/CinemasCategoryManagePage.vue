@@ -4,11 +4,11 @@
   >
     <div class="w-full mb-1">
       <div class="mb-4">
-        <Breadcrumb name="Cinemas Category" />
+        <Breadcrumb name="Quản lý công ty chiếu phim" />
         <h1
           class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
         >
-          All cinemas company
+          Quản lý công ty chiếu phim
         </h1>
       </div>
       <div
@@ -17,7 +17,7 @@
         <!-- Start search -->
         <Search
           @handleSubmit="search"
-          placeholder="Search for cinemas company"
+          placeholder="Nhập tên công ty chiếu phim"
         />
         <!-- End search -->
         <ButtonHandleCreate

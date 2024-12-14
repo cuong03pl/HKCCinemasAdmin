@@ -4,18 +4,18 @@
   >
     <div class="w-full mb-1">
       <div class="mb-4">
-        <Breadcrumb name="Category" />
+        <Breadcrumb name="Quản lý danh mục phim" />
         <h1
           class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
         >
-          All categories
+          Quản lý danh mục phim
         </h1>
       </div>
       <div
         class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
       >
         <!-- Start search -->
-        <Search @handleSubmit="search" placeholder="Search for categories" />
+        <Search @handleSubmit="search" placeholder="Nhập tên danh mục phim" />
         <!-- End search -->
         <ButtonHandleCreate
           @handleCreate="createNewCategory"
