@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div v-if="actorList.length > 0" class="flex flex-col">
+  <div v-if="actorList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -111,7 +111,8 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="actorList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="actorList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -136,6 +137,7 @@ import Pagination from "@/components/Pagination/Pagination.vue";
 import { paginationConfig } from "../../config/paginationConfig";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
@@ -148,6 +150,7 @@ export default {
       count: 0,
       pageSize: 5,
       currentPage: 1,
+      isLoading: true,
     };
   },
   created() {
@@ -164,6 +167,7 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.isLoading = true;
         const res = await getAllActors();
         const actors = await Promise.all(
           res.data.map(async (item) => {
@@ -181,6 +185,7 @@ export default {
         const end = start + this.pageSize;
         this.actorList = actors.slice(start, end);
         this.count = actors[0].count;
+        this.isLoading = false;
       } catch (error) {}
     },
     async fetchApi() {
@@ -313,6 +318,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>

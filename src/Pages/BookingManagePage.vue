@@ -20,7 +20,7 @@
       </div>
     </div>
   </div>
-  <div v-if="bookingList.length > 0" class="flex flex-col">
+  <div v-if="bookingList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -154,7 +154,8 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="bookingList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="bookingList.length <= 0 && !isLoading" />
 </template>
 <script>
 import { GetAllBookingDetails } from "@/Services/FetchAPI";
@@ -164,15 +165,17 @@ import Pagination from "@/components/Pagination/Pagination.vue";
 import { paginationConfig } from "../../config/paginationConfig";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 
 export default {
-  components: { Search, Pagination, Breadcrumb, EmptyList },
+  components: { Search, Pagination, Breadcrumb, EmptyList, Spinner },
   data() {
     return {
       bookingList: [],
       count: 0,
       pageSize: 5,
       currentPage: 1,
+      isLoading: true,
     };
   },
   created() {
@@ -187,6 +190,7 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.isLoading = true;
         const res = await GetAllBookingDetails();
 
         if (this.currentPage > this.countPage) {
@@ -200,6 +204,7 @@ export default {
         const end = start + this.pageSize;
         this.bookingList = res.data.slice(start, end);
         this.count = res.data[0].count;
+        this.isLoading = false;
       } catch (error) {}
     },
     async search(keyword) {

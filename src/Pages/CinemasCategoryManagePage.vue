@@ -30,7 +30,10 @@
       </div>
     </div>
   </div>
-  <div v-if="cinemasCategoryList.length > 0" class="flex flex-col">
+  <div
+    v-if="cinemasCategoryList.length > 0 && !isLoading"
+    class="flex flex-col"
+  >
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -113,7 +116,8 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="cinemasCategoryList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="cinemasCategoryList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -135,6 +139,7 @@ import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
@@ -147,6 +152,7 @@ export default {
       formFields: formFields.cinemas_category,
       pageSize: 3,
       currentPage: 1,
+      isLoading: true,
     };
   },
   created() {
@@ -162,19 +168,19 @@ export default {
   },
   methods: {
     async loadData() {
+      this.isLoading = true;
       await getAllCinemasCategories().then(async (res) => {
-        ///
         if (this.currentPage > this.countPage) {
           await this.handlePagination(this.countPage);
         }
         if (this.currentPage <= 0) {
           await this.handlePagination(1);
         }
-        ////
         const start = (this.currentPage - 1) * this.pageSize;
         const end = start + this.pageSize;
         this.cinemasCategoryList = res.data.slice(start, end);
         this.count = res.data[0].count;
+        this.isLoading = false;
       });
     },
 
@@ -286,6 +292,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>

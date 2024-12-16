@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div v-if="seatList.length > 0" class="flex flex-col">
+  <div v-if="seatList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -113,7 +113,8 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="seatList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="seatList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -137,13 +138,13 @@ import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
       seatList: [],
       toggleModal: false,
       toggleModalDelete: false,
-
       selectListData: [],
       formFields: formFields.seat,
       roomName: "",
@@ -151,6 +152,7 @@ export default {
       pageSize: 5,
       currentPage: 1,
       keyword: "",
+      isLoading: true,
     };
   },
   created() {
@@ -168,6 +170,7 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.isLoading = true;
         const res = await GetAllSeats();
         const seats = res.data.map((item) => {
           return {
@@ -185,6 +188,7 @@ export default {
         const end = start + this.pageSize;
         this.seatList = seats.slice(start, end);
         this.count = res.data[0].count;
+        this.isLoading = false;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -320,6 +324,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>

@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div v-if="roomList.length > 0" class="flex flex-col">
+  <div v-if="roomList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -102,7 +102,8 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="roomList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="roomList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -125,13 +126,13 @@ import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
       roomList: [],
       toggleModal: false,
       toggleModalDelete: false,
-
       selectListData: [],
       formFields: formFields.room,
       cinemasName: "",
@@ -139,6 +140,7 @@ export default {
       pageSize: 5,
       currentPage: 1,
       keyword: "",
+      isLoading: true,
     };
   },
   created() {
@@ -154,6 +156,7 @@ export default {
   },
   methods: {
     async loadData() {
+      this.isLoading = true;
       await GetAllRooms().then(async (res) => {
         const rooms = res.data.map((item) => {
           return { ...item, cinemasId: item.cinemas.id };
@@ -168,6 +171,7 @@ export default {
         const end = start + this.pageSize;
         this.roomList = rooms.slice(start, end);
         this.count = res.data[0].count;
+        this.isLoading = false;
       });
     },
     async getCinemas() {
@@ -292,6 +296,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>

@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div v-if="categoryList.length > 0" class="flex flex-col">
+  <div v-if="categoryList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -90,7 +90,8 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="categoryList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="categoryList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -113,6 +114,7 @@ import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
@@ -124,6 +126,7 @@ export default {
       formFields: formFields.category,
       pageSize: 5,
       currentPage: 1,
+      isLoading: true,
     };
   },
   created() {
@@ -139,6 +142,7 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.isLoading = true;
         const res = await getAllCategories();
         if (this.currentPage > this.countPage) {
           await this.handlePagination(this.countPage);
@@ -150,6 +154,7 @@ export default {
         const end = start + this.pageSize;
         this.categoryList = res.data.slice(start, end);
         this.count = res.data[0].count;
+        this.isLoading = false;
       } catch (error) {}
     },
 
@@ -259,6 +264,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>

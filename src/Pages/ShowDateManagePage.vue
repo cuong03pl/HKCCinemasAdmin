@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div v-if="showdateList.length > 0" class="flex flex-col">
+  <div v-if="showdateList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -102,7 +102,8 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="showdateList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="showdateList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -127,6 +128,7 @@ import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
@@ -139,6 +141,7 @@ export default {
       currentPage: 1,
       formFields: formFields.showDate,
       keyword: "",
+      isLoading: true,
     };
   },
   created() {
@@ -159,6 +162,7 @@ export default {
     },
     async loadData() {
       try {
+        this.isLoading = true;
         const res = await GetAllShowDates();
         const showDates = res.data.map((item) => {
           return {
@@ -176,6 +180,7 @@ export default {
         const end = start + this.pageSize;
         this.showdateList = showDates.slice(start, end);
         this.count = showDates[0].count;
+        this.isLoading = false;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu lịch chiếu:", error);
       }
@@ -316,6 +321,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>

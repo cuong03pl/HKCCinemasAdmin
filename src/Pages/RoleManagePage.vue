@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div v-if="roleList.length > 0" class="flex flex-col">
+  <div v-if="roleList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -93,8 +93,8 @@
       </div>
     </div>
   </div>
-
-  <EmptyList v-if="roleList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="roleList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -121,6 +121,7 @@ import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
@@ -131,6 +132,7 @@ export default {
       formFields: formFields.role,
       keyword: "",
       count: 0,
+      isLoading: true,
     };
   },
   created() {
@@ -141,8 +143,10 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.isLoading = true;
         const res = await GetAllRoles();
         this.roleList = res.data;
+        this.isLoading = false;
       } catch (error) {}
     },
     async createNewRole(form_data) {
@@ -216,6 +220,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>

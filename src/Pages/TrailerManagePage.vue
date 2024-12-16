@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div v-if="trailerList.length > 0" class="flex flex-col">
+  <div v-if="trailerList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -111,6 +111,7 @@
               </tr>
             </tbody>
           </table>
+
           <div>
             <Pagination
               :pageCount="countPage"
@@ -124,7 +125,8 @@
       </div>
     </div>
   </div>
-  <EmptyList v-if="trailerList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="trailerList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -147,6 +149,7 @@ import { paginationConfig } from "../../config/paginationConfig";
 import Pagination from "@/components/Pagination/Pagination.vue";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
@@ -159,6 +162,7 @@ export default {
       currentPage: 1,
       formFields: formFields.trailer,
       keyword: "",
+      isLoading: true,
     };
   },
   mounted() {
@@ -175,6 +179,7 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.isLoading = true;
         const res = await GetAllTrailers();
         const trailers = await Promise.all(
           res.data.map(async (item) => {
@@ -192,6 +197,7 @@ export default {
         const end = start + this.pageSize;
         this.trailerList = trailers.slice(start, end);
         this.count = res.data[0].count;
+        this.isLoading = false;
       } catch (error) {}
     },
     async fetchApi() {
@@ -288,6 +294,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>

@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div v-if="filmList.length > 0" class="flex flex-col">
+  <div v-if="filmList.length > 0 && !isLoading" class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -167,8 +167,8 @@
       </div>
     </div>
   </div>
-
-  <EmptyList v-if="filmList.length <= 0" />
+  <Spinner v-if="isLoading" />
+  <EmptyList v-if="filmList.length <= 0 && !isLoading" />
 </template>
 <script>
 import ButtonHandleModal from "@/components/Modal/ButtonHandleModal.vue";
@@ -194,6 +194,7 @@ import { paginationConfig } from "../../config/paginationConfig";
 import router from "@/router";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.vue";
 import EmptyList from "@/components/EmptyList/EmptyList.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 export default {
   data() {
     return {
@@ -206,6 +207,7 @@ export default {
       pageSize: 5,
       currentPage: 1,
       keyword: "",
+      isLoading: true,
     };
   },
   created() {
@@ -222,6 +224,7 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.isLoading = true;
         const res = await getFilmList();
         const films = await Promise.all(
           res.data.map(async (item) => {
@@ -239,6 +242,7 @@ export default {
         const end = start + this.pageSize;
         this.filmList = films.slice(start, end);
         this.count = films[0].count;
+        this.isLoading = false;
       } catch (error) {}
     },
     async getAllCategories() {
@@ -392,6 +396,7 @@ export default {
     Pagination,
     Breadcrumb,
     EmptyList,
+    Spinner,
   },
 };
 </script>
