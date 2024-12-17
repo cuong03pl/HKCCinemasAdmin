@@ -109,9 +109,8 @@
                   @error="handleFallBack"
                   :src="
                     field.id === 'background'
-                      ? background ||
-                        `https://localhost:7253${FormData[field.id]}`
-                      : image || `https://localhost:7253${FormData[field.id]}`
+                      ? background || `${baseUrl}${FormData[field.id]}`
+                      : image || `${baseUrl}${FormData[field.id]}`
                   "
                   alt=""
                 />
@@ -174,6 +173,7 @@ export default {
       selectList: [],
       image: null,
       background: null,
+      baseUrl: import.meta.env.VITE_IMAGE_URL,
     };
   },
   watch: {
@@ -242,9 +242,9 @@ export default {
     },
     handleFallBack() {
       this.image =
-        "https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg";
+        "https://global.discourse-cdn.com/turtlehead/original/2X/c/c830d1dee245de3c851f0f88b6c57c83c69f3ace.png";
       this.background =
-        "https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg";
+        "https://global.discourse-cdn.com/turtlehead/original/2X/c/c830d1dee245de3c851f0f88b6c57c83c69f3ace.png";
     },
     convertTime,
     convertTimeSpan,
